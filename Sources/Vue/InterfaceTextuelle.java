@@ -28,14 +28,23 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
     @Override
     public void jouePartie() {
+    	long delayIA = 0;//en ms
+    	long timer;
         c.fixerInterfaceUtilisateur(this);
         s = new Scanner(System.in);
         while (!j.finpartie && s.hasNextLine()) {
             try {
             	int entier;
-            	            	
             	if(j.estIA(j.quiJoue())) {
-            		entier = j.getCoupIA(j.quiJoue());
+            		if(j.manchefini()) {
+            			entier = 1;
+            		} else {
+            			timer = System.currentTimeMillis();
+            			entier = j.getCoupIA(j.quiJoue());
+            			while(System.currentTimeMillis() - timer < delayIA) {
+            				//A "threder" pour ne pas freeze l'interface graphique
+            			}
+            		}
             	}else {
             		entier = Integer.parseInt(s.nextLine());
             	}
@@ -63,7 +72,8 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
                 }
             } catch (Exception e) {
-                System.out.println(e);
+            	e.printStackTrace();
+                //System.out.println(e);
             }
         }
     }

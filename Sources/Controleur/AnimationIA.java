@@ -18,6 +18,7 @@ public class AnimationIA extends Animation{
 			System.err.println("ERREUR : impossible de trouver un coup");
 			return;//ERREUR
 		}
+		
 		controleur.commande(aJouer);
 	}
 }

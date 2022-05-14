@@ -33,12 +33,15 @@ class IAAleatoire extends IA {
 		if(r==null) {
 			r=new Random();
 		}
+		
 		int retour=-1;
-		int codePhase = jeu.phasetour();
+		//int codePhase = jeu.phasetour();
 		if(nbPiochesNonVide()==0) {
-			codePhase%=2;
+			System.out.println("nbPhases : " + jeu.phase());
+			System.out.println(jeu.manchefini());
+			//codePhase%=2;
 		}
-		switch(codePhase) {
+		switch(jeu.phasetour()%jeu.phase()) {
 			case 0:
 				retour = r.nextInt(jeu.joueurDonneur().main().taille());
 				break;
@@ -47,11 +50,7 @@ class IAAleatoire extends IA {
 				break;
 			case 2:
 			case 3:
-				int numPioche = nbPiochesNonVide();
-				if(numPioche>1) {
-					numPioche=r.nextInt(numPioche-1)+1;
-				}
-				retour = choisirPioche(numPioche);
+				retour = choisirPioche(r.nextInt(nbPiochesNonVide())+1);
 				break;
 		}
 		return retour;
