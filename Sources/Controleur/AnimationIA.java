@@ -1,4 +1,4 @@
-package Controleur
+package Controleur;
 public class AnimationIA {
 	
 	ControleurMediateur controleur;
