@@ -9,6 +9,8 @@ public abstract class IA {
 		IA retour=null;
 		if(mode.equals("alea")) {
 			retour = new IAAleatoire();
+		} else if(mode.equals("easy")) {
+			retour = new IAMinMax();
 		} else {
 			System.err.println("IA inconnue : " + mode);
 		}

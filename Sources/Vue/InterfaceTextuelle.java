@@ -102,7 +102,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         j.ModeV(mode, nombre);
         
         System.out.println("Joueur 1 IA : tapez non si humain ou le mode si IA.");
-        System.out.println("modes : alea");
+        System.out.println("modes : alea , easy");
         String typeJ1 = s.nextLine();
         while (!typeJ1.equals("non") && !typeJ1.equals("alea")) {
         	System.out.println("commande inconnu :"+typeJ1);
@@ -111,9 +111,9 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         j.ModeJoueur(1,typeJ1);
         
         System.out.println("Joueur 2 IA : tapez non si humain ou le mode si IA.");
-        System.out.println("modes : alea");
+        System.out.println("modes : alea , easy");
         String typeJ2 = s.nextLine();
-        while (!typeJ2.equals("non") && !typeJ2.equals("alea")) {
+        while (!typeJ2.equals("non") && !typeJ2.equals("alea") && !typeJ2.equals("easy")) {
         	System.out.println("commande inconnu");
         	typeJ2 = s.nextLine();
         }
