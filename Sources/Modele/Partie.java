@@ -3,6 +3,7 @@ package Modele;
 import java.util.ArrayList;
 
 import Patterns.Observable;
+import Controleur.IA;
 
 public class Partie extends Observable {
     ArrayList<Manche> Manches;
@@ -13,7 +14,12 @@ public class Partie extends Observable {
     boolean manchefin;
     public boolean debutpartie, finpartie;
     int phase, phasetour, nbmanche, nMax, score1, score2;
-
+    
+    boolean J1EstIA;
+    boolean J2EstIA;
+    IA joueur1IA;
+    IA joueur2IA;
+    
     public Partie() {
         j1 = new Joueur();
         j2 = new Joueur();
@@ -208,6 +214,56 @@ public class Partie extends Observable {
         Modedejeu = mode;
         nMax = nombre;
         testFinPartie();
+    }
+    
+    public int quiJoue() {
+    	switch(phasetour()) {
+    		case 0:
+    			return quiDonne();
+    		case 1:
+    			return quiRecois();
+    		case 2:
+    			return quiDonne();
+    		case 3:
+    			return quiRecois();
+    		default:
+    			return -1;
+    	}
+    }
+    
+    public void ModeJoueur(int joueur, String mode) {
+    	if(mode.equals("non")) {
+    		if(joueur==1) {
+        		J1EstIA=false;
+        	}else {
+        		J2EstIA=false;
+        	}
+    	} else {
+    		if(joueur==1) {
+        		J1EstIA=true;
+        		joueur1IA = IA.creerIA(this,mode);
+        	}else {
+        		J2EstIA=true;
+        		joueur2IA = IA.creerIA(this,mode);
+        	}
+    	}
+    	
+    }
+    
+    public boolean estIA(int joueur) {
+    	if(joueur==1) {
+    		return J1EstIA;
+    	}else {
+    		return J2EstIA;
+    	}
+    }
+    
+    public int getCoupIA(int joueur) {
+    	if(joueur==1) {
+    		return joueur1IA.jouerCoup();
+    	}else {
+    		return joueur2IA.jouerCoup();
+    	}
     }
 
     public boolean partifini() {

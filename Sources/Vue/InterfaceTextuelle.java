@@ -1,8 +1,6 @@
 package Vue;
 
-//import java.lang.module.Configuration;
 import java.util.Scanner;
-//import java.util.concurrent.ExecutionException;
 
 import Modele.Partie;
 
@@ -34,7 +32,14 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         s = new Scanner(System.in);
         while (!j.finpartie && s.hasNextLine()) {
             try {
-                int entier = Integer.parseInt(s.nextLine());
+            	int entier;
+            	            	
+            	if(j.estIA(j.quiJoue())) {
+            		entier = j.getCoupIA(j.quiJoue());
+            	}else {
+            		entier = Integer.parseInt(s.nextLine());
+            	}
+            	
                 switch (c.commande(entier)) {
                     case 0:
                         break;
@@ -85,7 +90,24 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         int nombre = s.nextInt();
         System.out.println("vous avez choisis de gagner en " + nombre + " " + modes);
         j.ModeV(mode, nombre);
-
+        
+        System.out.println("Joueur 1 IA : tapez non si humain ou le mode si IA.");
+        System.out.println("modes : alea");
+        String typeJ1 = s.nextLine();
+        while (!typeJ1.equals("non") && !typeJ1.equals("alea")) {
+        	System.out.println("commande inconnu :"+typeJ1);
+        	typeJ1 = s.nextLine();
+        }
+        j.ModeJoueur(1,typeJ1);
+        
+        System.out.println("Joueur 2 IA : tapez non si humain ou le mode si IA.");
+        System.out.println("modes : alea");
+        String typeJ2 = s.nextLine();
+        while (!typeJ2.equals("non") && !typeJ2.equals("alea")) {
+        	System.out.println("commande inconnu");
+        	typeJ2 = s.nextLine();
+        }
+        j.ModeJoueur(2,typeJ2);
     }
 
 }
