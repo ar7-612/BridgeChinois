@@ -1,4 +1,4 @@
-package Controleur
+/*package Controleur;
 abstract class IA {
 	Manche partie;
 	
@@ -17,4 +17,4 @@ abstract class IA {
 	Coup jouerCoup(){
 		return null;
 	}
-}
+}*/

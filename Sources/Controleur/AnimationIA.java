@@ -1,4 +1,4 @@
-package Controleur;
+/*package Controleur;
 public class AnimationIA {
 	
 	ControleurMediateur controleur;
@@ -23,4 +23,4 @@ public class AnimationIA {
 		controleur.jouerCoup(aJouer);
 		aJouer = null;
 	}
-}
+}*/

@@ -1,8 +1,8 @@
 package Vue;
 
-import java.lang.module.Configuration;
+//import java.lang.module.Configuration;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
+//import java.util.concurrent.ExecutionException;
 
 import Modele.Partie;
 

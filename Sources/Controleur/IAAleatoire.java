@@ -1,0 +1,5 @@
+package Controleur;
+
+class IAAleatoire {
+	
+}
