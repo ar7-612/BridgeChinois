@@ -62,7 +62,8 @@ public class PileCartes implements Cloneable {
         }
     }
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public PileCartes clone() {
         PileCartes p = new PileCartes();
         p.pile = (ArrayList<Carte>) pile.clone();

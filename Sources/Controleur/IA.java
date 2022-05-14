@@ -1,20 +1,22 @@
-/*package Controleur;
+package Controleur;
+
+import Modele.Partie;
+
 abstract class IA {
-	Manche partie;
+	Partie jeu;
 	
-	abstract IA creerIA (Manche m, String mode){
-		partie = m;
+	public IA creerIA (Partie j, String mode){
+		IA retour=null;
 		switch(mode){
 			case "Aleatoire":
-				return new IAAleatoire();
+				retour = new IAAleatoire();
 			default :
-				System.err.println("IA \"",mode,"\" inconnue");
+				System.err.println("IA inconnue : "+mode);
 				//ERREUR
 		}
-		return null;
+		retour.jeu = j;
+		return retour;
 	}
 	
-	Coup jouerCoup(){
-		return null;
-	}
-}*/
+	abstract int jouerCoup();
+}
