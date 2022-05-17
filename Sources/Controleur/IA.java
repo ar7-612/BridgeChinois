@@ -1,11 +1,13 @@
 package Controleur;
 
 import Modele.Partie;
+import Modele.Historique;
+import Modele.Coup;
 
 public abstract class IA {
 	Partie jeu;
-	
-	public static IA creerIA (Partie j, String mode){
+	Historique<Coup> historique;
+	public static IA creerIA (Partie j,Historique<Coup> h, String mode){
 		IA retour=null;
 		if(mode.equals("alea")) {
 			retour = new IAAleatoire();
@@ -22,6 +24,7 @@ public abstract class IA {
 				//ERREUR
 		}*/
 		retour.jeu = j;
+		retour.historique = h;
 		return retour;
 	}
 	

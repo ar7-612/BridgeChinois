@@ -1,8 +1,8 @@
 package Vue;
 
-import java.lang.module.Configuration;
+//import java.lang.module.Configuration;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
+//import java.util.concurrent.ExecutionException;
 
 
 import Modele.Partie;
@@ -32,26 +32,40 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-    	long delayIA = 0;//en ms
+    	long delayIA = 500;//en ms
     	long timer;
+    	
         c.fixerInterfaceUtilisateur(this);
         s = new Scanner(System.in);
-        while (!j.finpartie && s.hasNextLine()) {
+        
+        int entier = -10;
+        
+        // while (!j.finpartie && s.hasNextLine()) {
+        while (!j.finpartie ) { 
             try {
-
-            	int entier;
+            	
             	if(j.estIA(j.quiJoue())) {
-            		if(j.manchefini()) {
+            		if(entier==-1  || entier==-2) {
+            			//On change rien
+            		} else if(j.manchefini()) {
             			entier = 1;
             		} else {
-            			timer = System.currentTimeMillis();
             			entier = j.getCoupIA(j.quiJoue());
-            			while(System.currentTimeMillis() - timer < delayIA) {
-            				//A "threder" pour ne pas freeze l'interface graphique
-            			}
             		}
+            		timer = System.currentTimeMillis();
+            		while(System.currentTimeMillis() - timer < delayIA) {
+        				//A "threder" pour ne pas freeze l'interface graphique
+        			}
             	}else {
-            		entier = Integer.parseInt(s.nextLine());
+            		boolean estEntier = false;
+            		while(!estEntier) {
+            			try {
+                			entier = Integer.parseInt(s.nextLine());
+                			estEntier = true;
+                		} catch(NumberFormatException e) {
+                			System.out.println("Doit etre un entier");
+                		}
+            		}
             	}
             	
                 switch (c.commande(entier)) {

@@ -1,6 +1,6 @@
 package Structure;
 
-import Structure.Iterateur;
+//import Structure.Iterateur;
 
 public interface Sequence<Toto> {
 	void insereTete(Toto element);

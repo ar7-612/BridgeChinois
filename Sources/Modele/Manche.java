@@ -1,7 +1,7 @@
 package Modele;
 
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 public class Manche {
     PileCartes pile1, pile2, pile3, pile4, pile5, pile6;
