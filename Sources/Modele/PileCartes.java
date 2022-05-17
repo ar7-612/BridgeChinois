@@ -21,6 +21,12 @@ public class PileCartes implements Cloneable {
         pile.add(c);
     }
 
+
+    public void ajouterdeb(Carte c) {
+        pile.add(0, c);
+    }
+
+
     public boolean vide() {
         return pile.isEmpty();
     }
@@ -62,7 +68,12 @@ public class PileCartes implements Cloneable {
         }
     }
 
-    @Override
+
+
+
+  @SuppressWarnings("unchecked")
+	@Override
+
     public PileCartes clone() {
         PileCartes p = new PileCartes();
         p.pile = (ArrayList<Carte>) pile.clone();
@@ -70,7 +81,9 @@ public class PileCartes implements Cloneable {
     }
 
     public Carte aleatoire(boolean visible) {
-        Random r = new Random();
+
+        Random r = new Random(100);
+
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);
         pile.remove(res);

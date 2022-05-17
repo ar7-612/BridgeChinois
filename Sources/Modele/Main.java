@@ -15,16 +15,35 @@ public class Main {
         taille++;
     }
 
-    public void retirer(Carte c) {
+    public void ajouterpos(Carte c, int i) {
+        Carte[] main2 = new Carte[11];
+        for (int j = 0; j < i; j++) {
+            main2[j] = main[j];
+        }
+        main2[i] = c;
+        for (int j = i + 1; j < 11; j++) {
+            main2[j] = main[j - 1];
+        }
+        main = main2;
+        taille++;
+    }
+
+    public Carte retirer(Carte c) {
         int i = 0;
+        Carte card;
         while (i < taille && !main[i].equals(c)) {
             i++;
         }
+        card = main[i];
+
         while (i < (taille - 1)) {
             main[i] = main[i + 1];
             i++;
         }
         taille = taille - 1;
+
+        return card;
+
 
     }
 
@@ -40,12 +59,17 @@ public class Main {
         return main;
     }
 
-    public void retirer(int i) {
+    public Carte retirer(int i) {
+        Carte card = main[i];
+
         while (i < taille - 1) {
             main[i] = main[i + 1];
             i++;
         }
         main[i] = null;
         taille = taille - 1;
+
+        return card;
+
     }
 }

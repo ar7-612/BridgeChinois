@@ -1,8 +1,9 @@
 package Vue;
 
-import java.lang.module.Configuration;
+//import java.lang.module.Configuration;
 import java.util.Scanner;
-import java.util.concurrent.ExecutionException;
+//import java.util.concurrent.ExecutionException;
+
 
 import Modele.Partie;
 
@@ -30,11 +31,43 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
     @Override
     public void jouePartie() {
+
+    	long delayIA = 500;//en ms
+    	long timer;
+    	
         c.fixerInterfaceUtilisateur(this);
         s = new Scanner(System.in);
-        while (!j.finpartie && s.hasNextLine()) {
+        
+        int entier = -10;
+        
+        // while (!j.finpartie && s.hasNextLine()) {
+        while (!j.finpartie ) { 
             try {
-                int entier = Integer.parseInt(s.nextLine());
+            	
+            	if(j.estIA(j.quiJoue())) {
+            		if(entier==-1  || entier==-2) {
+            			//On change rien
+            		} else if(j.manchefini()) {
+            			entier = 1;
+            		} else {
+            			entier = j.getCoupIA(j.quiJoue());
+            		}
+            		timer = System.currentTimeMillis();
+            		while(System.currentTimeMillis() - timer < delayIA) {
+        				//A "threder" pour ne pas freeze l'interface graphique
+        			}
+            	}else {
+            		boolean estEntier = false;
+            		while(!estEntier) {
+            			try {
+                			entier = Integer.parseInt(s.nextLine());
+                			estEntier = true;
+                		} catch(NumberFormatException e) {
+                			System.out.println("Doit etre un entier");
+                		}
+            		}
+            	}
+            	
                 switch (c.commande(entier)) {
                     case 0:
                         break;
@@ -58,7 +91,11 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
                 }
             } catch (Exception e) {
+
                 System.out.println(e);
+
+            	//e.printStackTrace();
+
             }
         }
     }
@@ -85,7 +122,24 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         int nombre = s.nextInt();
         System.out.println("vous avez choisis de gagner en " + nombre + " " + modes);
         j.ModeV(mode, nombre);
-
+        
+        System.out.println("Joueur 1 IA : tapez non si humain ou le mode si IA.");
+        System.out.println("modes : alea , easy");
+        String typeJ1 = s.nextLine();
+        while (!typeJ1.equals("non") && !typeJ1.equals("alea")) {
+        	System.out.println("commande inconnu :"+typeJ1);
+        	typeJ1 = s.nextLine();
+        }
+        j.ModeJoueur(1,typeJ1);
+        
+        System.out.println("Joueur 2 IA : tapez non si humain ou le mode si IA.");
+        System.out.println("modes : alea , easy");
+        String typeJ2 = s.nextLine();
+        while (!typeJ2.equals("non") && !typeJ2.equals("alea") && !typeJ2.equals("easy")) {
+        	System.out.println("commande inconnu");
+        	typeJ2 = s.nextLine();
+        }
+        j.ModeJoueur(2,typeJ2);
     }
 
 }
