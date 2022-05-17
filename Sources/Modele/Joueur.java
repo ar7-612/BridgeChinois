@@ -7,6 +7,18 @@ public class Joueur {
     int[] scores;
     String nom;
     Main main;
+    
+    public PileCartes getPli() {
+    	return Pli;
+    }
+    
+    public PileCartes getCartesPiochees() {
+    	return cartesPiochees;
+    }
+    
+    public boolean[] getTabCouleur() {
+    	return tabcouleur;
+    }
 
     public Joueur() {
         main = new Main();

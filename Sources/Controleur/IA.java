@@ -8,7 +8,7 @@ public abstract class IA {
 	Partie jeu;
 	Joueur joueur1;
 	Joueur joueur2;
-	int joueur;
+	int joueurIA;
 	public static IA creerIA (Partie j,Joueur j1,Joueur j2,int numJ, String mode){
 		IA retour=null;
 		if(mode.equals("alea")) {
@@ -28,7 +28,7 @@ public abstract class IA {
 		retour.jeu = j;
 		retour.joueur1 = j1;
 		retour.joueur2 = j2;
-		retour.joueur = numJ;
+		retour.joueurIA = numJ;
 		return retour;
 	}
 	

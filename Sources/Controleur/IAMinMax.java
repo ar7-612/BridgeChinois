@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import Modele.Carte;
+import Modele.Main;
+
 //joueur : 0 ou 1
 
 class CartesM {
@@ -74,6 +77,10 @@ class InfoPlateau {
 		plisJ[joueur] &= ~(1 << carte);
 	}
 	
+	void delCouleur(int joueur,int couleur) {
+		nmainsJ[joueur] |= CartesM.mCouleur(couleur);
+	}
+	
 	void iniPioche (int c1,int c2,int c3,int c4,int c5,int c6) {
 		pioche[4] = (1 << c1) | (1 << c2) | (1 << c3) | (1 << c4) | (1 << c5) | (1 << c6);
 	}
@@ -141,6 +148,34 @@ class InfoPlateau {
 	boolean estFinal(){
 		return CartesM.nbCartes(plisJ[0] & plisJ[1]) == 52;
 	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(getClass()!=o.getClass()){
+			return false;
+		}
+		InfoPlateau p = (InfoPlateau) o;
+		return	p.mainsJ[0]==mainsJ[0] &&
+				p.mainsJ[1]==mainsJ[1] && 
+				p.plisJ[0]==plisJ[0] && 
+				p.plisJ[1]==plisJ[1] && 
+				p.nmainsJ[0]==nmainsJ[0] &&
+				p.nmainsJ[1]==nmainsJ[1] &&
+				p.pioche[0]==pioche[0] &&
+				p.pioche[1]==pioche[1] &&
+				p.pioche[2]==pioche[2] &&
+				p.pioche[3]==pioche[3] &&
+				p.pioche[4]==pioche[4];
+	}
+	
+	@Override
+	public String toString() {
+		return	mainsJ[0] + " " + mainsJ[1] + " | " +
+				plisJ[0] + " " + plisJ[1] + " | " +
+				nmainsJ[0] + " " + nmainsJ[1] + " | " +
+				pioche[0] + " " + pioche[1] + " " + pioche[2] + " " + pioche[3] + " " + pioche[4];
+	}
+	
 }
 
 class Configuration {
@@ -195,7 +230,10 @@ class Configuration {
 	
 	void delPli (int joueur, int carte) {
 		info.delPli(joueur, carte);
-		
+	}
+	
+	void delCouleur(int joueur,int couleur) {
+		info.delCouleur(joueur, couleur);
 	}
 	
 	void iniPioche (int c1,int c2,int c3,int c4,int c5,int c6) {
@@ -256,11 +294,33 @@ class Configuration {
 	public boolean estFinal(){
 		return info.estFinal();
 	}
+	
+	@Override
+	public int hashCode(){
+		return this.toString().hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o){
+		if(getClass()!=o.getClass()){
+			return false;
+		}
+		Configuration c = (Configuration) o;
+		return	c.mainJ==mainJ && 
+				c.joueur==joueur && 
+				c.phase==phase && 
+				c.carte==carte && 
+				c.atout==atout &&
+				c.info.equals(info);
+	}
+	
+	@Override
+	public String toString() {
+		return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " " + info;
+	}
 }
 
 public class IAMinMax extends IA {
-	
-	short joueurIA;// 0 ou 1
 	
 	Hashtable<Configuration,Float> configurations;
 	
@@ -321,14 +381,53 @@ public class IAMinMax extends IA {
 	
 	Random r;
 	
-	InfoPlateau compterCarte () { //A faire
-		return null;
+	int joueur = 1;
+	
+	long trouverMain() {
+		return 0;
 	}
 	
-	int joueur = 1;
+	int carteToInt (Carte c) {
+		return c.valeur()-2 + (c.couleur()-1) * 14;
+	}
 	
 	Configuration trouverConfiguration() { //A faire
 		Configuration config = null;
+		config = new Configuration(trouverMain(),joueurIA-1,jeu.phasetourterm(),-1,jeu.atout()-1);
+		for(int i=0;i<4;i++) {
+			if(joueur1.getTabCouleur()[i]) {
+				config.delCouleur(0,i);
+			}
+		}
+		for(int i=0;i<4;i++) {
+			if(joueur2.getTabCouleur()[i]) {
+				config.delCouleur(1,i);
+			}
+		}
+		Iterator<Carte> it = joueur1.getCartesPiochees().iterateur();
+		while(it.hasNext()) {
+			Carte courant = it.next();
+			config.addMain(0,carteToInt(courant));
+		}
+		it = joueur2.getCartesPiochees().iterateur();
+		while(it.hasNext()) {
+			Carte courant = it.next();
+			config.addMain(1,carteToInt(courant));
+		}
+		it = joueur1.getPli().iterateur();
+		while(it.hasNext()) {
+			Carte courant = it.next();
+			config.delMain(0,carteToInt(courant));
+			config.delMain(1,carteToInt(courant));
+			config.addPli(0,carteToInt(courant));
+		}
+		it = joueur2.getPli().iterateur();
+		while(it.hasNext()) {
+			Carte courant = it.next();
+			config.delMain(0,carteToInt(courant));
+			config.delMain(1,carteToInt(courant));
+			config.addPli(1,carteToInt(courant));
+		}
 		return config;
 	}
 	
@@ -339,18 +438,16 @@ public class IAMinMax extends IA {
 		}
 		
 		int retour=-1;
-		switch(jeu.phasetour()%jeu.phase()) {
-			case 0:
+		int idCarte = minMaxInitial(trouverConfiguration(),2);
+		Main m = (joueurIA==1 ? joueur1 : joueur2).main();
+		for(int i=0;i<m.taille();i++) {
+			if(carteToInt(m.carte(i))==idCarte) {
+				retour = i;
 				break;
-			case 1:
-				break;
-			case 2:
-				break;
-			case 3:
-				break;
+			}
 		}
 		
-		System.err.println("IA MIN MAX NON IMPLENTE");
+		//System.err.println("IA MIN MAX NON IMPLENTE");
 		
 		return retour;
 	}
