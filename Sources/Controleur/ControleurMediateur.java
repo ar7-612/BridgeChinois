@@ -49,21 +49,21 @@ public class ControleurMediateur implements CollecteurEvenements {
 				return CodeErrCommandeInconnu;
 			}
 
-		} else if (jeu.phasetour() % jeu.phase() == 0) {
+		} else if (jeu.phasetourterm() == 0) {
 			if (arg >= 0 && arg < 11) {
 				faitcoup(jeu.phasetour() % jeu.phase(), arg);
 				return 0;
 			} else {
 				return CodeErrMauvaiseChoix;
 			}
-		} else if (jeu.phasetour() % jeu.phase() >= 2) {
+		} else if (jeu.phasetourterm() >= 2) {
 			if (!jeu.pilevide(arg)) {
 				faitcoup(jeu.phasetour() % jeu.phase(), arg);
 				return 0;
 			} else {
 				return CodeErrMauvaisePioche;
 			}
-		} else if (jeu.phasetour() % jeu.phase() == 1) {
+		} else if (jeu.phasetourterm() == 1) {
 			if (arg >= 0 && arg < 11) {
 				if (jeu.JouableSec(arg)) {
 					faitcoup(jeu.phasetour() % jeu.phase(), arg);

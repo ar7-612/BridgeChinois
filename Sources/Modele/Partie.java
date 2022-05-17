@@ -269,7 +269,10 @@ public class Partie extends Observable {
     public int scorePartiej1() {
         return manchecourante.j1.scorePartie;
     }
-
+    public int phasetourterm() {
+        
+        return phasetour%phase;
+    }
     public int scorePartiej2() {
         return manchecourante.j2.scorePartie;
     }
