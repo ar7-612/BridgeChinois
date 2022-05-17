@@ -15,6 +15,14 @@ public class Coup extends Commande {
         codecoup = cdcoup;
         argument = arg;
     }
+    
+    public int getCode() {
+    	return codecoup;
+    }
+    
+    public int getArg() {
+    	return argument;
+    }
 
     public void fixerpartie(Partie p) {
         partie = p;
