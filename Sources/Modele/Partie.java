@@ -48,12 +48,12 @@ public class Partie extends Observable {
     public Boolean JouableSec(int arg) {
         if (manchecourante.donneur == 1) {
 
-            if (manchecourante.j2.jouables(manchecourante.cartePremier().couleur))
+            if (manchecourante.j2.jouables(manchecourante.cartePremier().couleur) > 0)
                 return manchecourante.j2.main.carte(arg).couleur == manchecourante.cartePremier().couleur;
             else
                 return true;
         } else {
-            if (manchecourante.j1.jouables(manchecourante.cartePremier().couleur))
+            if (manchecourante.j1.jouables(manchecourante.cartePremier().couleur) > 0)
                 return manchecourante.j1.main.carte(arg).couleur == manchecourante.cartePremier().couleur;
 
             else
@@ -130,11 +130,6 @@ public class Partie extends Observable {
         return phasetour;
     }
 
-    public int phasetourterm() {
-
-        return phasetour % phase;
-    }
-
     public int phase() {
         return phase;
     }
@@ -154,15 +149,6 @@ public class Partie extends Observable {
     }
 
     public boolean manchefini() {
-        if (manchecourante.j1.scoreManche > manchecourante.j2.scoreManche && manchecourante.Manchefini()) {
-            manchecourante.j1.manchesGagnees++;
-        } else if (manchecourante.Manchefini()
-                && manchecourante.j1.scoreManche < manchecourante.j2.scoreManche) {
-            manchecourante.j2.manchesGagnees++;
-        } else if (manchecourante.Manchefini()) {
-            manchecourante.j1.manchesGagnees++;
-            manchecourante.j2.manchesGagnees++;
-        }
         return manchecourante.Manchefini();
     }
 
@@ -227,30 +213,30 @@ public class Partie extends Observable {
     }
 
     public void ModeJoueur(int joueur, String mode) {
-    	if(mode.equals("non")) {
-    		if(joueur==1) {
-        		J1EstIA=false;
-        	}else {
-        		J2EstIA=false;
-        	}
-    	} else {
-    		Main m;
-    		if(quiDonne()==joueur) {
-    			m=joueurDonneur().main();
-    		} else {
-    			m=joueurReceveur().main();
-    		}
-    		if(joueur==1) {
-        		J1EstIA=true;
-        		joueur1IA = IA.creerIA(this,histo,m,mode);
-        	}else {
-        		J2EstIA=true;
-        		joueur2IA = IA.creerIA(this,histo,m,mode);
-        	}
-    	}
-    	
+        if (mode.equals("non")) {
+            if (joueur == 1) {
+                J1EstIA = false;
+            } else {
+                J2EstIA = false;
+            }
+        } else {
+            Main m;
+            if (quiDonne() == joueur) {
+                m = joueurDonneur().main();
+            } else {
+                m = joueurReceveur().main();
+            }
+            if (joueur == 1) {
+                J1EstIA = true;
+                joueur1IA = IA.creerIA(this, histo, m, mode);
+            } else {
+                J2EstIA = true;
+                joueur2IA = IA.creerIA(this, histo, m, mode);
+            }
+        }
+
     }
-    
+
     public boolean estIA(int joueur) {
         if (joueur == 1) {
             return J1EstIA;
@@ -274,10 +260,12 @@ public class Partie extends Observable {
     public int scorePartiej1() {
         return manchecourante.j1.scorePartie;
     }
+
     public int phasetourterm() {
-        
-        return phasetour%phase;
+
+        return phasetour % phase;
     }
+
     public int scorePartiej2() {
         return manchecourante.j2.scorePartie;
     }

@@ -44,7 +44,6 @@ public class Main {
 
         return card;
 
-
     }
 
     public Carte carte(int i) {
