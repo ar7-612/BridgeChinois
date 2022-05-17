@@ -32,16 +32,16 @@ public class ControleurMediateur implements CollecteurEvenements {
 	@Override
 	public int commande(int arg) {
 		if (arg == -1) {
-			Coup cp = jeu.determinerCoup(jeu.phasetour() % jeu.phase(), arg);
+			Coup cp = jeu.determinerCoup(jeu.phasetourterm(), arg);
 			annulleCoup(cp);
 			return 0;
 		} else if (arg == -2) {
-			Coup cp = jeu.determinerCoup(jeu.phasetour() % jeu.phase(), arg);
+			Coup cp = jeu.determinerCoup(jeu.phasetourterm(), arg);
 			refaireCoup(cp);
 			return 0;
 		} else if (jeu.manchefini()) {
 			if (arg == 1) {
-				faitcoup(jeu.phasetour() % jeu.phase(), arg);
+				faitcoup(jeu.phasetourterm(), arg);
 				return 0;
 			} else if (arg == 2) {
 				return 0;
@@ -58,7 +58,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 			}
 		} else if (jeu.phasetourterm() >= 2) {
 			if (!jeu.pilevide(arg)) {
-				faitcoup(jeu.phasetour() % jeu.phase(), arg);
+				faitcoup(jeu.phasetourterm(), arg);
 				return 0;
 			} else {
 				return CodeErrMauvaisePioche;
@@ -66,7 +66,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 		} else if (jeu.phasetourterm() == 1) {
 			if (arg >= 0 && arg < 11) {
 				if (jeu.JouableSec(arg)) {
-					faitcoup(jeu.phasetour() % jeu.phase(), arg);
+					faitcoup(jeu.phasetourterm(), arg);
 					return 0;
 				} else
 					return CodeErrMauvaiseChoixSec;

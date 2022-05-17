@@ -121,13 +121,24 @@ public class Manche {
         } else if (tours[nbtour].carteSeconde.couleur == atout) {
             gagnant = tours[nbtour].receveur;
             perdant = tours[nbtour].donneur;
+            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur);
         } else {
             gagnant = tours[nbtour].donneur;
             perdant = tours[nbtour].receveur;
+            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur);
         }
         tours[nbtour].fixgagnant(gagnant);
 
         ajoutepli();
+    }
+
+    public void cochercouleur(int joueur, int couleur) {
+        if (joueur == 1) {
+            j1.tabcouleur[couleur] = true;
+        } else {
+            j2.tabcouleur[couleur] = true;
+        }
+
     }
 
     public void distribuer() {
@@ -211,11 +222,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -227,11 +240,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -243,11 +258,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -259,11 +276,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -275,11 +294,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -291,11 +312,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -314,11 +337,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -330,11 +355,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -346,11 +373,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -362,11 +391,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -378,11 +409,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
 
                 }
                 break;
@@ -394,11 +427,13 @@ public class Manche {
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j1.cartesPiochees.ajouter(c);
                 } else {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+                    j2.cartesPiochees.ajouter(c);
                 }
                 break;
         }

@@ -130,6 +130,11 @@ public class Partie extends Observable {
         return phasetour;
     }
 
+    public int phasetourterm() {
+
+        return phasetour % phase;
+    }
+
     public int phase() {
         return phase;
     }
