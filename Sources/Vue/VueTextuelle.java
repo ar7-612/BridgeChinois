@@ -76,7 +76,9 @@ public class VueTextuelle implements Observateur {
 
     public void afficheGagnantPlis() {
         if (!j.debutpartie)
-            System.out.println("Le joueur " + j.quiDonne() + " a gagne le plis avec");
+
+            System.out.println("Le joueur " + j.quiGagnetour() + " a gagne le plis avec");
+
         afficherCarte(j.cartePrem());
         afficherCarte(j.carteSec());
 
@@ -106,10 +108,14 @@ public class VueTextuelle implements Observateur {
                     afficherCarteDonneur();
                     if (j.quiDonne() == 1) {
                         afficheAtout();
-                        System.out.println("Joueur 1 Choisisez une carte a jouer");
+
+                        System.out.println(
+                                "Joueur 1 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
                         afficheAtout();
-                        System.out.println("Joueur 2 Choisisez une carte a jouer");
+                        System.out.println(
+                                "Joueur 2 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
+
                     }
                     break;
                 case 1:
@@ -117,10 +123,14 @@ public class VueTextuelle implements Observateur {
                     afficheCarteReceveur();
                     if (j.quiDonne() == 2) {
                         afficheAtout();
-                        System.out.println("Joueur 1 Choisisez une carte a jouer");
+
+                        System.out.println(
+                                "Joueur 1 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
                         afficheAtout();
-                        System.out.println("Joueur 2 Choisisez une carte a jouer");
+                        System.out.println(
+                                "Joueur 2 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
+
                     }
                     break;
                 case 2:
@@ -128,20 +138,28 @@ public class VueTextuelle implements Observateur {
                     affichePile();
                     if (j.quiDonne() == 1) {
                         afficheAtout();
-                        System.out.println("Joueur 1 Choisisez une carte a piocher");
+
+                        System.out.println(
+                                "Joueur 1 Choisisez une carte a piocher | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
                         afficheAtout();
-                        System.out.println("Joueur 2 Choisisez une carte a piocher");
+                        System.out.println(
+                                "Joueur 2 Choisisez une carte a piocher | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
+
                     }
                     break;
                 case 3:
                     affichePile();
                     if (j.quiDonne() == 2) {
                         afficheAtout();
-                        System.out.println("Joueur 1 Choisisez une carte a piocher");
+
+                        System.out.println(
+                                "Joueur 1 Choisisez une carte a piocher | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
                         afficheAtout();
-                        System.out.println("Joueur 2 Choisisez une carte a piocher");
+                        System.out.println(
+                                "Joueur 2 Choisisez une carte a piocher | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
+
                     }
                     break;
             }

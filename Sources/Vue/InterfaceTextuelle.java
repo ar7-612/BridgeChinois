@@ -1,6 +1,9 @@
 package Vue;
 
+import java.lang.module.Configuration;
 import java.util.Scanner;
+import java.util.concurrent.ExecutionException;
+
 
 import Modele.Partie;
 
@@ -28,12 +31,14 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
     @Override
     public void jouePartie() {
+
     	long delayIA = 0;//en ms
     	long timer;
         c.fixerInterfaceUtilisateur(this);
         s = new Scanner(System.in);
         while (!j.finpartie && s.hasNextLine()) {
             try {
+
             	int entier;
             	if(j.estIA(j.quiJoue())) {
             		if(j.manchefini()) {
@@ -72,8 +77,11 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
 
                 }
             } catch (Exception e) {
-            	e.printStackTrace();
-                //System.out.println(e);
+
+                System.out.println(e);
+
+            	//e.printStackTrace();
+
             }
         }
     }
