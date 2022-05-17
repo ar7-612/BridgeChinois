@@ -4,8 +4,10 @@ import java.util.ArrayList;
 
 import Patterns.Observable;
 
+import Controleur.IA;
 public class Partie extends Observable {
     private Historique<Coup> histo;
+
     ArrayList<Manche> Manches;
     ArrayList<Carte> cartepiochevisible;
     Manche manchecourante;
@@ -15,6 +17,12 @@ public class Partie extends Observable {
     public boolean debutpartie, finpartie;
     int phase, phasetour, nbmanche, nMax, score1, score2;
 
+    
+    boolean J1EstIA;
+    boolean J2EstIA;
+    IA joueur1IA;
+    IA joueur2IA;
+    
     public Partie() {
         j1 = new Joueur();
         j2 = new Joueur();
@@ -26,7 +34,9 @@ public class Partie extends Observable {
         score2 = 0;
         debutpartie = true;
         finpartie = false;
+
         histo = new Historique<Coup>();
+
         Manches = new ArrayList<Manche>();
         Manches.add(manchecourante);
     }
@@ -37,6 +47,7 @@ public class Partie extends Observable {
 
     public Boolean JouableSec(int arg) {
         if (manchecourante.donneur == 1) {
+
             if (manchecourante.j2.jouables(manchecourante.cartePremier().couleur))
                 return manchecourante.j2.main.carte(arg).couleur == manchecourante.cartePremier().couleur;
             else
@@ -44,6 +55,7 @@ public class Partie extends Observable {
         } else {
             if (manchecourante.j1.jouables(manchecourante.cartePremier().couleur))
                 return manchecourante.j1.main.carte(arg).couleur == manchecourante.cartePremier().couleur;
+
             else
                 return true;
         }
@@ -62,12 +74,14 @@ public class Partie extends Observable {
     }
 
     public void jouerCoup(Coup cp) {
+
         cp.fixerpartie(this);
         histo.nouveau(cp);
         miseAJour();
     }
 
     void nouvellemanche() {
+
         manchecourante = new Manche(j1, j2);
         Manches.add(manchecourante);
         phasetour = 0;
@@ -80,6 +94,7 @@ public class Partie extends Observable {
 
     public Joueur joueurDonneur() {
         if (manchecourante.quiDonne() == 1)
+
             return manchecourante.j1;
         else
             return manchecourante.j2;
@@ -87,6 +102,7 @@ public class Partie extends Observable {
 
     public Joueur joueurReceveur() {
         if (manchecourante.quiRecois() == 1)
+
             return manchecourante.j1;
         else
             return manchecourante.j2;
@@ -118,11 +134,13 @@ public class Partie extends Observable {
     }
 
     public int quiDonne() {
+
         return manchecourante.quiDonne();
     }
 
     public int quiRecois() {
         return manchecourante.quiRecois();
+
     }
 
     public Boolean pilevide(int arg) {
@@ -139,7 +157,9 @@ public class Partie extends Observable {
 
     public String cartePremCouleur() {
         String s = null;
+
         switch (manchecourante.cartePremier().couleur()) {
+
             case 1:
                 s = "TREFLE";
                 return s;
@@ -158,17 +178,70 @@ public class Partie extends Observable {
     }
 
     public Carte cartePrem() {
+
         return manchecourante.cartePremier();
     }
 
     public Carte carteSec() {
         return manchecourante.carteSeconde();
+
     }
 
     public void ModeV(String mode, int nombre) {
         Modedejeu = mode;
         nMax = nombre;
         testFinPartie();
+    }
+
+    
+    public int quiJoue() {
+    	switch(phasetour()) {
+    		case 0:
+    			return quiDonne();
+    		case 1:
+    			return quiRecois();
+    		case 2:
+    			return quiDonne();
+    		case 3:
+    			return quiRecois();
+    		default:
+    			return -1;
+    	}
+    }
+    
+    public void ModeJoueur(int joueur, String mode) {
+    	if(mode.equals("non")) {
+    		if(joueur==1) {
+        		J1EstIA=false;
+        	}else {
+        		J2EstIA=false;
+        	}
+    	} else {
+    		if(joueur==1) {
+        		J1EstIA=true;
+        		joueur1IA = IA.creerIA(this,mode);
+        	}else {
+        		J2EstIA=true;
+        		joueur2IA = IA.creerIA(this,mode);
+        	}
+    	}
+    	
+    }
+    
+    public boolean estIA(int joueur) {
+    	if(joueur==1) {
+    		return J1EstIA;
+    	}else {
+    		return J2EstIA;
+    	}
+    }
+    
+    public int getCoupIA(int joueur) {
+    	if(joueur==1) {
+    		return joueur1IA.jouerCoup();
+    	}else {
+    		return joueur2IA.jouerCoup();
+    	}
     }
 
     public boolean partifini() {
@@ -222,4 +295,5 @@ public class Partie extends Observable {
     public int quiGagnetour() {
         return manchecourante.quigagnetour();
     }
+
 }

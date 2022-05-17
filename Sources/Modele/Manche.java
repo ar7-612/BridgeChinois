@@ -1,5 +1,6 @@
 package Modele;
 
+
 import java.util.ArrayList;
 
 public class Manche {
@@ -11,7 +12,9 @@ public class Manche {
     Manche(Joueur joueur1, Joueur joueur2) {
         j1 = joueur1;
         j2 = joueur2;
+
         tours = new Tour[26];
+
         initManche();
     }
 
@@ -30,6 +33,7 @@ public class Manche {
         j2.scoreManche = 0;
         nbpilereste = 6;
         nbtour = 0;
+
         donneur = 1;
         receveur = 2;
         gagnant = 0;
@@ -37,6 +41,7 @@ public class Manche {
         distribuer();
         DefAtout();
         nouvtour();
+
     }
 
     public Boolean Manchefini() {
@@ -49,11 +54,13 @@ public class Manche {
     }
 
     public void cartePrems(Carte c) {
+
         tours[nbtour].fixcartePremier(c);
     }
 
     public void carteSec(Carte c) {
         tours[nbtour].fixcarteSec(c);
+
     }
 
     public void DefAtout() {
@@ -92,17 +99,20 @@ public class Manche {
 
     public void ajoutepli() {
         if (gagnant == 1) {
+
             j1.Pli.ajouter(tours[nbtour].cartePremier);
             j1.Pli.ajouter(tours[nbtour].carteSeconde);
             j1.ajouterScore();
         } else {
             j2.Pli.ajouter(tours[nbtour].cartePremier);
             j2.Pli.ajouter(tours[nbtour].carteSeconde);
+
             j2.ajouterScore();
         }
     }
 
     public void gagnantPli() {
+
         if (tours[nbtour].cartePremier.couleur == tours[nbtour].carteSeconde.couleur) {
             if (tours[nbtour].cartePremier.valeur > tours[nbtour].carteSeconde.valeur) {
                 gagnant = tours[nbtour].donneur;
@@ -119,6 +129,7 @@ public class Manche {
             perdant = tours[nbtour].receveur;
         }
         tours[nbtour].fixgagnant(gagnant);
+
         ajoutepli();
     }
 
@@ -153,8 +164,10 @@ public class Manche {
 
     public void jouerCoupPremier(int argument) { // Carte card en +
         Carte card;
+
         tours[nbtour].fixcoupMainpremier(argument);
         if (tours[nbtour].donneur == 1) {
+
             card = j1.main.carte(argument);
             j1.main.retirer(argument);
         } else {
@@ -162,14 +175,18 @@ public class Manche {
             j2.main.retirer(argument);
         }
         cartePrems(card);
+
+
         // j1.main.trier();
         // j2.main.trier();
     }
 
     public void jouerCoupSec(int argument) { // Carte card en +
         Carte card;
+
         tours[nbtour].fixcoupMainSec(argument);
         if (tours[nbtour].receveur == 1) {
+
             card = j1.main.carte(argument);
             j1.main.retirer(argument);
         } else {
@@ -177,9 +194,12 @@ public class Manche {
             j2.main.retirer(argument);
         }
         carteSec(card);
+
+
         // j1.main.trier();
         // j2.main.trier();
     }
+
 
     public void nouvtour() {
         tours[nbtour] = new Tour();
@@ -202,11 +222,13 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 2:
                 c = pile2.retirer();
                 if (gagnant == 1) {
+
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
@@ -216,11 +238,13 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 3:
                 c = pile3.retirer();
                 if (gagnant == 1) {
+
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
@@ -230,11 +254,13 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 4:
                 c = pile4.retirer();
                 if (gagnant == 1) {
+
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
@@ -244,11 +270,13 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 5:
                 c = pile5.retirer();
                 if (gagnant == 1) {
+
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
@@ -258,10 +286,12 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 6:
                 c = pile6.retirer();
+
                 if (tours[nbtour].gagnant == 1) {
                     if (tours[nbtour].donneur == tours[nbtour].gagnant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
@@ -272,6 +302,7 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
         }
@@ -279,6 +310,7 @@ public class Manche {
 
     public void piochePerdant(int numPioche) {
         Carte c;
+
         tours[nbtour].fixpiocheSec(numPioche);
         switch (numPioche) {
             case 1:
@@ -293,10 +325,12 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 2:
                 c = pile2.retirer();
+
                 if (tours[nbtour].perdant == 1) {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
@@ -307,10 +341,12 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 3:
                 c = pile3.retirer();
+
                 if (tours[nbtour].perdant == 1) {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
@@ -321,11 +357,13 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 4:
                 c = pile4.retirer();
                 if (perdant == 1) {
+
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
@@ -335,10 +373,12 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 5:
                 c = pile5.retirer();
+
                 if (tours[nbtour].perdant == 1) {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
@@ -349,10 +389,12 @@ public class Manche {
                         j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
                     else
                         j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 6:
                 c = pile6.retirer();
+
                 if (tours[nbtour].perdant == 1) {
                     if (tours[nbtour].donneur == tours[nbtour].perdant)
                         j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
@@ -370,6 +412,7 @@ public class Manche {
         receveur = tours[nbtour].perdant;
         nbtour++;
         nouvtour();
+
     }
 
     public Boolean toutelespilesontvide() {
@@ -424,6 +467,7 @@ public class Manche {
                 return true;
         }
     }
+
 
     public void annulleCoupPremier(int argument) {
         Carte card;

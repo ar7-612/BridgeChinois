@@ -43,5 +43,6 @@ public class Tour {
 
     public void fixpiocheSec(int i) {
         piocheSecond = i;
+
     }
 }

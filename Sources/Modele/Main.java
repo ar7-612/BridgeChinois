@@ -35,12 +35,15 @@ public class Main {
             i++;
         }
         card = main[i];
+
         while (i < (taille - 1)) {
             main[i] = main[i + 1];
             i++;
         }
         taille = taille - 1;
+
         return card;
+
 
     }
 
@@ -58,12 +61,15 @@ public class Main {
 
     public Carte retirer(int i) {
         Carte card = main[i];
+
         while (i < taille - 1) {
             main[i] = main[i + 1];
             i++;
         }
         main[i] = null;
         taille = taille - 1;
+
         return card;
+
     }
 }

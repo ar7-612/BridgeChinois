@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 public class Coup extends Commande {
     int codecoup, argument;
     Partie partie;
+  
     static final int Premierdepos = 0;
     static final int Seconddepos = 1;
     static final int PremierPioche = 2;
