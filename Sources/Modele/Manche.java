@@ -1,14 +1,20 @@
 package Modele;
 
+
+import java.util.ArrayList;
+
 public class Manche {
     PileCartes pile1, pile2, pile3, pile4, pile5, pile6;
     Joueur j1, j2;
-    Carte cartePremier, carteSeconde;
-    int atout, gagnant, donneur, perdant, receveur, joueurGagnantPli, nbpilereste;
+    int atout, gagnant, donneur, perdant, receveur, joueurGagnantPli, nbpilereste, nbtour;
+    Tour[] tours;
 
     Manche(Joueur joueur1, Joueur joueur2) {
         j1 = joueur1;
         j2 = joueur2;
+
+        tours = new Tour[26];
+
         initManche();
     }
 
@@ -26,12 +32,16 @@ public class Manche {
         j1.scoreManche = 0;
         j2.scoreManche = 0;
         nbpilereste = 6;
+        nbtour = 0;
+
         donneur = 1;
         receveur = 2;
         gagnant = 0;
         perdant = 0;
         distribuer();
         DefAtout();
+        nouvtour();
+
     }
 
     public Boolean Manchefini() {
@@ -44,11 +54,13 @@ public class Manche {
     }
 
     public void cartePrems(Carte c) {
-        cartePremier = c;
+
+        tours[nbtour].fixcartePremier(c);
     }
 
     public void carteSec(Carte c) {
-        carteSeconde = c;
+        tours[nbtour].fixcarteSec(c);
+
     }
 
     public void DefAtout() {
@@ -87,34 +99,37 @@ public class Manche {
 
     public void ajoutepli() {
         if (gagnant == 1) {
-            j1.Pli.ajouter(cartePremier);
-            j1.Pli.ajouter(carteSeconde);
+
+            j1.Pli.ajouter(tours[nbtour].cartePremier);
+            j1.Pli.ajouter(tours[nbtour].carteSeconde);
             j1.ajouterScore();
         } else {
-            j2.Pli.ajouter(cartePremier);
-            j2.Pli.ajouter(carteSeconde);
+            j2.Pli.ajouter(tours[nbtour].cartePremier);
+            j2.Pli.ajouter(tours[nbtour].carteSeconde);
+
             j2.ajouterScore();
         }
     }
 
     public void gagnantPli() {
-        if (cartePremier.couleur == carteSeconde.couleur) {
-            if (cartePremier.valeur > carteSeconde.valeur) {
-                gagnant = donneur;
-                perdant = receveur;
+
+        if (tours[nbtour].cartePremier.couleur == tours[nbtour].carteSeconde.couleur) {
+            if (tours[nbtour].cartePremier.valeur > tours[nbtour].carteSeconde.valeur) {
+                gagnant = tours[nbtour].donneur;
+                perdant = tours[nbtour].receveur;
             } else {
-                gagnant = receveur;
-                perdant = donneur;
+                gagnant = tours[nbtour].receveur;
+                perdant = tours[nbtour].donneur;
             }
-        } else if (carteSeconde.couleur == atout) {
-            gagnant = receveur;
-            perdant = donneur;
+        } else if (tours[nbtour].carteSeconde.couleur == atout) {
+            gagnant = tours[nbtour].receveur;
+            perdant = tours[nbtour].donneur;
         } else {
-            gagnant = donneur;
-            perdant = receveur;
+            gagnant = tours[nbtour].donneur;
+            perdant = tours[nbtour].receveur;
         }
-        donneur = gagnant;
-        receveur = perdant;
+        tours[nbtour].fixgagnant(gagnant);
+
         ajoutepli();
     }
 
@@ -149,7 +164,10 @@ public class Manche {
 
     public void jouerCoupPremier(int argument) { // Carte card en +
         Carte card;
-        if (donneur == 1) {
+
+        tours[nbtour].fixcoupMainpremier(argument);
+        if (tours[nbtour].donneur == 1) {
+
             card = j1.main.carte(argument);
             j1.main.retirer(argument);
         } else {
@@ -158,13 +176,17 @@ public class Manche {
         }
         cartePrems(card);
 
+
         // j1.main.trier();
         // j2.main.trier();
     }
 
     public void jouerCoupSec(int argument) { // Carte card en +
         Carte card;
-        if (receveur == 1) {
+
+        tours[nbtour].fixcoupMainSec(argument);
+        if (tours[nbtour].receveur == 1) {
+
             card = j1.main.carte(argument);
             j1.main.retirer(argument);
         } else {
@@ -173,59 +195,114 @@ public class Manche {
         }
         carteSec(card);
 
+
         // j1.main.trier();
         // j2.main.trier();
     }
 
+
+    public void nouvtour() {
+        tours[nbtour] = new Tour();
+        tours[nbtour].fixdonneur(donneur);
+    }
+
     public void piocheGagnant(int numPioche) {
         Carte c;
+        tours[nbtour].fixpiochePremier(numPioche);
         switch (numPioche) {
             case 1:
                 c = pile1.retirer();
-                if (gagnant == 1) {
-                    j1.main.ajouter(c);
+                if (tours[nbtour].gagnant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 2:
                 c = pile2.retirer();
                 if (gagnant == 1) {
-                    j1.main.ajouter(c);
+
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 3:
                 c = pile3.retirer();
                 if (gagnant == 1) {
-                    j1.main.ajouter(c);
+
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 4:
                 c = pile4.retirer();
                 if (gagnant == 1) {
-                    j1.main.ajouter(c);
+
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 5:
                 c = pile5.retirer();
                 if (gagnant == 1) {
-                    j1.main.ajouter(c);
+
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 6:
                 c = pile6.retirer();
-                if (gagnant == 1) {
-                    j1.main.ajouter(c);
+
+                if (tours[nbtour].gagnant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
         }
@@ -233,56 +310,109 @@ public class Manche {
 
     public void piochePerdant(int numPioche) {
         Carte c;
+
+        tours[nbtour].fixpiocheSec(numPioche);
         switch (numPioche) {
             case 1:
                 c = pile1.retirer();
-                if (perdant == 1) {
-                    j1.main.ajouter(c);
+                if (tours[nbtour].perdant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 2:
                 c = pile2.retirer();
-                if (perdant == 1) {
-                    j1.main.ajouter(c);
+
+                if (tours[nbtour].perdant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 3:
                 c = pile3.retirer();
-                if (perdant == 1) {
-                    j1.main.ajouter(c);
+
+                if (tours[nbtour].perdant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 4:
                 c = pile4.retirer();
                 if (perdant == 1) {
-                    j1.main.ajouter(c);
+
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 5:
                 c = pile5.retirer();
-                if (perdant == 1) {
-                    j1.main.ajouter(c);
+
+                if (tours[nbtour].perdant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
+
                 }
                 break;
             case 6:
                 c = pile6.retirer();
-                if (perdant == 1) {
-                    j1.main.ajouter(c);
+
+                if (tours[nbtour].perdant == 1) {
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j1.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 } else {
-                    j2.main.ajouter(c);
+                    if (tours[nbtour].donneur == tours[nbtour].perdant)
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainPremier);
+                    else
+                        j2.main.ajouterpos(c, tours[nbtour].coupmainSec);
                 }
                 break;
         }
+        donneur = tours[nbtour].gagnant;
+        receveur = tours[nbtour].perdant;
+        nbtour++;
+        nouvtour();
+
     }
 
     public Boolean toutelespilesontvide() {
@@ -336,6 +466,206 @@ public class Manche {
             default:
                 return true;
         }
+    }
+
+
+    public void annulleCoupPremier(int argument) {
+        Carte card;
+        card = tours[nbtour].cartePremier;
+        if (tours[nbtour].donneur == 1) {
+            j1.main.ajouterpos(card, tours[nbtour].coupmainPremier);
+        } else {
+            j2.main.ajouterpos(card, tours[nbtour].coupmainPremier);
+        }
+    }
+
+    public void annullepiocheGagnant(int argument) {
+        Carte card;
+        if (tours[nbtour].gagnant == 1) {
+            if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                card = j1.main.retirer(tours[nbtour].coupmainPremier);
+            else
+                card = j1.main.retirer(tours[nbtour].coupmainSec);
+            switch (tours[nbtour].piochePremier) {
+                case 1:
+                    pile1.ajouterdeb(card);
+                    break;
+                case 2:
+                    pile2.ajouterdeb(card);
+                    break;
+                case 3:
+                    pile3.ajouterdeb(card);
+                    break;
+                case 4:
+                    pile4.ajouterdeb(card);
+                    break;
+                case 5:
+                    pile5.ajouterdeb(card);
+                    break;
+                case 6:
+                    pile6.ajouterdeb(card);
+                    break;
+            }
+        } else {
+            if (tours[nbtour].donneur == tours[nbtour].gagnant)
+                card = j2.main.retirer(tours[nbtour].coupmainPremier);
+            else
+                card = j2.main.retirer(tours[nbtour].coupmainSec);
+            switch (tours[nbtour].piochePremier) {
+                case 1:
+                    pile1.ajouterdeb(card);
+                    break;
+                case 2:
+                    pile2.ajouterdeb(card);
+                    break;
+                case 3:
+                    pile3.ajouterdeb(card);
+                    break;
+                case 4:
+                    pile4.ajouterdeb(card);
+                    break;
+                case 5:
+                    pile5.ajouterdeb(card);
+                    break;
+                case 6:
+                    pile6.ajouterdeb(card);
+                    break;
+            }
+        }
+
+    }
+
+    public void annullejouerCoupSec(int argument) {
+        Carte card;
+        card = tours[nbtour].carteSeconde;
+        if (tours[nbtour].donneur == 1) {
+            j2.main.ajouterpos(card, tours[nbtour].coupmainSec);
+        } else {
+            j1.main.ajouterpos(card, tours[nbtour].coupmainSec);
+        }
+    }
+
+    /*
+     * public void {
+     * if (cartePremier.couleur == carteSeconde.couleur) {
+     * if (cartePremier.valeur > carteSeconde.valeur) {
+     * gagnant = donneur;
+     * perdant = receveur;
+     * } else {
+     * gagnant = receveur;
+     * perdant = donneur;
+     * }
+     * } else if (carteSeconde.couleur == atout) {
+     * gagnant = receveur;
+     * perdant = donneur;
+     * } else {
+     * gagnant = donneur;
+     * perdant = receveur;
+     * }
+     * ajoutepli();
+     * }
+     */
+    public void annullegagnantPli() {
+        if (tours[nbtour].gagnant == 1) {
+            j1.Pli.retirer();
+            j1.Pli.retirer();
+            j1.scoreManche--;
+            j1.scorePartie--;
+        } else {
+            j2.Pli.retirer();
+            j2.Pli.retirer();
+            j2.scoreManche--;
+            j2.scorePartie--;
+
+        }
+    }
+
+    public void annullepiochePerdant(int argument) {
+        nbtour--;
+        Carte card;
+        int poscd = 10 - nbtour;
+        if (poscd < 0) {
+            poscd = poscd + 11;
+        }
+        if (tours[nbtour].perdant == 1) {
+            if (tours[nbtour].donneur == tours[nbtour].perdant)
+                card = j1.main.retirer(tours[nbtour].coupmainPremier);
+            else
+                card = j1.main.retirer(tours[nbtour].coupmainSec);
+            switch (tours[nbtour].piocheSecond) {
+                case 1:
+                    pile1.ajouterdeb(card);
+                    break;
+                case 2:
+                    pile2.ajouterdeb(card);
+                    break;
+                case 3:
+                    pile3.ajouterdeb(card);
+                    break;
+                case 4:
+                    pile4.ajouterdeb(card);
+                    break;
+                case 5:
+                    pile5.ajouterdeb(card);
+                    break;
+                case 6:
+                    pile6.ajouterdeb(card);
+                    break;
+            }
+        } else {
+            if (tours[nbtour].donneur == tours[nbtour].perdant)
+                card = j2.main.retirer(tours[nbtour].coupmainPremier);
+            else
+                card = j2.main.retirer(tours[nbtour].coupmainSec);
+            switch (tours[nbtour].piocheSecond) {
+                case 1:
+                    pile1.ajouterdeb(card);
+                    break;
+                case 2:
+                    pile2.ajouterdeb(card);
+                    break;
+                case 3:
+                    pile3.ajouterdeb(card);
+                    break;
+                case 4:
+                    pile4.ajouterdeb(card);
+                    break;
+                case 5:
+                    pile5.ajouterdeb(card);
+                    break;
+                case 6:
+                    pile6.ajouterdeb(card);
+                    break;
+            }
+        }
+    }
+
+    public int quiDonne() {
+        return tours[nbtour].donneur;
+    }
+
+    public int quiRecois() {
+        return tours[nbtour].receveur;
+    }
+
+    public Carte cartePremier() {
+        return tours[nbtour].cartePremier;
+    }
+
+    public Carte carteSeconde() {
+        return tours[nbtour].carteSeconde;
+    }
+
+    public int quigagnetour() {
+        return tours[nbtour].gagnant;
+    }
+
+    public int receveur() {
+        return tours[nbtour].donneur;
+    }
+
+    public int donneur() {
+        return tours[nbtour].receveur;
     }
 
 }

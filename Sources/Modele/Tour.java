@@ -1,24 +1,48 @@
 package Modele;
 
-import java.util.ArrayList;
-
 public class Tour {
-    ArrayList<Coup> Couptour;
-    Partie p;
+    int donneur, receveur, gagnant, perdant, piochePremier, piocheSecond,
+            coupmainPremier, coupmainSec;
+    Carte cartePremier, carteSeconde;
 
-    Tour() {
-        Couptour = new ArrayList<Coup>();
+    public void fixdonneur(int i) {
+        donneur = i;
+        if (donneur == 1)
+            receveur = 2;
+        else
+            receveur = 1;
     }
 
-    void fixerPartie(Partie par) {
-        p = par;
+    public void fixcartePremier(Carte i) {
+        cartePremier = i;
     }
 
-    public void faireCoup(int codecoup, int arg) {
-        Couptour.add(new Coup(codecoup, arg));
+    public void fixcarteSec(Carte i) {
+        carteSeconde = i;
     }
 
-    public ArrayList<Coup> CoupTour() {
-        return Couptour;
+    public void fixgagnant(int i) {
+        gagnant = i;
+        if (gagnant == 1)
+            perdant = 2;
+        else
+            perdant = 1;
+    }
+
+    public void fixcoupMainpremier(int i) {
+        coupmainPremier = i;
+    }
+
+    public void fixcoupMainSec(int i) {
+        coupmainSec = i;
+    }
+
+    public void fixpiochePremier(int i) {
+        piochePremier = i;
+    }
+
+    public void fixpiocheSec(int i) {
+        piocheSecond = i;
+
     }
 }
