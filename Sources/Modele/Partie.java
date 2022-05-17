@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import Patterns.Observable;
 
 import Controleur.IA;
+
 public class Partie extends Observable {
     private Historique<Coup> histo;
 
@@ -16,17 +17,17 @@ public class Partie extends Observable {
     boolean manchefin;
     public boolean debutpartie, finpartie;
     int phase, phasetour, nbmanche, nMax, score1, score2;
-
-    
+    int donneurdebut;
     boolean J1EstIA;
     boolean J2EstIA;
     IA joueur1IA;
     IA joueur2IA;
-    
+
     public Partie() {
         j1 = new Joueur();
         j2 = new Joueur();
-        manchecourante = new Manche(j1, j2);
+        donneurdebut = 1;
+        manchecourante = new Manche(j1, j2, donneurdebut);
         phase = 4;
         phasetour = 0;
         nbmanche = 1;
@@ -34,7 +35,6 @@ public class Partie extends Observable {
         score2 = 0;
         debutpartie = true;
         finpartie = false;
-
         histo = new Historique<Coup>();
 
         Manches = new ArrayList<Manche>();
@@ -81,8 +81,9 @@ public class Partie extends Observable {
     }
 
     void nouvellemanche() {
-
-        manchecourante = new Manche(j1, j2);
+        if (donneurdebut == 1)
+            donneurdebut = 2;
+        manchecourante = new Manche(j1, j2, donneurdebut);
         Manches.add(manchecourante);
         phasetour = 0;
         phase = 4;
@@ -148,6 +149,15 @@ public class Partie extends Observable {
     }
 
     public boolean manchefini() {
+        if (manchecourante.j1.scoreManche > manchecourante.j2.scoreManche && manchecourante.Manchefini()) {
+            manchecourante.j1.manchesGagnees++;
+        } else if (manchecourante.Manchefini()
+                && manchecourante.j1.scoreManche < manchecourante.j2.scoreManche) {
+            manchecourante.j2.manchesGagnees++;
+        } else if (manchecourante.Manchefini()) {
+            manchecourante.j1.manchesGagnees++;
+            manchecourante.j2.manchesGagnees++;
+        }
         return manchecourante.Manchefini();
     }
 
@@ -193,22 +203,24 @@ public class Partie extends Observable {
         testFinPartie();
     }
 
-    
     public int quiJoue() {
-    	switch(phasetour()) {
-    		case 0:
-    			return quiDonne();
-    		case 1:
-    			return quiRecois();
-    		case 2:
-    			return quiDonne();
-    		case 3:
-    			return quiRecois();
-    		default:
-    			return -1;
-    	}
+        switch (phasetour()) {
+            case 0:
+                return quiDonne();
+            case 1:
+                return quiRecois();
+            case 2:
+                return quiGagnetour();
+            case 3:
+                if (quiGagnetour() == 1)
+                    return 2;
+                else
+                    return 1;
+            default:
+                return -1;
+        }
     }
-    
+
     public void ModeJoueur(int joueur, String mode) {
     	if(mode.equals("non")) {
     		if(joueur==1) {
@@ -235,19 +247,19 @@ public class Partie extends Observable {
     }
     
     public boolean estIA(int joueur) {
-    	if(joueur==1) {
-    		return J1EstIA;
-    	}else {
-    		return J2EstIA;
-    	}
+        if (joueur == 1) {
+            return J1EstIA;
+        } else {
+            return J2EstIA;
+        }
     }
-    
+
     public int getCoupIA(int joueur) {
-    	if(joueur==1) {
-    		return joueur1IA.jouerCoup();
-    	}else {
-    		return joueur2IA.jouerCoup();
-    	}
+        if (joueur == 1) {
+            return joueur1IA.jouerCoup();
+        } else {
+            return joueur2IA.jouerCoup();
+        }
     }
 
     public boolean partifini() {
@@ -266,9 +278,10 @@ public class Partie extends Observable {
         if (Modedejeu.equals("m")) {
             if (manchecourante.j1.manchesGagnees > manchecourante.j2.manchesGagnees)
                 return 1;
-            else {
+            else if (manchecourante.j1.manchesGagnees < manchecourante.j2.manchesGagnees) {
                 return 2;
             }
+
         } else {
             if (manchecourante.j1.scorePartie > manchecourante.j2.scorePartie)
                 return 1;
@@ -276,14 +289,16 @@ public class Partie extends Observable {
                 return 2;
             }
         }
+        return 0;
     }
 
     public int quiGagneManche() {
         if (manchecourante.j1.scoreManche > manchecourante.j2.scoreManche)
             return 1;
-        else {
+        else if (manchecourante.j1.scoreManche < manchecourante.j2.scoreManche) {
             return 2;
         }
+        return 0;
     }
 
     public void annulleCoup(Coup cp) {
@@ -300,6 +315,14 @@ public class Partie extends Observable {
 
     public int quiGagnetour() {
         return manchecourante.quigagnetour();
+    }
+
+    public int nbmanchegagnej1() {
+        return manchecourante.nbmanchegagnej1();
+    }
+
+    public int nbmanchegagnej2() {
+        return manchecourante.nbmanchegagnej2();
     }
 
 }
