@@ -36,11 +36,6 @@ class IAAleatoire extends IA {
 		
 		int retour=-1;
 		//int codePhase = jeu.phasetour();
-		if(nbPiochesNonVide()==0) {
-			System.out.println("nbPhases : " + jeu.phase());
-			System.out.println(jeu.manchefini());
-			//codePhase%=2;
-		}
 		switch(jeu.phasetour()%jeu.phase()) {
 			case 0:
 				retour = r.nextInt(jeu.joueurDonneur().main().taille());
