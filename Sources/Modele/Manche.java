@@ -1,6 +1,5 @@
 package Modele;
 
-
 //import java.util.ArrayList;
 
 public class Manche {
@@ -9,10 +8,14 @@ public class Manche {
     int atout, gagnant, donneur, perdant, receveur, joueurGagnantPli, nbpilereste, nbtour;
     Tour[] tours;
 
-    Manche(Joueur joueur1, Joueur joueur2) {
+    Manche(Joueur joueur1, Joueur joueur2, int donneurdeb) {
         j1 = joueur1;
         j2 = joueur2;
-
+        donneur = donneurdeb;
+        if (donneur == 1)
+            receveur = 2;
+        else
+            receveur = 1;
         tours = new Tour[26];
 
         initManche();
@@ -45,16 +48,10 @@ public class Manche {
     }
 
     public Boolean Manchefini() {
-        if (j1.scoreManche > j2.scoreManche) {
-            j1.manchesGagnees++;
-        } else {
-            j2.manchesGagnees++;
-        }
         return j1.main.taille == 0 && j2.main.taille == 0;
     }
 
     public void cartePrems(Carte c) {
-
         tours[nbtour].fixcartePremier(c);
     }
 
@@ -176,7 +173,6 @@ public class Manche {
         }
         cartePrems(card);
 
-
         // j1.main.trier();
         // j2.main.trier();
     }
@@ -195,11 +191,9 @@ public class Manche {
         }
         carteSec(card);
 
-
         // j1.main.trier();
         // j2.main.trier();
     }
-
 
     public void nouvtour() {
         tours[nbtour] = new Tour();
@@ -468,7 +462,6 @@ public class Manche {
         }
     }
 
-
     public void annulleCoupPremier(int argument) {
         Carte card;
         card = tours[nbtour].cartePremier;
@@ -666,6 +659,14 @@ public class Manche {
 
     public int donneur() {
         return tours[nbtour].receveur;
+    }
+
+    public int nbmanchegagnej1() {
+        return j1.manchesGagnees;
+    }
+
+    public int nbmanchegagnej2() {
+        return j2.manchesGagnees;
     }
 
 }

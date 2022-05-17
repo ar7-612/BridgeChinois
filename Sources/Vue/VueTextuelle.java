@@ -136,7 +136,7 @@ public class VueTextuelle implements Observateur {
                 case 2:
                     afficheGagnantPlis();
                     affichePile();
-                    if (j.quiDonne() == 1) {
+                    if (j.quiGagnetour() == 1) {
                         afficheAtout();
 
                         System.out.println(
@@ -150,7 +150,7 @@ public class VueTextuelle implements Observateur {
                     break;
                 case 3:
                     affichePile();
-                    if (j.quiDonne() == 2) {
+                    if (j.quiGagnetour() == 2) {
                         afficheAtout();
 
                         System.out.println(
@@ -207,14 +207,24 @@ public class VueTextuelle implements Observateur {
 
     private void afficheGagnantManche() {
         System.out.println("Fin Manche " + (j.nbmanche() - 1));
-        System.out.println("Le joueur " + j.quiGagneManche() + " a gagne la manche ");
-        System.out.println("Score joueur 1 : " + j.scoremanchej1() + "Score joueur 2 : " + j.scoremanchej2());
-        System.out.println(" tapez 1 pour rejouer , 2 pour quitter");
+        if (j.quiGagneManche() != 0)
+            System.out.println("Le joueur " + j.quiGagneManche() + " a gagne la manche ");
+        else
+            System.out.println("Il y a une egalité personne ne gagne cette manche");
+        System.out.println("Score joueur 1 : " + j.scoremanchej1() + " Score joueur 2 : " + j.scoremanchej2());
+        if (!j.partifini()) {
+            System.out.println(" tapez 1 pour rejouer , 2 pour quitter");
+        }
     }
 
     private void afficheGagnantPartie() {
         System.out.println("Fin De la Partie ");
-        System.out.println("Le joueur " + j.quiGagnePartie() + " a gagne la partie ");
+        if (j.quiGagnePartie() != 0)
+            System.out.println("Le joueur " + j.quiGagnePartie() + " a gagne la partie ");
+        else
+            System.out.println("Il y a une egalité personne ne gagne cette partie");
+        System.out.println("Le joueur 1 a gagne" + j.nbmanchegagnej1() + " manches , Le joueur 2 a gagne "
+                + j.nbmanchegagnej2() + "manches");
         System.out.println("Score joueur 1 : " + j.scorePartiej1() + " Score joueur 2 : " + j.scorePartiej2());
     }
 
