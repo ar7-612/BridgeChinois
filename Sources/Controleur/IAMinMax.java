@@ -4,8 +4,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.Enumeration;
 
-import Modele.Carte;
+//import Modele.Carte;
+import Modele.Coup;
 
 //joueur : 0 ou 1
 
@@ -266,7 +268,6 @@ public class IAMinMax extends IA {
 	
 	Hashtable<Configuration,Float> configurations;
 	
-	
 	float heuristique(Configuration config){ //A faire
 		return 0;
 	}
@@ -328,9 +329,13 @@ public class IAMinMax extends IA {
 		return null;
 	}
 	
-	Configuration trouverConfiguration(List<Carte> historique) { //A faire
+	Configuration trouverConfiguration() { //A faire
 		Configuration config = null;
+		Enumeration<Coup> en = historique.getEnumPasse();
 		
+		while(en.hasMoreElements()) {
+			//Coup courant = en.nextElement();
+		}
 		return config;
 	}
 	
