@@ -10,6 +10,7 @@ public class Historique<E extends Commande> {
         passe = new SequenceListe<>();
         futur = new SequenceListe<>();
     }
+    
 
     void nouveau(E c) {
         passe.insereTete(c);

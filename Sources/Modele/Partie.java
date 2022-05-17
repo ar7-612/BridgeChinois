@@ -219,10 +219,10 @@ public class Partie extends Observable {
     	} else {
     		if(joueur==1) {
         		J1EstIA=true;
-        		joueur1IA = IA.creerIA(this,mode);
+        		joueur1IA = IA.creerIA(this,histo,mode);
         	}else {
         		J2EstIA=true;
-        		joueur2IA = IA.creerIA(this,mode);
+        		joueur2IA = IA.creerIA(this,histo,mode);
         	}
     	}
     	
