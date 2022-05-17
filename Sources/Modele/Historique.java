@@ -1,33 +1,36 @@
 package Modele;
 
-import Structure.Sequence;
-import Structure.SequenceListe;
+import java.util.Stack;
+import java.util.Enumeration;
 
 public class Historique<E extends Commande> {
-    Sequence<E> passe, futur;
+	Stack<E> passe, futur;
 
     Historique() {
-        passe = new SequenceListe<>();
-        futur = new SequenceListe<>();
+        passe = new Stack<>();
+        futur = new Stack<>();
     }
     
+    public Enumeration<E> getEnumPasse () {
+    	return passe.elements();
+    }
 
     void nouveau(E c) {
-        passe.insereTete(c);
+        passe.push(c);
         c.Execute();
-        while (!futur.estVide())
-            futur.extraitTete();
+        while (!futur.isEmpty())
+            futur.pop();
     }
 
     public boolean peutAnnuler() {
-        return !passe.estVide();
+        return !passe.isEmpty();
     }
 
     E annuler() {
         if (peutAnnuler()) {
-            E c = passe.extraitTete();
+            E c = passe.pop();
             c.DesExecute();
-            futur.insereTete(c);
+            futur.push(c);
             return c;
         } else {
             return null;
@@ -35,14 +38,14 @@ public class Historique<E extends Commande> {
     }
 
     public boolean peutRefaire() {
-        return !futur.estVide();
+        return !futur.isEmpty();
     }
 
     E refaire() {
         if (peutRefaire()) {
-            E c = futur.extraitTete();
+            E c = futur.pop();
             c.Execute();
-            passe.insereTete(c);
+            passe.push(c);
             return c;
         } else {
             return null;

@@ -217,12 +217,18 @@ public class Partie extends Observable {
         		J2EstIA=false;
         	}
     	} else {
+    		Main m;
+    		if(quiDonne()==joueur) {
+    			m=joueurDonneur().main();
+    		} else {
+    			m=joueurReceveur().main();
+    		}
     		if(joueur==1) {
         		J1EstIA=true;
-        		joueur1IA = IA.creerIA(this,histo,mode);
+        		joueur1IA = IA.creerIA(this,histo,m,mode);
         	}else {
         		J2EstIA=true;
-        		joueur2IA = IA.creerIA(this,histo,mode);
+        		joueur2IA = IA.creerIA(this,histo,m,mode);
         	}
     	}
     	
