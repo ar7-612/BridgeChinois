@@ -2,6 +2,7 @@ package Modele;
 
 public class Joueur {
     PileCartes Pli, cartesPiochees;
+    boolean[] tabcouleur;
     int scoreManche, scorePartie, manchesGagnees, lg;
     int[] scores;
     String nom;
@@ -10,6 +11,7 @@ public class Joueur {
     public Joueur() {
         main = new Main();
         Pli = new PileCartes();
+        tabcouleur = new boolean[4];
         cartesPiochees = new PileCartes();
         scoreManche = 0;
         scorePartie = 0;

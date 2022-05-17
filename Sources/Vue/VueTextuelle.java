@@ -102,7 +102,7 @@ public class VueTextuelle implements Observateur {
     public void metAJour() {
         afficheretourligne();
         if (!j.partifini() && (!j.tourfini() || j.debutpartie)) {
-            switch (j.phasetour() % j.phase()) {
+            switch (j.phasetourterm()) {
                 case 0:
                     affichePile();
                     afficherCarteDonneur();
