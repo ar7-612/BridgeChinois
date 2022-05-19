@@ -76,7 +76,7 @@ public class PileCartes implements Cloneable {
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random(100);
+        Random r = new Random();
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

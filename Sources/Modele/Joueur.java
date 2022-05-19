@@ -39,13 +39,13 @@ public class Joueur {
      * @param couleur la couleur de la carte posée par le premier joueur
      * @return Tableau des cartes jouables
      */
-    public Boolean jouables(int couleur) {
-
+    public int jouables(int couleur) {
+        int x = 0;
         for (int i = 0; i < main.taille; i++) {
             if (main.carte(i).couleur == couleur)
-                return true;
+                x++;
         }
-        return false;
+        return x;
     }
 
     public Main main() {

@@ -50,7 +50,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 			}
 
 		} else if (jeu.phasetourterm() == 0) {
-			if (arg >= 0 && arg < 11) {
+			if (arg >= 0 && arg < jeu.joueurDonneur().main().taille()) {
 				faitcoup(jeu.phasetour() % jeu.phase(), arg);
 				return 0;
 			} else {
@@ -64,7 +64,7 @@ public class ControleurMediateur implements CollecteurEvenements {
 				return CodeErrMauvaisePioche;
 			}
 		} else if (jeu.phasetourterm() == 1) {
-			if (arg >= 0 && arg < 11) {
+			if (arg >= 0 && arg < jeu.joueurReceveur().main().taille()) {
 				if (jeu.JouableSec(arg)) {
 					faitcoup(jeu.phasetourterm(), arg);
 					return 0;

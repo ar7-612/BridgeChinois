@@ -121,11 +121,11 @@ public class Manche {
         } else if (tours[nbtour].carteSeconde.couleur == atout) {
             gagnant = tours[nbtour].receveur;
             perdant = tours[nbtour].donneur;
-            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur);
+            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur - 1);
         } else {
             gagnant = tours[nbtour].donneur;
             perdant = tours[nbtour].receveur;
-            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur);
+            cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur - 1);
         }
         tours[nbtour].fixgagnant(gagnant);
 
@@ -611,10 +611,6 @@ public class Manche {
     public void annullepiochePerdant(int argument) {
         nbtour--;
         Carte card;
-        int poscd = 10 - nbtour;
-        if (poscd < 0) {
-            poscd = poscd + 11;
-        }
         if (tours[nbtour].perdant == 1) {
             if (tours[nbtour].donneur == tours[nbtour].perdant)
                 card = j1.main.retirer(tours[nbtour].coupmainPremier);
