@@ -1,5 +1,6 @@
 package Controleur;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -11,18 +12,19 @@ import Modele.Main;
 //joueur : 0 ou 1
 
 class CartesM {
-	public static long TREFLE = 0b1111111111111;
-	public static long CARREAU = 0b1111111111111 << 13;
-	public static long COEUR = 0b1111111111111 << 26;
-	public static long PIQUE = 0b1111111111111 << 39;
-	public static long ALL = ( ~0 << 12 ) >>> 12;
+	public static final long TREFLE = 0b1111111111111;
+	public static final long CARREAU = 0b1111111111111 << 13L;
+	public static final long COEUR = 0b1111111111111 << 26L;
+	public static final long PIQUE = 0b1111111111111 << 39L;
+	public static final long ALL = ( ~0L << 12L ) >>> 12L;
 	
 	public static int nbCartes(long ensemble){
-		int s=0;
+		/*int s=0;
 		for(int i=0;i<52;i++){
-			s += (ensemble & (0b1 << i)) >>> i;
+			s += (ensemble & (1L << i)) >>> i;
 		}
-		return s;
+		return s;*/
+		return Long.bitCount(ensemble);
 	}
 	
 	public static long mCouleur(int c) {
@@ -37,18 +39,19 @@ class CartesM {
 				return 0;
 		}
 	}
-	public static short tabToCarte(long tab) {
+	
+	/*public static short tabToCarte(long tab) {
 		for(short i=0;i<52;i++){
-			if((tab & (0b1 << i)) >>> i == 1){
+			if((tab & (0b1 << i)) >>> i == 1L){
 				return i;
 			}
 		}
 		//ERREUR
 		return -1;
-	}
+	}*/
 }
 
-class InfoPlateau {
+class InfoPlateau implements Cloneable{
 	long[] mainsJ;
 	long[] plisJ;
 	long[] pioche;
@@ -62,35 +65,39 @@ class InfoPlateau {
 	}
 	
 	void addMain (int joueur, int carte) {
-		mainsJ[joueur] |= 1 << carte;
+		mainsJ[joueur] |= 1L << carte;
 	}
 	
 	void addPli (int joueur, int carte) {
-		plisJ[joueur] |= 1 << carte;
+		plisJ[joueur] |= 1L << carte;
 	}
 	
 	void delMain (int joueur, int carte) {
-		mainsJ[joueur] &= ~(1 << carte);
+		mainsJ[joueur] &= ~(1L << carte);
 	}
 	
 	void delPli (int joueur, int carte) {
-		plisJ[joueur] &= ~(1 << carte);
+		plisJ[joueur] &= ~(1L << carte);
 	}
 	
 	void delCouleur(int joueur,int couleur) {
 		nmainsJ[joueur] |= CartesM.mCouleur(couleur);
 	}
 	
-	void iniPioche (int c1,int c2,int c3,int c4,int c5,int c6) {
-		pioche[4] = (1 << c1) | (1 << c2) | (1 << c3) | (1 << c4) | (1 << c5) | (1 << c6);
+	/*void iniPioche (int c1,int c2,int c3,int c4,int c5,int c6) {
+		pioche[4] = (1L << c1) | (1L << c2) | (1L << c3) | (1L << c4) | (1L << c5) | (1L << c6);
+	}*/
+	
+	void addPioche(int numPioche,int carte) {
+		pioche[numPioche] = (1L << carte);
 	}
 	
 	void updatePioche (int carte1, int carte2) {
 		for(int i=0;i<5;i++) {
-			if((pioche[i] & (1 << carte1))!=0) {
-				pioche[i] &= ~(1 << carte1);
+			if((pioche[i] & (1L << carte1))!=0) {
+				pioche[i] &= ~(1L << carte1);
 				if(i>0) {
-					pioche[i-1] |= (1 << carte2);
+					pioche[i-1] |= (1L << carte2);
 				}
 				return;
 			}
@@ -98,10 +105,14 @@ class InfoPlateau {
 	}
 	
 	/*
-	carte inconnues du point de vue du joueur j de main mainJ
+	carte inconnues du joueur j avec mainJ info en plus
 	*/
 	long cartesInconnuesJ(long mainJ, int j){//A refaire
 		return ~mainJ & ~mainsJ[j] & ~mainsJ[(j+1)%2] & ~cartesPlis() & ~cartesPioche() & ~nmainsJ[j];
+	}
+	
+	long cartesMain(int j) {
+		return mainsJ[j];
 	}
 	
 	long cartesPioche(){
@@ -114,8 +125,8 @@ class InfoPlateau {
 	
 	float esperance(int carte, int atout, long ensemble, boolean countAtout) {
 		long maskCouleur = CartesM.mCouleur(carte%13);
-		float nbc;
-		float nbcGagnante;
+		float nbc = 1;
+		float nbcGagnante = 0;
 		if((ensemble & maskCouleur) == 0){
 			if(countAtout){
 				nbc = (float) CartesM.nbCartes(ensemble & ~maskCouleur);
@@ -124,18 +135,15 @@ class InfoPlateau {
 					nbc = 1;
 					nbcGagnante = 0;
 				}
-			} else {
-				nbc = 1;
-				nbcGagnante = 0;
 			}
 		} else {
 			nbc = (float) CartesM.nbCartes(ensemble & maskCouleur);
 			nbcGagnante = (float) CartesM.nbCartes((ensemble & maskCouleur) >>> carte);
 		}
-		return nbcGagnante / nbc;
+		return 1f - (2f * nbcGagnante / nbc);
 	}
 	
-	float esperanceMoy(int carte, int atout, int joueur, long infoCartes) {
+	public float esperanceMoy(int carte, int atout, int joueur , long infoCartes) {
 		float espSur;
 		float espInc;// mainsJ[joueur%2]
 		long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
@@ -143,6 +151,15 @@ class InfoPlateau {
 		espSur = esperance(carte,atout,mainsJ[(joueur+1)%2],!aCouleur);
 		espInc = esperance(carte,atout,cartesInc,!aCouleur) * (11 - CartesM.nbCartes(mainsJ[(joueur+1)%2])) / CartesM.nbCartes(cartesInc);
 		return espInc + espSur;
+	}
+	
+	public long reponsePossible(int carte, int atout, long ensemble) {
+		long retour;
+		retour = ensemble & CartesM.mCouleur(carte%13);
+		if(retour == 0){
+			retour = ensemble;
+		}
+		return retour;
 	}
 	
 	boolean estFinal(){
@@ -176,9 +193,27 @@ class InfoPlateau {
 				pioche[0] + " " + pioche[1] + " " + pioche[2] + " " + pioche[3] + " " + pioche[4];
 	}
 	
+
+	@Override
+	public InfoPlateau clone() {
+		InfoPlateau c = new InfoPlateau();
+		c.mainsJ[0] = mainsJ[0];
+		c.mainsJ[1] = mainsJ[1];
+		c.plisJ[0] = plisJ[0];
+		c.plisJ[1] = plisJ[1];
+		c.nmainsJ[0] = nmainsJ[0];
+		c.nmainsJ[1] = nmainsJ[1];
+		c.pioche[0] = pioche[0];
+		c.pioche[1] = pioche[1];
+		c.pioche[2] = pioche[2];
+		c.pioche[3] = pioche[3];
+		c.pioche[4] = pioche[4];
+		return c;
+	}
+	
 }
 
-class Configuration {
+class Configuration implements Cloneable{
 	/*int avancementTour;
 	32 bits : 100...0000033222222
 	1 : joueur
@@ -236,8 +271,28 @@ class Configuration {
 		info.delCouleur(joueur, couleur);
 	}
 	
-	void iniPioche (int c1,int c2,int c3,int c4,int c5,int c6) {
-		info.iniPioche(c1,c2,c3,c4,c5,c6);
+	void addPioche(int numPioche,int carte) {
+		info.addPioche(numPioche, carte);
+	}
+	
+	public long getPossibleDonne(boolean estIA) {
+		if(estIA) {
+			return mainJ;
+		} else {
+			return info.cartesInconnuesJ(mainJ, joueur);
+		}
+	}
+	
+	public long getPossibleReponse(boolean estIA) {
+		if(estIA) {
+			return info.reponsePossible(carte,atout,mainJ);
+		} else {
+			return info.reponsePossible(carte, atout, info.cartesInconnuesJ(mainJ, joueur));
+		}
+	}
+	
+	public long getPossiblePioche() {
+		return info.cartesPioche();
 	}
 	
 	public int getJoueur(){ 
@@ -264,13 +319,13 @@ class Configuration {
 		case 0 :
 			this.carte = carte1;
 			delMain(joueur,carte1);
-			mainJ &= ~(1<<carte1);
+			mainJ &= ~(1L<<carte1);
 			joueur = (joueur+1)%2;
 			break;
 		case 1 :
 			this.carte = carte1;
 			delMain(joueur,carte1);
-			mainJ &= ~(1<<carte1);
+			mainJ &= ~(1L<<carte1);
 			if(!isGreater(this.carte,carte1)) {
 				joueur = (joueur+1)%2;
 			}
@@ -279,7 +334,7 @@ class Configuration {
 		case 3 :
 			this.carte = carte1;
 			addMain(joueur,carte1);
-			mainJ |= (1<<carte1);
+			mainJ |= (1L<<(carte1 - 1));
 			info.updatePioche(carte1, carte2);
 			joueur = (joueur+1)%2;
 		
@@ -293,6 +348,79 @@ class Configuration {
 	
 	public boolean estFinal(){
 		return info.estFinal();
+	}
+	
+	/*esperanceMoy(int carte, int atout, int joueur, long infoCartes)
+	long mainJ;
+	InfoPlateau info;
+	int joueur;
+	int phase;
+	int carte;
+	int atout;*/
+	
+	/*float esperanceMoy(int c,boolean estIA) {
+		if(estIA) {
+			return info.esperanceMoy(c, atout, joueur, mainJ);
+		} else {
+			return info.esperanceMoy(c, atout, joueur, 1L << c);
+		}
+	}
+	
+	float esperanceMainSelf(boolean estIA) {
+		float retour = 0;
+		long ensemble;
+		if(estIA) {
+			ensemble = mainJ;
+		} else {
+			ensemble = info.cartesInconnuesJ(mainJ, (joueur + 1) % 2) | info.cartesMain((joueur + 1) % 2);
+		}
+		for(int i=0;i<52;i++) {
+			if((ensemble & (1L << i))!=0) {
+				
+			}
+		}
+		return retour;
+	}*/
+	
+	//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
+	float esperanceMainJoueur() {
+		float retour = 0;
+		for(int i=0;i<52;i++) {
+			if((mainJ & (1L << i))!=0) {
+				retour += info.esperanceMoy(i, atout, joueur, mainJ);
+			}
+		}
+		return retour;
+	}
+	
+	//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
+	float esperanceMainAdverse() {
+		float retour = 0;
+		long cartesCon = info.cartesMain((joueur + 1) % 2);
+		long cartesInc = info.cartesInconnuesJ(mainJ, (joueur + 1) % 2);
+		
+		for(int i=0;i<52;i++) {
+			if((cartesInc & (1L << i))!=0) {
+				retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+			}
+		}
+		retour = retour * (11-CartesM.nbCartes(cartesCon)) / CartesM.nbCartes(cartesInc); 
+		
+		cartesCon = info.cartesMain((joueur + 1) % 2);
+		for(int i=0;i<52;i++) {
+			if((cartesCon & (1L << i))!=0) {
+				retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+			}
+		}
+		return retour;
+	}
+	
+	//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
+	float heuristique() {
+		float he = 0;
+		he += esperanceMainJoueur();
+		he -= esperanceMainAdverse();
+		return he;
 	}
 	
 	@Override
@@ -313,6 +441,14 @@ class Configuration {
 				c.atout==atout &&
 				c.info.equals(info);
 	}
+
+	@Override
+	public Configuration clone() {
+		Configuration c;
+		c = new Configuration(mainJ,joueur,phase,carte,atout);
+		c.info = info.clone();
+		return c;
+	}
 	
 	@Override
 	public String toString() {
@@ -324,23 +460,75 @@ public class IAMinMax extends IA {
 	
 	Hashtable<Configuration,Float> configurations;
 	
-	float heuristique(Configuration config){ //A faire
-		return 0;
+	//FONCTIONNE UNIQUEMENT SI CONFIG VALIDE
+	float heuristique(Configuration config){ 
+		return config.heuristique();
 	}
 	
 	List<Configuration> trouverFils(Configuration config){ //A faire
-		return null;
+		//update(int carte1,int carte2)
+		List<Configuration> retour = new ArrayList<>();
+		long ensemble = 0;
+		
+		switch(config.getPhase()) {
+			case 0 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble = config.getPossibleDonne(true);
+				} else {
+					ensemble = config.getPossibleDonne(false);
+				}
+				break;
+			case 1 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble = config.getPossibleReponse(true);
+				} else {
+					ensemble = config.getPossibleReponse(false);
+				}
+				break;
+			case 2 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble = config.getPossiblePioche();
+				} else {
+					ensemble = config.getPossiblePioche();
+				}
+				break;
+			case 3 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble = config.getPossiblePioche();
+				} else {
+					ensemble = config.getPossiblePioche();
+				}
+				break;
+		}
+		
+		for(int i=0;i<52;i++) {
+			if((ensemble & (1<<i))!=0) {
+				Configuration config2 = config.clone();
+				config2.update(i, -1);
+			}
+		}
+		
+		return retour;
 	}
 	
 	int infinie(){
 		// doit etre superieur a l'heuristique
-		return 100000;
+		return Integer.MAX_VALUE;
 	}
 	
 	float minMax(Configuration config, int profondeur, float borneMax, float borneMaxAdv){
-		if(config.estFinal() || profondeur==0){
+		if(config.estFinal()) {
 			return heuristique(config);
 		}
+		if(profondeur==0) {
+			if(config.getJoueur() == joueurIA-1) {
+				return heuristique(config);
+			} else {
+				profondeur++;
+			}
+		}
+		
+		
 		List<Configuration> fils = trouverFils(config);
 		Iterator<Configuration> it = fils.iterator();
 		float max = -borneMaxAdv;
@@ -384,15 +572,30 @@ public class IAMinMax extends IA {
 	int joueur = 1;
 	
 	long trouverMain() {
-		return 0;
+		long retour = 0;
+		Main m = (joueurIA==1 ? joueur1 : joueur2).main();
+		for(int i=0;i<m.taille();i++) {
+			retour |= 1L << (carteToInt(m.carte(i)));// -1 ?
+			//System.out.println(i+" Carte "+carteToInt(m.carte(i)) + " Retour "+retour);
+		}
+		return retour;
 	}
 	
 	int carteToInt (Carte c) {
-		return c.valeur()-2 + (c.couleur()-1) * 14;
+		return c.valeur()-2 + (c.couleur()-1) * 13;
+	}
+	
+	void debugAfficherCartes(long m) {
+		for(int i=0;i<52;i++) {
+			if((m & (1L << i)) != 0) {
+				System.out.println("valeur " + (2+i%13) + " couleur "+i/13);
+			}
+		}
 	}
 	
 	Configuration trouverConfiguration() { //A faire
 		Configuration config = null;
+		//debugAfficherCartes(trouverMain());
 		config = new Configuration(trouverMain(),joueurIA-1,jeu.phasetourterm(),-1,jeu.atout()-1);
 		for(int i=0;i<4;i++) {
 			if(joueur1.getTabCouleur()[i]) {
@@ -428,6 +631,12 @@ public class IAMinMax extends IA {
 			config.delMain(1,carteToInt(courant));
 			config.addPli(1,carteToInt(courant));
 		}
+		for(int i=0;i<6;i++) {
+			if(!jeu.pilevide(i)) {
+				config.addPioche(i, carteToInt(jeu.CartevisiblePile()[i]));
+			}
+		}
+		//System.out.println(Long.SIZE);
 		return config;
 	}
 	
@@ -437,7 +646,7 @@ public class IAMinMax extends IA {
 			r=new Random();
 		}
 		
-		int retour=-1;
+		int retour=-10;
 		int idCarte = minMaxInitial(trouverConfiguration(),2);
 		Main m = (joueurIA==1 ? joueur1 : joueur2).main();
 		for(int i=0;i<m.taille();i++) {
@@ -448,6 +657,7 @@ public class IAMinMax extends IA {
 		}
 		
 		//System.err.println("IA MIN MAX NON IMPLENTE");
+		System.err.println("retour = "+ retour);
 		
 		return retour;
 	}

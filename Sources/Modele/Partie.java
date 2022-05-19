@@ -40,7 +40,11 @@ public class Partie extends Observable {
         Manches = new ArrayList<Manche>();
         Manches.add(manchecourante);
     }
-
+    
+    public Carte[] CartevisiblePile() {
+    	return manchecourante.CartevisiblePile();
+    }
+    
     public int atout() {
         return manchecourante.atout;
     }
