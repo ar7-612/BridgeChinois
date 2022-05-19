@@ -89,7 +89,7 @@ class InfoPlateau implements Cloneable{
 	}*/
 	
 	void addPioche(int numPioche,int carte) {
-		pioche[numPioche] = (1L << carte);
+		pioche[numPioche] |= (1L << carte);
 	}
 	
 	void updatePioche (int carte1, int carte2) {
@@ -124,7 +124,7 @@ class InfoPlateau implements Cloneable{
 	}
 	
 	float esperance(int carte, int atout, long ensemble, boolean countAtout) {
-		long maskCouleur = CartesM.mCouleur(carte%13);
+		long maskCouleur = CartesM.mCouleur(carte/13);
 		float nbc = 1;
 		float nbcGagnante = 0;
 		if((ensemble & maskCouleur) == 0){
@@ -147,7 +147,7 @@ class InfoPlateau implements Cloneable{
 		float espSur;
 		float espInc;// mainsJ[joueur%2]
 		long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
-		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesM.mCouleur(carte%13)) != 0;
+		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesM.mCouleur(carte/13)) != 0;
 		espSur = esperance(carte,atout,mainsJ[(joueur+1)%2],!aCouleur);
 		espInc = esperance(carte,atout,cartesInc,!aCouleur) * (11 - CartesM.nbCartes(mainsJ[(joueur+1)%2])) / CartesM.nbCartes(cartesInc);
 		return espInc + espSur;
@@ -155,7 +155,7 @@ class InfoPlateau implements Cloneable{
 	
 	public long reponsePossible(int carte, int atout, long ensemble) {
 		long retour;
-		retour = ensemble & CartesM.mCouleur(carte%13);
+		retour = ensemble & CartesM.mCouleur(carte/13);
 		if(retour == 0){
 			retour = ensemble;
 		}
@@ -505,6 +505,7 @@ public class IAMinMax extends IA {
 			if((ensemble & (1<<i))!=0) {
 				Configuration config2 = config.clone();
 				config2.update(i, -1);
+				retour.add(config2);
 			}
 		}
 		
@@ -537,6 +538,7 @@ public class IAMinMax extends IA {
 			Float tmp = configurations.get(configF);
 			if(tmp==null){
 				tmp = minMax(configF,profondeur-1,-max, borneMax);
+				configurations.put(configF, tmp);
 			}
 			if(tmp > borneMax){// alpha/beta reduction
 				return max;
@@ -555,7 +557,8 @@ public class IAMinMax extends IA {
 			Configuration configF = it.next();
 			Float tmp = configurations.get(configF);
 			if(tmp==null){
-				minMax(configF,profondeur-1,-max, infinie());
+				tmp = minMax(configF,profondeur-1,-max, infinie());
+				configurations.put(configF, tmp);
 			}
 			if(tmp > max){
 				max = tmp;
@@ -632,11 +635,10 @@ public class IAMinMax extends IA {
 			config.addPli(1,carteToInt(courant));
 		}
 		for(int i=0;i<6;i++) {
-			if(!jeu.pilevide(i)) {
-				config.addPioche(i, carteToInt(jeu.CartevisiblePile()[i]));
+			if(!jeu.pilevide(i+1)) {
+				config.addPioche(jeu.taillePile(i+1)-1, carteToInt(jeu.CartevisiblePile()[i]));
 			}
 		}
-		//System.out.println(Long.SIZE);
 		return config;
 	}
 	
@@ -644,6 +646,7 @@ public class IAMinMax extends IA {
 	public int jouerCoup() { //A faire / finir
 		if(r==null) { // Initialisation
 			r=new Random();
+			configurations = new Hashtable<>();
 		}
 		
 		int retour=-10;
@@ -655,11 +658,8 @@ public class IAMinMax extends IA {
 				break;
 			}
 		}
-		
-		//System.err.println("IA MIN MAX NON IMPLENTE");
 		System.err.println("retour = "+ retour);
 		
 		return retour;
 	}
-
 }

@@ -444,6 +444,25 @@ public class Manche {
 
     }
 
+    public int taillePile(int arg) {
+    	switch (arg) {
+        case 1:
+            return pile1.taille();
+        case 2:
+            return pile2.taille();
+        case 3:
+            return pile3.taille();
+        case 4:
+            return pile4.taille();
+        case 5:
+            return pile5.taille();
+        case 6:
+            return pile6.taille();
+        default:
+            return 0;
+    	}
+    }
+    
     public Boolean toutelespilesontvide() {
         return pile1.vide() && pile2.vide() && pile3.vide() && pile4.vide() && pile5.vide() && pile6.vide();
     }

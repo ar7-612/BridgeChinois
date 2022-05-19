@@ -151,6 +151,10 @@ public class Partie extends Observable {
     public Boolean pilevide(int arg) {
         return manchecourante.pilevide(arg);
     }
+    
+    public int taillePile(int arg) {
+    	return manchecourante.taillePile(arg);
+    }
 
     public boolean manchefini() {
         return manchecourante.Manchefini();

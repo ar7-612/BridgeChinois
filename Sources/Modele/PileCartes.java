@@ -24,7 +24,11 @@ public class PileCartes implements Cloneable {
     public void ajouterdeb(Carte c) {
         pile.add(0, c);
     }
-
+    
+    public int taille() {
+    	return pile.size();
+    }
+    
     public boolean vide() {
         return pile.isEmpty();
     }
