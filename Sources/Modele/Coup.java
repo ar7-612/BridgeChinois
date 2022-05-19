@@ -5,11 +5,11 @@ package Modele;
 public class Coup extends Commande {
     int codecoup, argument;
     Partie partie;
-
-    static final int Premierdepos = 0;
-    static final int Seconddepos = 1;
-    static final int PremierPioche = 2;
-    static final int SecondPioche = 3;
+  
+    public static final int Premierdepos = 0;
+    public static final int Seconddepos = 1;
+    public static final int PremierPioche = 2;
+    public static final int SecondPioche = 3;
 
     Coup(int cdcoup, int arg) {
         codecoup = cdcoup;

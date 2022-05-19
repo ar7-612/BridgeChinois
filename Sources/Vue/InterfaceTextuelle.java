@@ -31,7 +31,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-        long delayIA = 500;// en ms
+        long delayIA = 3000;// en ms
         long timer;
 
         c.fixerInterfaceUtilisateur(this);
@@ -123,7 +123,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         System.out.println("Joueur 1 IA : tapez non si humain ou le mode si IA.");
         System.out.println("modes : alea , easy");
         String typeJ1 = s.nextLine();
-        while (!typeJ1.equals("non") && !typeJ1.equals("alea")) {
+        while (!typeJ1.equals("non") && !typeJ1.equals("alea") && !typeJ1.equals("easy")) {
             System.out.println("commande inconnu :" + typeJ1);
             typeJ1 = s.nextLine();
         }

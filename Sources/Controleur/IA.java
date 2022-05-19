@@ -1,15 +1,15 @@
 package Controleur;
 
 import Modele.Partie;
-import Modele.Historique;
-import Modele.Coup;
-import Modele.Main;
+import Modele.Joueur;
+
 
 public abstract class IA {
 	Partie jeu;
-	Historique<Coup> historique;
-	Main main;
-	public static IA creerIA (Partie j,Historique<Coup> h,Main m, String mode){
+	Joueur joueur1;
+	Joueur joueur2;
+	int joueurIA;
+	public static IA creerIA (Partie j,Joueur j1,Joueur j2,int numJ, String mode){
 		IA retour=null;
 		if(mode.equals("alea")) {
 			retour = new IAAleatoire();
@@ -26,8 +26,9 @@ public abstract class IA {
 				//ERREUR
 		}*/
 		retour.jeu = j;
-		retour.historique = h;
-		retour.main = m;
+		retour.joueur1 = j1;
+		retour.joueur2 = j2;
+		retour.joueurIA = numJ;
 		return retour;
 	}
 	

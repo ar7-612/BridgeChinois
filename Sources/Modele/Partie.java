@@ -40,7 +40,11 @@ public class Partie extends Observable {
         Manches = new ArrayList<Manche>();
         Manches.add(manchecourante);
     }
-
+    
+    public Carte[] CartevisiblePile() {
+    	return manchecourante.CartevisiblePile();
+    }
+    
     public int atout() {
         return manchecourante.atout;
     }
@@ -213,28 +217,22 @@ public class Partie extends Observable {
     }
 
     public void ModeJoueur(int joueur, String mode) {
-        if (mode.equals("non")) {
-            if (joueur == 1) {
-                J1EstIA = false;
-            } else {
-                J2EstIA = false;
-            }
-        } else {
-            Main m;
-            if (quiDonne() == joueur) {
-                m = joueurDonneur().main();
-            } else {
-                m = joueurReceveur().main();
-            }
-            if (joueur == 1) {
-                J1EstIA = true;
-                joueur1IA = IA.creerIA(this, histo, m, mode);
-            } else {
-                J2EstIA = true;
-                joueur2IA = IA.creerIA(this, histo, m, mode);
-            }
-        }
-
+    	if(mode.equals("non")) {
+    		if(joueur==1) {
+        		J1EstIA=false;
+        	}else {
+        		J2EstIA=false;
+        	}
+    	} else {
+    		if(joueur==1) {
+        		J1EstIA=true;
+        		joueur1IA = IA.creerIA(this,j1,j2,1,mode);
+        	}else {
+        		J2EstIA=true;
+        		joueur2IA = IA.creerIA(this,j1,j2,2,mode);
+        	}
+    	}
+    	
     }
 
     public boolean estIA(int joueur) {
@@ -265,7 +263,7 @@ public class Partie extends Observable {
 
         return phasetour % phase;
     }
-
+  
     public int scorePartiej2() {
         return manchecourante.j2.scorePartie;
     }

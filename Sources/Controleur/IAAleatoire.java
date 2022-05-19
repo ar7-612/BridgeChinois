@@ -58,15 +58,11 @@ class IAAleatoire extends IA {
 		if (r == null) {
 			r = new Random();
 		}
+		
+		int retour=-1;
+		//int codePhase = jeu.phasetour();
+		switch(jeu.phasetour()%jeu.phase()) {
 
-		int retour = -1;
-		// int codePhase = jeu.phasetour();
-		if (nbPiochesNonVide() == 0) {
-			System.out.println("nbPhases : " + jeu.phase());
-			System.out.println(jeu.manchefini());
-			// codePhase%=2;
-		}
-		switch (jeu.phasetour() % jeu.phase()) {
 			case 0:
 				retour = r.nextInt(jeu.joueurDonneur().main().taille());
 				break;
