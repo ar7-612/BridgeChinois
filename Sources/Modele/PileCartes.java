@@ -80,7 +80,7 @@ public class PileCartes implements Cloneable {
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random();
+        Random r = new Random(5);
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

@@ -96,7 +96,19 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
             }
         }
     }
+    
+    //Pour test IA
+    /*
+    @Override
+    public void Configuration() {
+        j.ModeV("m", 2);
 
+        j.ModeJoueur(1, "easy");
+
+        j.ModeJoueur(2, "alea");
+    }
+    */
+    
     @Override
     public void Configuration() {
         System.out.println(
@@ -138,5 +150,5 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         }
         j.ModeJoueur(2, typeJ2);
     }
-
+	
 }

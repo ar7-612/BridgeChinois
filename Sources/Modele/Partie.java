@@ -2,9 +2,8 @@ package Modele;
 
 import java.util.ArrayList;
 
+import Controleur.IAbase;
 import Patterns.Observable;
-
-import Controleur.IA;
 
 public class Partie extends Observable {
     private Historique<Coup> histo;
@@ -20,8 +19,8 @@ public class Partie extends Observable {
     int donneurdebut;
     boolean J1EstIA;
     boolean J2EstIA;
-    IA joueur1IA;
-    IA joueur2IA;
+    IAbase joueur1IA;
+    IAbase joueur2IA;
 
     public Partie() {
         j1 = new Joueur();
@@ -230,10 +229,10 @@ public class Partie extends Observable {
     	} else {
     		if(joueur==1) {
         		J1EstIA=true;
-        		joueur1IA = IA.creerIA(this,j1,j2,1,mode);
+        		joueur1IA = IAbase.creerIA(this,j1,j2,1,mode);
         	}else {
         		J2EstIA=true;
-        		joueur2IA = IA.creerIA(this,j1,j2,2,mode);
+        		joueur2IA = IAbase.creerIA(this,j1,j2,2,mode);
         	}
     	}
     	

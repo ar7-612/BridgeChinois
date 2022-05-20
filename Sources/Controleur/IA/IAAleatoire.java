@@ -1,10 +1,11 @@
-package Controleur;
+package Controleur.IA;
 
 import java.util.Random;
 
+import Controleur.IAbase;
 import Modele.Carte;
 
-class IAAleatoire extends IA {
+public class IAAleatoire extends IAbase {
 
 	Random r;
 
