@@ -14,11 +14,11 @@ import Modele.Main;
 
 public class IAMinMax extends IAbase {
 	
-	Hashtable<ConfigurationIA,Float> configurations;
-	
 	//FONCTIONNE UNIQUEMENT SI CONFIG VALIDE
-	float heuristique(ConfigurationIA config){ 
-		return config.heuristique();
+	float heuristique(ConfigurationIA config){
+		float h = config.heuristique(config.joueur+1 == joueurIA);
+		//System.out.println("Heutistique : "+h);
+		return h;
 	}
 
 	List<ConfigurationIA> trouverFils(ConfigurationIA config){ //A faire
@@ -26,6 +26,10 @@ public class IAMinMax extends IAbase {
 		List<ConfigurationIA> retour = new ArrayList<>();
 		long ensemble1 = 0;
 		long ensemble2 = 0;
+		
+		if(config.mainJ==0) {
+			System.err.println(" AhAO ! "+config);
+		}
 		
 		switch(config.getPhase()) {
 			case 0 :
@@ -64,8 +68,8 @@ public class IAMinMax extends IAbase {
 		
 		
 		for(int i=0;i<52;i++) {
-			if((ensemble1 & (1L<<i))!=0) {
-				if(ensemble2==0) {
+			if((ensemble1 & (1L<<i))!=0L) {
+				if(ensemble2==0L) {
 					ConfigurationIA config2 = config.clone();
 					config2.update(i, -1, config2.getJoueur()==joueurIA-1);
 					retour.add(config2);
@@ -81,20 +85,25 @@ public class IAMinMax extends IAbase {
 			}
 		}
 		
+		//REFAIRE COMPARAISONS
+		//retour.sort(null);
+		if(retour.isEmpty()) {
+			System.err.println(" AhA ! "+config);
+		}
+		
 		return retour;
 	}
 	
-	int infinie(){
+	float infinie(){
 		// doit etre superieur a l'heuristique
-		return Integer.MAX_VALUE;
+		return Float.MAX_VALUE;
 	}
 	
-	float [] bornesMax;
 	String prec;
 	
 	long nbConfigs;
 	
-	float minMax(ConfigurationIA config, int profondeur){
+	float minMax(ConfigurationIA config, float borneMax, float borneMaxAdv, int profondeur,int debugHauteur){
 		
 	//debug debut
 		//System.err.println(bornesMax[0] + " " + bornesMax[1] + " ");
@@ -106,64 +115,89 @@ public class IAMinMax extends IAbase {
 			return heuristique(config);
 		}
 		if(profondeur==0) {
-			if(config.getJoueur() == joueurIA-1 && config.getPhase()==0) { //Trop gourmand...
+			if(config.getJoueur() == joueurIA-1 && config.getPhase() == 0) { //Trop gourmand...
 				return heuristique(config);
 			} else {
 				profondeur++;
 			}
+			return heuristique(config);
 		}
 		List<ConfigurationIA> fils = trouverFils(config);
 		Iterator<ConfigurationIA> it = fils.iterator();
-		float max = -bornesMax[(config.getJoueur()+1)%2];
+		
+		float max = -infinie();//-borneMaxAdv;
 		while(it.hasNext()){
 			ConfigurationIA configF = it.next();
 			Float tmp = configurations.get(configF);
 			if(tmp==null){
-				tmp = minMax(configF,profondeur-1);
-				if(config.getJoueur()!=configF.getJoueur()) {
-					tmp*=-1;
+				//printDebug1(debugHauteur);System.out.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()));
+				if(config.getJoueur()==configF.getJoueur()) {
+					tmp =  minMax(configF,borneMax,borneMaxAdv,profondeur-1,debugHauteur+1);
+				} else {
+					tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur-1,debugHauteur+1);
 				}
+				//printDebug1(debugHauteur);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
 				configurations.put(configF, tmp);
 			}
-			if(tmp > bornesMax[config.getJoueur()]){// alpha/beta reduction
-				return max;
+			if(tmp > borneMax){// alpha/beta reduction
+				return infinie();//tmp;//A commenter/decommenter
 			} else {
 				//System.out.println();
 			}
 			max = Math.max(max,tmp);
-			bornesMax[(config.getJoueur()+1)%2] = Math.max(-max,bornesMax[(config.getJoueur()+1)%2]);
+			borneMaxAdv = -max;
 		}
 		return max;
 	}
 	
-	int minMaxInitial(ConfigurationIA config, int profondeur){
+	int trouverProfondeur(ConfigurationIA config){
+		int retour = 3;
+		return retour;
+	}
+	
+	int minMaxInitial(ConfigurationIA config){
 		int carteAJouer = -1;
+		int profondeur  = trouverProfondeur(config);
+		
 		List<ConfigurationIA> fils = trouverFils(config);
 		Iterator<ConfigurationIA> it = fils.iterator();
-		bornesMax[(config.getJoueur()+1)%2]=infinie();
-		bornesMax[config.getJoueur()]=infinie();
+		
+		float borneMax = infinie();
+		float borneMaxAdv = infinie();
+		
 		float max = -infinie();
 		while(it.hasNext()){
 			ConfigurationIA configF = it.next();
 			Float tmp = configurations.get(configF);
 			if(tmp==null){
-				tmp = minMax(configF,profondeur-1);
-				if(config.getJoueur()!=configF.getJoueur()) {
-					tmp*=-1;
+				//printDebug1(100);System.out.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()));
+				if(config.getJoueur()==configF.getJoueur()) {
+					tmp = minMax(configF,borneMax,borneMaxAdv,profondeur,1);
+				} else {
+					tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur,1);
 				}
 				configurations.put(configF, tmp);
+				//printDebug1(100);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
 			}
-			System.err.print("Carte : "+configF.getCarte());
+			
+			//System.err.println("Carte : "+TestsIA.iToS(configF.getCarte())  + " Valeur : " + tmp);
 			if(tmp > max){
 				max = tmp;
 				carteAJouer = configF.getCarte();
-				System.err.print(" Superieur !");
+				//System.err.print(" Superieur !");
 			}
-			System.err.println();
+			//System.err.println();
 			max = Math.max(max,tmp);
-			bornesMax[(config.getJoueur()+1)%2] = Math.max(-max,bornesMax[(config.getJoueur()+1)%2]);
+			borneMaxAdv = -max;
 		}
+		//System.err.println(max);
 		return carteAJouer;
+	}
+	
+	void printDebug1(int h) {
+		for(int i=0;i<h;i++) {
+			System.out.print("|");
+		}
 	}
 	
 	long trouverMain() {
@@ -179,19 +213,27 @@ public class IAMinMax extends IAbase {
 	int carteToInt (Carte c) {
 		return c.valeur()-2 + (c.couleur()-1) * 13;
 	}
-	
-	void debugAfficherCartes(long m) {
-		for(int i=0;i<52;i++) {
-			if((m & (1L << i)) != 0) {
-				System.out.println("valeur " + (2+i%13) + " couleur "+i/13);
-			}
-		}
-	}
-	
-	ConfigurationIA trouverConfiguration() { //A faire
+
+	ConfigurationIA trouverConfiguration() { //A faire ?
 		ConfigurationIA config = null;
 		//debugAfficherCartes(trouverMain());
-		config = new ConfigurationIA(trouverMain(),joueurIA-1,jeu.phasetourterm(),-1,jeu.atout()-1);
+		int carte = -1;
+		switch(jeu.phasetourterm()) {
+		case 0: break;
+		case 1:
+			carte = carteToInt(jeu.cartePrem());
+			break;
+		case 2: break;
+		case 3: break;
+		}
+		if(trouverMain()==0) {
+			while(true) {
+				System.err.println("okay");
+			}
+		}
+		//System.err.println(trouverMain());
+		config = new ConfigurationIA(trouverMain(),joueurIA-1,jeu.phasetourterm(),carte,jeu.atout()-1);
+				
 		for(int i=0;i<4;i++) {
 			if(joueur1.getTabCouleur()[i]) {
 				config.delCouleur(0,i);
@@ -233,30 +275,51 @@ public class IAMinMax extends IAbase {
 		}
 		return config;
 	}
+	
+	int trouverIndice(int idCarte) {
+		int retour = -10;
+		switch(jeu.phasetourterm()) {
+		case 0:
+		case 1:
+			Main m = (joueurIA==1 ? joueur1 : joueur2).main();
+			for(int i=0;i<m.taille();i++) {
+				if(carteToInt(m.carte(i))==idCarte) {
+					retour = i;
+					break;
+				}
+			}
+			break;
+		case 2:
+		case 3:
+			for(int i=0;i<jeu.CartevisiblePile().length;i++) { 
+				if(!jeu.pilevide(i+1) && carteToInt(jeu.CartevisiblePile()[i])==idCarte) {
+					retour = i+1;
+					break;
+				}
+			}
+			break;
+		}
+		return retour;
+	}
 
-	
-	
+	Hashtable<ConfigurationIA,Float> configurations;
 	Random r;
+	
 	@Override
 	public int jouerCoup() { //A faire / finir
 		if(r==null) { // Initialisation
 			r=new Random();
 			configurations = new Hashtable<>();
-			bornesMax = new float[2];
+		} else {
+			configurations.clear();
 		}
 		
 		nbConfigs=0;
 		
-		int retour=-10;
-		int idCarte = minMaxInitial(TestsIA.config2(),3);
-		Main m = (joueurIA==1 ? joueur1 : joueur2).main();
-		for(int i=0;i<m.taille();i++) {
-			if(carteToInt(m.carte(i))==idCarte) {
-				retour = i;
-				break;
-			}
-		}
-		System.err.println("retour = "+ retour+" (id="+idCarte+")");
+		int idCarte = minMaxInitial(trouverConfiguration());
+		int retour=trouverIndice(idCarte);
+		
+		System.err.println("Carte : "+TestsIA.iToS(idCarte)+", indice : "+retour);
 		return retour;
 	}
 }

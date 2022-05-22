@@ -66,7 +66,7 @@ class InfoPlateau implements Cloneable{
 	}
 	
 	long cartesMain() {
-		return mainsJ[0] & mainsJ[1];
+		return mainsJ[0] | mainsJ[1];
 	}
 	
 	long cartesMain(int j) {
@@ -134,7 +134,7 @@ class InfoPlateau implements Cloneable{
 	boolean estFinal(){
 		return CartesMIA.nbCartes(plisJ[0] & plisJ[1]) == 52;
 	}
-	
+
 	@Override
 	public boolean equals(Object o){
 		if(getClass()!=o.getClass()){
@@ -181,7 +181,7 @@ class InfoPlateau implements Cloneable{
 	
 }
 
-class ConfigurationIA implements Cloneable{
+class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		long mainJ;
 		InfoPlateau info;
 		int joueur;
@@ -232,7 +232,7 @@ class ConfigurationIA implements Cloneable{
 		
 		public long getPossibleReponse(boolean estIA) {
 			if(estIA) {
-				return info.reponsePossible(carte,atout,mainJ);
+				return info.reponsePossible(carte, atout,mainJ);
 			} else {
 				return info.reponsePossible(carte, atout,info.cartesMain(joueur) | info.cartesInconnuesJ(mainJ, joueur));
 			}
@@ -260,7 +260,8 @@ class ConfigurationIA implements Cloneable{
 		
 		private boolean isGreater(int c1,int c2) {
 			boolean retour = false;
-			retour = c1 > c2 && (c2%13!=atout || c1%13==atout);
+			retour = retour || (c2/13 == c1/13) && (c1%13 > c2%13);// si de meme couleur
+			retour = retour || (c1/13 != c2/13) && (c2/13!=atout); // si de differentes couleur
 			return retour;
 		}
 		
@@ -273,6 +274,7 @@ class ConfigurationIA implements Cloneable{
 				}
 				joueur = (joueur+1)%2;
 				info.addPli(joueur, carte1);//temporaitement, supprimer en phase 1
+				info.addPli((joueur+1)%2, carte1);//temporaitement, supprimer en phase 1
 				this.carte = carte1;
 				break;
 			case 1 :
@@ -280,10 +282,17 @@ class ConfigurationIA implements Cloneable{
 				if(estIA) {
 					mainJ &= ~(1L<<carte1);
 				}
+				info.delPli(joueur, this.carte);//suppression de la carte placee temporairement en phase 0
+				info.delPli((joueur+1)%2, this.carte);//suppression de la carte placee temporairement en phase 0
+				
+				//System.err.print(TestsIA.iToS(this.carte)+" VS "+TestsIA.iToS(carte1)+" ");
 				if(isGreater(this.carte,carte1)) {
+					//System.out.print(TestsIA.iToS(this.carte));
 					joueur = (joueur+1)%2;
+				} else {
+					//System.out.print(TestsIA.iToS(carte1));
 				}
-				info.delPli((joueur+1)%2, this.carte);//suppression si besoin
+				//System.out.println(" gagne");
 				info.addPli(joueur, this.carte);
 				info.addPli(joueur, carte1);
 				this.carte = carte1;
@@ -292,7 +301,7 @@ class ConfigurationIA implements Cloneable{
 			case 3 :
 				addMain(joueur,carte1);
 				if(estIA) {
-					mainJ |= (1L<<(carte1 - 1));
+					mainJ |= (1L<<carte1);
 				}
 				info.updatePioche(carte1, carte2);
 				joueur = (joueur+1)%2;
@@ -306,7 +315,7 @@ class ConfigurationIA implements Cloneable{
 		}
 		
 		public boolean estFinal(){
-			return info.cartesMain()==0L && mainJ==0;
+			return info.cartesMain()==0L && mainJ==0L;
 		}
 		
 		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
@@ -326,12 +335,15 @@ class ConfigurationIA implements Cloneable{
 			long cartesCon = info.cartesMain((joueur + 1) % 2);
 			long cartesInc = info.cartesInconnuesJ(mainJ, (joueur + 1) % 2);
 			
-			for(int i=0;i<52;i++) {
-				if((cartesInc & (1L << i))!=0) {
-					retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+			if(CartesMIA.nbCartes(cartesInc)!=0) {
+				for(int i=0;i<52;i++) {
+					if((cartesInc & (1L << i))!=0) {
+						retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+					}
 				}
+				retour = retour * (11-CartesMIA.nbCartes(cartesCon)) / CartesMIA.nbCartes(cartesInc); 
 			}
-			retour = retour * (11-CartesMIA.nbCartes(cartesCon)) / CartesMIA.nbCartes(cartesInc); 
+			
 			
 			cartesCon = info.cartesMain((joueur + 1) % 2);
 			for(int i=0;i<52;i++) {
@@ -343,14 +355,19 @@ class ConfigurationIA implements Cloneable{
 		}
 		
 		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA EN PHASE 0
-		float heuristique() {
+		float heuristique(boolean estIA) {
 			float he = 0;
 			if(!this.estFinal()) {
 				he += esperanceMainJoueur();
 				he -= esperanceMainAdverse();
 			}
-			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2;
-			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2;
+			he += CartesMIA.nbCartes(info.cartesPlis(0)) / 2f;
+			he -= CartesMIA.nbCartes(info.cartesPlis(1)) / 2f;
+			
+			if(!estIA) {
+				he*=-1;
+			}
+			
 			return he;
 		}
 		
@@ -365,10 +382,10 @@ class ConfigurationIA implements Cloneable{
 				return false;
 			}
 			ConfigurationIA c = (ConfigurationIA) o;
-			return	c.mainJ==mainJ && 
+			return	(c.carte==carte || phase==1) && 
+					c.mainJ==mainJ && 
 					c.joueur==joueur && 
 					c.phase==phase && 
-					c.carte==carte && 
 					c.atout==atout &&
 					c.info.equals(info);
 		}
@@ -383,6 +400,11 @@ class ConfigurationIA implements Cloneable{
 		
 		@Override
 		public String toString() {
-			return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " " + info;
+			return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " | " + info;
+		}
+
+		@Override
+		public int compareTo(ConfigurationIA c) { // A REFAIRE
+			return 0;//(int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
 		}
 }
