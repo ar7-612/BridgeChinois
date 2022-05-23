@@ -21,7 +21,7 @@ public class IAMinMax extends IAbase {
 		return h;
 	}
 	
-	Deque<ConfigurationIA> trouverFilsV1(ConfigurationIA config){
+	Deque<ConfigurationIA> trouverFilsV01(ConfigurationIA config){
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
 		long ensemble2 = 0;
@@ -92,6 +92,85 @@ public class IAMinMax extends IAbase {
 		return retour;
 	}
 
+	int unDans(long ensemble) {
+		int taille = CartesMIA.nbCartes(ensemble);
+		if(taille==0) {
+			return -1;
+		}
+		int nb = r.nextInt(taille);
+		for(int i=0;i<52;i++) {
+			if((ensemble & (1L<<i))!=0L) {
+				if(nb==0) {
+					return i;
+				} else {
+					nb--;
+				}
+			}
+		}
+		return -1;
+	}
+	
+	Deque<ConfigurationIA> trouverFilsV1(ConfigurationIA config){
+		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
+		long ensemble1 = 0;
+		int cartePioche = -1;
+		
+		switch(config.getPhase()) {
+			case 0 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble1 = config.getPossibleDonne();
+				} else {
+					ensemble1 = config.getPossibleDonne();
+				}
+				break;
+			case 1 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble1 = config.getPossibleReponse();
+				} else {
+					ensemble1 = config.getPossibleReponse();
+				}
+				break;
+			case 2 : 
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble1 = config.getPossiblePioche();
+					cartePioche = config.carteIncMax();
+				} else {
+					ensemble1 = config.getPossiblePioche();
+					cartePioche = config.carteIncMin();
+				}
+				break;
+			case 3 :
+				if(config.getJoueur()==joueurIA-1) {
+					ensemble1 = config.getPossiblePioche();
+					cartePioche = unDans(config.getPossiblePiocheCachee());
+				} else {
+					ensemble1 = config.getPossiblePioche();
+					cartePioche = unDans(config.getPossiblePiocheCachee());
+				}
+				break;
+		}
+		
+		
+		for(int i=0;i<52;i++) {
+			if((ensemble1 & (1L<<i))!=0L) {
+				ConfigurationIA config2 = config.clone();
+				config2.update(i, cartePioche);
+				retour.addFirst(config2);
+			}
+		}
+		
+		//REFAIRE COMPARAISONS
+		//retour.sort(null);
+		
+		
+		
+		if(retour.isEmpty()) {
+			//System.err.println(" AhA ! "+config);
+		}
+		
+		return retour;
+	}
+	
 	Deque<ConfigurationIA> trouverFils(ConfigurationIA config){ //A faire
 		return trouverFilsV1(config);
 	}
@@ -130,6 +209,7 @@ public class IAMinMax extends IAbase {
 		while(it.hasNext()){
 			ConfigurationIA configF = it.next();
 			Float tmp = configurations.get(configF);
+			
 			if(tmp==null){
 				//printDebug1(debugHauteur);System.out.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()));
 				if(config.getJoueur()==configF.getJoueur()) {
@@ -137,9 +217,10 @@ public class IAMinMax extends IAbase {
 				} else {
 					tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur-1,debugHauteur+1);
 				}
-				//printDebug1(debugHauteur);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
 				configurations.put(configF, tmp);
+				//printDebug1(debugHauteur);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
 			}
+			
 			if(tmp > borneMax){// alpha/beta reduction
 				return infinie();//tmp;//A commenter/decommenter
 			} else {
@@ -156,9 +237,9 @@ public class IAMinMax extends IAbase {
 		int nbInc = retour = config.nbCartesInconnue();
 		//retour = config.nbCartesInconnue()!=0 ? 3 : 100;//(50 - config.nbCartesMain());
 		if(nbInc>10) {
-			retour = 3;
+			retour = 7;
 		} else if (nbInc>5) {
-			retour = 5;
+			retour = 7;
 		} else if (nbInc>0) {
 			retour = 7;
 		} else {
@@ -326,7 +407,7 @@ public class IAMinMax extends IAbase {
 	@Override
 	public int jouerCoup() { //A faire / finir
 		if(r==null) { // Initialisation
-			r=new Random();
+			r=new Random(6699);
 			configurations = new Hashtable<>();
 		} else {
 			configurations.clear();

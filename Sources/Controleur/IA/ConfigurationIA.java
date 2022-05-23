@@ -108,6 +108,7 @@ class InfoPlateau implements Cloneable{
 		}
 		return 1f - (2f * ((float)nbcGagnante) / ((float) nbc));
 	}
+
 	
 	public float esperanceMoy(int carte, int atout, int joueur , long infoCartes) {
 		float espSur;
@@ -323,6 +324,36 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		
 		public boolean estFinal(){
 			return info.cartesMain()==0L && mainJ==0L;
+		}
+		
+		int carteIncMax() {
+			int iMax = -1;
+			float eMax = Float.MIN_VALUE;
+			for(int i=0;i<52;i++) {
+				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
+					float e = info.esperance(i, atout, info.cartesInconnues(0L), true);
+					if(e >= eMax) {
+						eMax = e;
+						iMax = i;
+					}
+				}
+			}
+			return iMax;
+		}
+		
+		int carteIncMin() {
+			int iMin = -1;
+			float eMin = Float.MAX_VALUE;
+			for(int i=0;i<52;i++) {
+				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
+					float e = info.esperance(i, atout, info.cartesInconnues(0L), true);
+					if(e <= eMin) {
+						eMin = e;
+						iMin = i;
+					}
+				}
+			}
+			return iMin;
 		}
 		
 		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA

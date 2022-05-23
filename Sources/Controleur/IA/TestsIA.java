@@ -196,8 +196,6 @@ class TestsIA {
 		return configFin(atout,cartesJ1,connuesJ2);
 	}
 	
-	
-	
 	static ConfigurationIA config4() {
 		/* Attendu : 
 		 * Resultat : 
