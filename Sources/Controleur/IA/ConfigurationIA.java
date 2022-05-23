@@ -131,6 +131,8 @@ class InfoPlateau implements Cloneable{
 		return retour;
 	}
 	
+	
+	
 	boolean estFinal(){
 		return CartesMIA.nbCartes(plisJ[0] & plisJ[1]) == 52;
 	}
@@ -188,14 +190,16 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		int phase;
 		int carte;
 		int atout;
+		boolean estIA;
 		
-		public ConfigurationIA(long m, int j, int p,int c,int a){
+		public ConfigurationIA(long m, int j, int p,int c,int a,boolean estIA){
 			info = new InfoPlateau();
 			mainJ = m;
 			joueur = j;
 			phase = p;
 			carte = c;
 			atout = a;
+			this.estIA=estIA;
 		}
 		
 		void addMain (int joueur, int carte) {
@@ -222,7 +226,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			info.addPioche(numPioche, carte);
 		}
 		
-		public long getPossibleDonne(boolean estIA) {
+		public long getPossibleDonne() {
 			if(estIA) {
 				return mainJ;
 			} else {
@@ -230,7 +234,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			}
 		}
 		
-		public long getPossibleReponse(boolean estIA) {
+		public long getPossibleReponse() {
 			if(estIA) {
 				return info.reponsePossible(carte, atout,mainJ);
 			} else {
@@ -265,7 +269,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return retour;
 		}
 		
-		public void update(int carte1,int carte2,boolean estIA){
+		public void update(int carte1,int carte2){
 			switch(phase) {
 			case 0 :
 				delMain(joueur,carte1);
@@ -273,6 +277,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 					mainJ &= ~(1L<<carte1);
 				}
 				joueur = (joueur+1)%2;
+				estIA = !estIA;
 				info.addPli(joueur, carte1);//temporaitement, supprimer en phase 1
 				info.addPli((joueur+1)%2, carte1);//temporaitement, supprimer en phase 1
 				this.carte = carte1;
@@ -289,6 +294,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 				if(isGreater(this.carte,carte1)) {
 					//System.out.print(TestsIA.iToS(this.carte));
 					joueur = (joueur+1)%2;
+					estIA = !estIA;
 				} else {
 					//System.out.print(TestsIA.iToS(carte1));
 				}
@@ -305,6 +311,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 				}
 				info.updatePioche(carte1, carte2);
 				joueur = (joueur+1)%2;
+				estIA = !estIA;
 				this.carte = carte1;
 			}
 			if(info.cartesPioche()==0) {
@@ -355,20 +362,29 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		}
 		
 		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA EN PHASE 0
-		float heuristique(boolean estIA) {
+		float heuristique() {
 			float he = 0;
 			if(!this.estFinal()) {
 				he += esperanceMainJoueur();
 				he -= esperanceMainAdverse();
 			}
-			he += CartesMIA.nbCartes(info.cartesPlis(0)) / 2f;
-			he -= CartesMIA.nbCartes(info.cartesPlis(1)) / 2f;
 			
 			if(!estIA) {
 				he*=-1;
 			}
 			
+			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
+			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
+			
 			return he;
+		}
+		
+		int nbCartesInconnue() {
+			return CartesMIA.nbCartes(info.cartesInconnues(mainJ));
+		}
+		
+		int nbCartesMain() {
+			return CartesMIA.nbCartes(mainJ);
 		}
 		
 		@Override
@@ -387,24 +403,25 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 					c.joueur==joueur && 
 					c.phase==phase && 
 					c.atout==atout &&
+					c.estIA==estIA &&
 					c.info.equals(info);
 		}
 
 		@Override
 		public ConfigurationIA clone() {
 			ConfigurationIA c;
-			c = new ConfigurationIA(mainJ,joueur,phase,carte,atout);
+			c = new ConfigurationIA(mainJ,joueur,phase,carte,atout,estIA);
 			c.info = info.clone();
 			return c;
 		}
 		
 		@Override
 		public String toString() {
-			return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " | " + info;
+			return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " " + estIA +  " | " + info;
 		}
 
 		@Override
 		public int compareTo(ConfigurationIA c) { // A REFAIRE
-			return 0;//(int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
+			return (int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
 		}
 }

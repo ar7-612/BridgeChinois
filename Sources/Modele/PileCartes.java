@@ -37,6 +37,10 @@ public class PileCartes implements Cloneable {
         Iterator<Carte> it = pile.iterator();
         return it;
     }
+    
+    public boolean debugContien(Carte c) {
+    	return pile.contains(c);
+    }
 
     public void retirer(Carte c) {
         pile.remove(c);

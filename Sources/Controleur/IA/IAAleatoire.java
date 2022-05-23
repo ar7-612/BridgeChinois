@@ -57,7 +57,7 @@ public class IAAleatoire extends IAbase {
 	@Override
 	public int jouerCoup() {
 		if (r == null) {
-			r = new Random(142);
+			r = new Random(2142);
 		}
 		
 		int retour=-1;

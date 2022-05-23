@@ -26,6 +26,10 @@ public class Manche {
         j2.main = new Main();
         j1.Pli = new PileCartes();
         j2.Pli = new PileCartes();
+        j1.cartesPiochees = new PileCartes();
+        j2.cartesPiochees = new PileCartes();
+        j1.tabcouleur = new boolean[4];
+        j2.tabcouleur = new boolean[4];
         pile1 = new PileCartes();
         pile2 = new PileCartes();
         pile3 = new PileCartes();
