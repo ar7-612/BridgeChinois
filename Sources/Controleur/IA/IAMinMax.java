@@ -192,7 +192,7 @@ public class IAMinMax extends IAbase {
 				//printDebug1(100);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
 			}
 			
-			System.err.println("Carte : "+TestsIA.iToS(configF.getCarte())  + " Valeur : " + tmp);
+			//System.err.println("Carte : "+TestsIA.iToS(configF.getCarte())  + " Valeur : " + tmp);
 			if(tmp > max){
 				max = tmp;
 				carteAJouer = configF.getCarte();
@@ -240,14 +240,11 @@ public class IAMinMax extends IAbase {
 		}
 		if(trouverMain()==0) {
 			while(true) {
-				System.err.println("okay");
+				//System.err.println("okay");
 			}
 		}
 		//System.err.println(""trouverMain());
 		config = new ConfigurationIA(trouverMain(),joueurIA-1,jeu.phasetourterm(),carte,jeu.atout()-1,true);
-		
-		config.delMain(0, carte);
-		config.delMain(1, carte);
 		
 		for(int i=0;i<4;i++) {
 			if(joueur1.getTabCouleur()[i]) {
@@ -288,11 +285,12 @@ public class IAMinMax extends IAbase {
 				config.addPioche(jeu.taillePile(i+1)-1, carteToInt(jeu.CartevisiblePile()[i]));
 			}
 		}
-		System.out.println("Debut : "+config);
-		//System.out.println("taille main J1 : ")
-		while(joueur1.main().taille()==joueur2.main().taille() && jeu.phasetourterm()==1) {
-			//ici
-		}
+		
+		config.delMain(0, carte);
+		config.delMain(1, carte);
+		
+		//System.out.println("Debut : "+config);
+		
 		return config;
 	}
 	

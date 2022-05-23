@@ -42,7 +42,12 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         // while (!j.finpartie && s.hasNextLine()) {
         while (!j.finpartie) {
             try {
-                if (j.estIA(j.quiJoue()) && !j.manchefini()) {
+                //
+            	if (j.estIA(j.quiJoue()) && j.manchefini()) {
+            		entier = 1;
+            	} else
+            	if (j.estIA(j.quiJoue()) && !j.manchefini()) {
+            		
                 	timer = System.currentTimeMillis();
                     if (entier == -1 || entier == -2) {
                         // On change rien
@@ -100,7 +105,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     
     @Override
     public void Configuration() {
-        j.ModeV("m", 4);
+        j.ModeV("m", 10);
 
         j.ModeJoueur(1, "easy");
 
