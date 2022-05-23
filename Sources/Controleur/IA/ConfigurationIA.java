@@ -310,7 +310,9 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 				if(estIA) {
 					mainJ |= (1L<<carte1);
 				}
-				info.updatePioche(carte1, carte2);
+				if(carte2!=-1) {
+					info.updatePioche(carte1, carte2);
+				}
 				joueur = (joueur+1)%2;
 				estIA = !estIA;
 				this.carte = carte1;
@@ -324,6 +326,32 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		
 		public boolean estFinal(){
 			return info.cartesMain()==0L && mainJ==0L;
+		}
+		
+		int carteIncMoy() {
+			float[] eTab = new float[52];
+			float eMoy = 0;
+			for(int i=0;i<52;i++) {
+				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
+					eTab[i] = info.esperanceMoy(i, atout, joueur, 0L);
+					eMoy += eTab[i];
+				}
+			}
+			eMoy = eMoy / ((float) CartesMIA.nbCartes(info.cartesInconnues(mainJ)));
+			
+			int iMin = -1;
+			float eMin = Float.MIN_VALUE;
+			
+			for(int i=0;i<52;i++) {
+				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
+					if(Math.abs(eTab[i] - eMoy) <= eMin) {
+						iMin = i;
+						eMin = Math.abs(eTab[i] - eMoy);
+					}
+				}
+			}
+			
+			return iMin;
 		}
 		
 		int carteIncMax() {

@@ -206,20 +206,20 @@ class TestsIA {
 		
 		
 		
-		long mainJoueur =49153L;
-		long connueJ0	=49153L;
-		long connueJ1	=1337006139375616L;
-		long plisJ0		=2261607215863742L;
-		long plisJ1		=904986272081984L;
+		long mainJoueur =1069824834864128L;
+		long connueJ0	=427710027465728L;
+		long connueJ1	=1126449671184961L;
+		long plisJ0		=19961266049328L;
+		long plisJ1		=379634845710L;
 		//long nconnueJ0	=4503599560261632L;
 		//long nconnueJ1	=0;
-		long pioche0	=0;
+		long pioche0	=128;
 		long pioche1	=0;
-		long pioche2	=0;
+		long pioche2	=32768;
 		long pioche3	=0;
 		long pioche4	=0;
 		
-		config = new ConfigurationIA(mainJoueur,0,1,47,0,true);
+		config = new ConfigurationIA(mainJoueur,0,0,-1,-1,true);
 		
 		for(int i=0;i<52;i++) {
 			if((connueJ0 & (1L << i))!=0) {

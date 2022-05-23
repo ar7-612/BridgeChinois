@@ -142,14 +142,15 @@ public class IAMinMax extends IAbase {
 			case 3 :
 				if(config.getJoueur()==joueurIA-1) {
 					ensemble1 = config.getPossiblePioche();
-					cartePioche = unDans(config.getPossiblePiocheCachee());
+					//cartePioche = unDans(config.getPossiblePiocheCachee());
+					cartePioche = config.carteIncMoy();
 				} else {
 					ensemble1 = config.getPossiblePioche();
-					cartePioche = unDans(config.getPossiblePiocheCachee());
+					//cartePioche = unDans(config.getPossiblePiocheCachee());
+					cartePioche = config.carteIncMoy();
 				}
 				break;
 		}
-		
 		
 		for(int i=0;i<52;i++) {
 			if((ensemble1 & (1L<<i))!=0L) {
@@ -416,6 +417,7 @@ public class IAMinMax extends IAbase {
 		nbConfigs=0;
 		//Debut : 49153 0 1 47 0 true | 49153 1337006139375616 | 2261607215863742 904986272081984 | 4503599560261632 0 | 0 0 0 0 0
 		int idCarte = minMaxInitial(trouverConfiguration());
+		//int idCarte = minMaxInitial(TestsIA.config4());
 		int retour=trouverIndice(idCarte);
 		
 		System.err.println("Carte : "+TestsIA.iToS(idCarte)+", indice : "+retour);

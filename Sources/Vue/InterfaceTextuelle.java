@@ -31,7 +31,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-        long delayIA = 2000;// en ms
+        long delayIA = 3000;// en ms
         long timer;
 
         c.fixerInterfaceUtilisateur(this);
@@ -104,7 +104,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     //Pour test IA
     @Override
     public void Configuration() {
-        j.ModeV("m", 100);
+        j.ModeV("m", 10);
 
         j.ModeJoueur(1, "easy");
 
