@@ -24,7 +24,11 @@ public class PileCartes implements Cloneable {
     public void ajouterdeb(Carte c) {
         pile.add(0, c);
     }
-
+    
+    public int taille() {
+    	return pile.size();
+    }
+    
     public boolean vide() {
         return pile.isEmpty();
     }
@@ -32,6 +36,10 @@ public class PileCartes implements Cloneable {
     public Iterator<Carte> iterateur() {
         Iterator<Carte> it = pile.iterator();
         return it;
+    }
+    
+    public boolean debugContien(Carte c) {
+    	return pile.contains(c);
     }
 
     public void retirer(Carte c) {
@@ -67,7 +75,6 @@ public class PileCartes implements Cloneable {
 
     @SuppressWarnings("unchecked")
     @Override
-
     public PileCartes clone() {
         PileCartes p = new PileCartes();
         p.pile = (ArrayList<Carte>) pile.clone();
@@ -76,7 +83,7 @@ public class PileCartes implements Cloneable {
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random();
+        Random r = new Random(500000018);
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

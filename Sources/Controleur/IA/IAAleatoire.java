@@ -1,10 +1,11 @@
-package Controleur;
+package Controleur.IA;
 
 import java.util.Random;
 
+import Controleur.IAbase;
 import Modele.Carte;
 
-class IAAleatoire extends IA {
+public class IAAleatoire extends IAbase {
 
 	Random r;
 
@@ -56,7 +57,7 @@ class IAAleatoire extends IA {
 	@Override
 	public int jouerCoup() {
 		if (r == null) {
-			r = new Random();
+			r = new Random(2142);
 		}
 		
 		int retour=-1;

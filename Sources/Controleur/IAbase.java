@@ -1,16 +1,18 @@
 package Controleur;
 
 import Modele.Partie;
+import Controleur.IA.IAAleatoire;
+import Controleur.IA.IAMinMax;
 import Modele.Joueur;
 
 
-public abstract class IA {
-	Partie jeu;
-	Joueur joueur1;
-	Joueur joueur2;
-	int joueurIA;
-	public static IA creerIA (Partie j,Joueur j1,Joueur j2,int numJ, String mode){
-		IA retour=null;
+public abstract class IAbase {
+	protected Partie jeu;
+	protected Joueur joueur1;
+	protected Joueur joueur2;
+	protected int joueurIA;
+	public static IAbase creerIA (Partie j,Joueur j1,Joueur j2,int numJ, String mode){
+		IAbase retour=null;
 		if(mode.equals("alea")) {
 			retour = new IAAleatoire();
 		} else if(mode.equals("easy")) {
