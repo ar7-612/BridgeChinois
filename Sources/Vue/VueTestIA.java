@@ -9,14 +9,21 @@ class VueTestIA implements Observateur {
     public VueTestIA(Partie j) {
         j.ajouteObservateur(this);
         this.j = j;
-
+        debutPartie = System.currentTimeMillis();
+        debutManche = System.currentTimeMillis();
+        debutCoup =  System.currentTimeMillis();
+        maxDelay = 0;
     }
     
     long debutPartie;
     long debutManche;
+    long debutCoup;
+    long maxDelay;
 
     @Override
     public void metAJour() {
+    	long delay = System.currentTimeMillis()-debutCoup;
+    	maxDelay = Math.max(maxDelay, delay);
     	System.out.print("|");
         if (j.manchefini()) {
         	System.out.println();
@@ -25,17 +32,22 @@ class VueTestIA implements Observateur {
         if (j.partifini()) {
            	afficheGagnantPartie();
         }
+        debutCoup = System.currentTimeMillis();
     }
 
     private void afficheGagnantManche() {
-        System.out.print(j.nbmanche() - 1 +"("+(System.currentTimeMillis()-debutManche)+") = ");
+    	long delay = System.currentTimeMillis()-debutManche;
+        System.out.print(j.nbmanche() - 1 + "  ");
         if (j.quiGagneManche() != 0) {
             System.out.print("joueur " + j.quiGagneManche() + " gagne");
         	System.out.print(" Scores : "+j.scoremanchej1()+" "+j.scoremanchej2());
         } else {
             System.out.print("egalite");
         }
+        System.out.print(" "+delay + " " + maxDelay);
+        maxDelay = 0;
         debutManche = System.currentTimeMillis();
+        debutCoup =  System.currentTimeMillis();
         System.out.println();
     }
 

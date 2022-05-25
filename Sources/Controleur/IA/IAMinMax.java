@@ -10,11 +10,24 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+//import javax.management.RuntimeErrorException;
+
 import Controleur.IAbase;
 import Modele.Carte;
 import Modele.Main;
 
 //joueur : 0 ou 1
+
+class TimeCheckException extends Exception {
+	/**
+	 * utile pour sortir de la recurtion si le temp d'attente est trop important
+	 */
+	private static final long serialVersionUID = 1L; // a verifier
+
+	public TimeCheckException(String m) {
+		super(m);
+	}
+}
 
 public class IAMinMax extends IAbase {
 	
@@ -182,7 +195,8 @@ public class IAMinMax extends IAbase {
 		return trouverFilsV1_0(config);
 	}
 	
-	float minMax(ConfigurationIA config, float borneMax, float borneMaxAdv, int profondeur,int debugHauteur){
+	float minMax(ConfigurationIA config, float borneMax, float borneMaxAdv, int profondeur,int debugHauteur) throws TimeCheckException{
+		checkTime();
 		if(config.estFinal()) {
 			return heuristique(config);
 		}
@@ -230,7 +244,8 @@ public class IAMinMax extends IAbase {
 		configurations.put(config, cMax);
 		return max;
 	}
-	int minMaxInitial(ConfigurationIA config, int profondeur){
+	int minMaxInitial(ConfigurationIA config, int profondeur) throws TimeCheckException{
+		checkTime();
 		float max = -infinie();
 		float borneMax = infinie();
 		float borneMaxAdv = infinie();
@@ -401,8 +416,21 @@ public class IAMinMax extends IAbase {
 		return retour;
 	}
 	
+	/*
+	 * 
+	 */
+	
 	Hashtable<ConfigurationIA,ConfigurationIA> configurations;
 	Random r;
+	
+	long startTime;
+	long delayVise = 2000;// en ms
+	long delayMax = 5000;// en ms
+	void checkTime() throws TimeCheckException {
+		if(System.currentTimeMillis() - startTime > delayMax) {
+			throw new TimeCheckException("trop long");
+		}
+	}
 	
 	@Override
 	public int jouerCoup() {
@@ -414,21 +442,27 @@ public class IAMinMax extends IAbase {
 			configurations = new Hashtable<>();
 		}
 		
-		long delay = 1000;// en ms
-        long time;
-        
+		
+		
         ConfigurationIA config = trouverConfiguration();
         int idCarte = -10;
         int retour = -10;
         
-        time = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         int profondeur = 3;
 		
-        while(System.currentTimeMillis() - time < delay) {
-    		idCarte = minMaxInitial(config,profondeur);
-    		profondeur++;
+        try {
+        	while(System.currentTimeMillis() - startTime < delayVise) {
+        		idCarte = minMaxInitial(config,profondeur);
+        		profondeur++;
+            }
+        } catch(TimeCheckException e) {
+        	if(idCarte==-10) {
+        		throw new RuntimeException("l'IA n'as pas eu le temps de trouver un coup");
+        	}
         }
-       // System.err.print(System.currentTimeMillis() - time);
+        
+       System.err.print(profondeur);
         
         retour=trouverIndice(idCarte);
 		

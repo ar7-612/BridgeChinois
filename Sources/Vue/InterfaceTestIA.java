@@ -97,7 +97,7 @@ public class InterfaceTestIA implements InterfaceUtilisateur {
         System.out.print("nombre manches : ");
         nbManches = s.nextInt();
         */
-    	for(int i=0;i<83;i++) {
+    	for(int i=0;i<82;i++) {
     		System.out.print("|");
     	}
     	System.out.println("|");
