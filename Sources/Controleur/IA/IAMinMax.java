@@ -1,9 +1,13 @@
 package Controleur.IA;
 
 import java.util.Deque;
-import java.util.ArrayDeque;
+//import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+//import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import Controleur.IAbase;
@@ -14,18 +18,56 @@ import Modele.Main;
 
 public class IAMinMax extends IAbase {
 	
-	//FONCTIONNE UNIQUEMENT SI CONFIG VALIDE
+	/* 
+	 * fonctions utiles
+	 */
+	
+	void printDebug1(int h) {
+		for(int i=0;i<h;i++) {
+			System.out.print("|");
+		}
+	}
+	int unDans(long ensemble) {
+		int taille = CartesMIA.nbCartes(ensemble);
+		if(taille==0) {
+			return -1;
+		}
+		int nb = r.nextInt(taille);
+		for(int i=0;i<52;i++) {
+			if((ensemble & (1L<<i))!=0L) {
+				if(nb==0) {
+					return i;
+				} else {
+					nb--;
+				}
+			}
+		}
+		return -1;
+	}
+	float infinie(){
+		// doit etre superieur a l'heuristique max
+		return Float.MAX_VALUE;
+	}
+	
+	/* 
+	 * fonctions minMax
+	 */
+	
 	float heuristique(ConfigurationIA config){
-		float h = config.heuristique();
+		float h;
+		if(config.nbCartesInconnue()==0) {
+			h = config.heuristiquePiocheVide();
+		} else {
+			h = config.heuristiquePartieEnCour1();
+		}
 		//System.out.println("Heutistique : "+h);
 		return h;
 	}
-	
-	Deque<ConfigurationIA> trouverFilsV01(ConfigurationIA config){
+
+	Deque<ConfigurationIA> trouverFilsV0_1(ConfigurationIA config){ // ne pas utilisee
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
 		long ensemble2 = 0;
-		
 		switch(config.getPhase()) {
 			case 0 :
 				if(config.getJoueur()==joueurIA-1) {
@@ -60,8 +102,6 @@ public class IAMinMax extends IAbase {
 				}
 				break;
 		}
-		
-		
 		for(int i=0;i<52;i++) {
 			if((ensemble1 & (1L<<i))!=0L) {
 				if(ensemble2==0L) {
@@ -79,38 +119,14 @@ public class IAMinMax extends IAbase {
 				}
 			}
 		}
-		
 		//REFAIRE COMPARAISONS
 		//retour.sort(null);
-		
-		
-		
 		if(retour.isEmpty()) {
 			//System.err.println(" AhA ! "+config);
 		}
-		
 		return retour;
 	}
-
-	int unDans(long ensemble) {
-		int taille = CartesMIA.nbCartes(ensemble);
-		if(taille==0) {
-			return -1;
-		}
-		int nb = r.nextInt(taille);
-		for(int i=0;i<52;i++) {
-			if((ensemble & (1L<<i))!=0L) {
-				if(nb==0) {
-					return i;
-				} else {
-					nb--;
-				}
-			}
-		}
-		return -1;
-	}
-	
-	Deque<ConfigurationIA> trouverFilsV1(ConfigurationIA config){
+	Deque<ConfigurationIA> trouverFilsV1_0(ConfigurationIA config){
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
 		int cartePioche = -1;
@@ -133,10 +149,12 @@ public class IAMinMax extends IAbase {
 			case 2 : 
 				if(config.getJoueur()==joueurIA-1) {
 					ensemble1 = config.getPossiblePioche();
-					cartePioche = config.carteIncMax();
+					//cartePioche = config.carteIncMax();
+					cartePioche = config.carteIncMoy();
 				} else {
 					ensemble1 = config.getPossiblePioche();
-					cartePioche = config.carteIncMin();
+					//cartePioche = config.carteIncMin();
+					cartePioche = config.carteIncMoy();
 				}
 				break;
 			case 3 :
@@ -151,7 +169,6 @@ public class IAMinMax extends IAbase {
 				}
 				break;
 		}
-		
 		for(int i=0;i<52;i++) {
 			if((ensemble1 & (1L<<i))!=0L) {
 				ConfigurationIA config2 = config.clone();
@@ -159,39 +176,13 @@ public class IAMinMax extends IAbase {
 				retour.addFirst(config2);
 			}
 		}
-		
-		//REFAIRE COMPARAISONS
-		//retour.sort(null);
-		
-		
-		
-		if(retour.isEmpty()) {
-			//System.err.println(" AhA ! "+config);
-		}
-		
 		return retour;
 	}
-	
 	Deque<ConfigurationIA> trouverFils(ConfigurationIA config){ //A faire
-		return trouverFilsV1(config);
+		return trouverFilsV1_0(config);
 	}
-	
-	float infinie(){
-		// doit etre superieur a l'heuristique
-		return Float.MAX_VALUE;
-	}
-	
-	String prec;
-	
-	long nbConfigs;
 	
 	float minMax(ConfigurationIA config, float borneMax, float borneMaxAdv, int profondeur,int debugHauteur){
-
-	//debug debut
-		//System.err.println(bornesMax[0] + " " + bornesMax[1] + " ");
-		nbConfigs++;
-	//debug fin
-		
 		if(config.estFinal()) {
 			return heuristique(config);
 		}
@@ -203,42 +194,99 @@ public class IAMinMax extends IAbase {
 			}
 			return heuristique(config);
 		}
+		float max = -infinie();
+		
 		Deque<ConfigurationIA> fils = trouverFils(config);
+		ConfigurationIA cMax = configurations.get(config);
+		if(cMax!=null) {
+			fils.addFirst(cMax);
+		}
+		cMax = fils.getFirst();
 		Iterator<ConfigurationIA> it = fils.iterator();
 		
-		float max = -infinie();//-borneMaxAdv;
 		while(it.hasNext()){
 			ConfigurationIA configF = it.next();
-			Float tmp = configurations.get(configF);
+			Float tmp;
 			
-			if(tmp==null){
-				//printDebug1(debugHauteur);System.out.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()));
-				if(config.getJoueur()==configF.getJoueur()) {
-					tmp =  minMax(configF,borneMax,borneMaxAdv,profondeur-1,debugHauteur+1);
-				} else {
-					tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur-1,debugHauteur+1);
-				}
-				configurations.put(configF, tmp);
-				//printDebug1(debugHauteur);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
+			if(config.getJoueur()==configF.getJoueur()) {
+				tmp =  minMax(configF,borneMax,borneMaxAdv,profondeur-1,debugHauteur+1);
+			} else {
+				tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur-1,debugHauteur+1);
 			}
 			
 			if(tmp > borneMax){// alpha/beta reduction
-				return infinie();//tmp;//A commenter/decommenter
+				max = infinie();
+				cMax = configF;
+				break;
 			} else {
 				//System.out.println();
 			}
 			max = Math.max(max,tmp);
 			borneMaxAdv = -max;
 		}
+		if(cMax==null) {
+			System.out.println("okay");
+		}
+		configurations.put(config, cMax);
 		return max;
 	}
+	int minMaxInitial(ConfigurationIA config, int profondeur){
+		float max = -infinie();
+		float borneMax = infinie();
+		float borneMaxAdv = infinie();
+		List<Couple<Integer,Float>> tableCartes = new ArrayList<>();
+		
+		Deque<ConfigurationIA> fils = trouverFils(config);
+		ConfigurationIA cMax = configurations.get(config);
+		if(cMax!=null) {
+			fils.addFirst(cMax);
+		}
+		cMax = fils.getFirst();
+		Iterator<ConfigurationIA> it = fils.iterator();
+		
+		while(it.hasNext()){
+			ConfigurationIA configF = it.next();
+			Float tmp;
+			
+			if(config.getJoueur()==configF.getJoueur()) {
+				tmp = minMax(configF,borneMax,borneMaxAdv,profondeur,1);
+			} else {
+				tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur,1);
+			}
+
+			//System.err.println("Carte : "+TestsIA.iToS(configF.getCarte())  + " Valeur : " + tmp);
+			if(tmp != -infinie()) {
+				tableCartes.add(new Couple<>(configF.getCarte(),tmp));
+			}
+			if(tmp>max) {
+				cMax = configF;
+				max = tmp;
+			}
+			borneMaxAdv = -max;
+		}
+		configurations.put(config,cMax);
+		
+		int retour = -10;
+		tableCartes.sort(null);
+		if(tableCartes.size()==0) {
+			System.err.println("Erreur critique : l'IA ne trouve pas de coups");
+		} else {
+			retour = tableCartes.get(tableCartes.size() - 1).v;
+		}
+		
+		return retour;
+	}
+	
+	/*
+	 * fonctions d'initialisation
+	 */
 	
 	int trouverProfondeur(ConfigurationIA config){
 		int retour = 0;
 		int nbInc = retour = config.nbCartesInconnue();
 		//retour = config.nbCartesInconnue()!=0 ? 3 : 100;//(50 - config.nbCartesMain());
 		if(nbInc>10) {
-			retour = 7;
+			retour = 5;
 		} else if (nbInc>5) {
 			retour = 7;
 		} else if (nbInc>0) {
@@ -248,52 +296,6 @@ public class IAMinMax extends IAbase {
 		}
 		return retour;
 	}
-	
-	int minMaxInitial(ConfigurationIA config){
-		int carteAJouer = -1;
-		int profondeur  = trouverProfondeur(config);
-		
-		Deque<ConfigurationIA> fils = trouverFils(config);
-		Iterator<ConfigurationIA> it = fils.iterator();
-		
-		float borneMax = infinie();
-		float borneMaxAdv = infinie();
-		
-		float max = -infinie();
-		while(it.hasNext()){
-			ConfigurationIA configF = it.next();
-			Float tmp = configurations.get(configF);
-			if(tmp==null){
-				//printDebug1(100);System.out.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()));
-				if(config.getJoueur()==configF.getJoueur()) {
-					tmp = minMax(configF,borneMax,borneMaxAdv,profondeur,1);
-				} else {
-					tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur,1);
-				}
-				configurations.put(configF, tmp);
-				//printDebug1(100);System.err.println("Joueur "+config.getJoueur()+" joue "+TestsIA.iToS(configF.getCarte()) + " resultat : "+tmp);
-			}
-			
-			//System.err.println("Carte : "+TestsIA.iToS(configF.getCarte())  + " Valeur : " + tmp);
-			if(tmp > max){
-				max = tmp;
-				carteAJouer = configF.getCarte();
-				//System.err.print(" Superieur !");
-			}
-			//System.err.println();
-			max = Math.max(max,tmp);
-			borneMaxAdv = -max;
-		}
-		//System.err.println(max);
-		return carteAJouer;
-	}
-	
-	void printDebug1(int h) {
-		for(int i=0;i<h;i++) {
-			System.out.print("|");
-		}
-	}
-	
 	long trouverMain() {
 		long retour = 0;
 		Main m = (joueurIA==1 ? joueur1 : joueur2).main();
@@ -303,11 +305,9 @@ public class IAMinMax extends IAbase {
 		}
 		return retour;
 	}
-	
 	int carteToInt (Carte c) {
 		return c.valeur()-2 + (c.couleur()-1) * 13;
 	}
-
 	ConfigurationIA trouverConfiguration() { //A faire ?
 		ConfigurationIA config = null;
 		//debugAfficherCartes(trouverMain());
@@ -375,7 +375,6 @@ public class IAMinMax extends IAbase {
 		
 		return config;
 	}
-	
 	int trouverIndice(int idCarte) {
 		int retour = -10;
 		switch(jeu.phasetourterm()) {
@@ -401,26 +400,39 @@ public class IAMinMax extends IAbase {
 		}
 		return retour;
 	}
-
-	Hashtable<ConfigurationIA,Float> configurations;
+	
+	Hashtable<ConfigurationIA,ConfigurationIA> configurations;
 	Random r;
 	
 	@Override
-	public int jouerCoup() { //A faire / finir
+	public int jouerCoup() {
+		
 		if(r==null) { // Initialisation
 			r=new Random(6699);
 			configurations = new Hashtable<>();
 		} else {
-			configurations.clear();
+			configurations = new Hashtable<>();
 		}
 		
-		nbConfigs=0;
-		//Debut : 49153 0 1 47 0 true | 49153 1337006139375616 | 2261607215863742 904986272081984 | 4503599560261632 0 | 0 0 0 0 0
-		int idCarte = minMaxInitial(trouverConfiguration());
-		//int idCarte = minMaxInitial(TestsIA.config4());
-		int retour=trouverIndice(idCarte);
+		long delay = 1000;// en ms
+        long time;
+        
+        ConfigurationIA config = trouverConfiguration();
+        int idCarte = -10;
+        int retour = -10;
+        
+        time = System.currentTimeMillis();
+        int profondeur = 3;
 		
-		System.err.println("Carte : "+TestsIA.iToS(idCarte)+", indice : "+retour);
+        while(System.currentTimeMillis() - time < delay) {
+    		idCarte = minMaxInitial(config,profondeur);
+    		profondeur++;
+        }
+       // System.err.print(System.currentTimeMillis() - time);
+        
+        retour=trouverIndice(idCarte);
+		
+		//System.err.println("Carte : "+TestsIA.iToS(idCarte)+", indice : "+retour);
 		return retour;
 	}
 }

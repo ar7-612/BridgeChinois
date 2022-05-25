@@ -113,7 +113,8 @@ class InfoPlateau implements Cloneable{
 	public float esperanceMoy(int carte, int atout, int joueur , long infoCartes) {
 		float espSur;
 		float espInc = 0;
-		long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
+		//long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
+		long cartesInc = cartesInconnues(infoCartes);
 		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesMIA.mCouleur(carte/13)) != 0;
 		espSur = esperance(carte,atout,mainsJ[(joueur+1)%2],!aCouleur);
 		
@@ -402,12 +403,17 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			long cartesInc = info.cartesInconnuesJ(mainJ, (joueur + 1) % 2);
 			
 			if(CartesMIA.nbCartes(cartesInc)!=0) {
+				int tmp = 0;
 				for(int i=0;i<52;i++) {
 					if((cartesInc & (1L << i))!=0) {
 						retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+						tmp++;
 					}
 				}
-				retour = retour * (11-CartesMIA.nbCartes(cartesCon)) / CartesMIA.nbCartes(cartesInc); 
+				retour = retour * (11f-CartesMIA.nbCartes(cartesCon)) / CartesMIA.nbCartes(cartesInc);
+				if(tmp != CartesMIA.nbCartes(cartesInc)) {
+					System.out.println("Hum");
+				}
 			}
 			
 			
@@ -420,8 +426,24 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return retour;
 		}
 		
-		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA EN PHASE 0
-		float heuristique() {
+		float heuristiquePiocheVide() {
+			float he = 0;
+			if(!this.estFinal()) {
+				he += esperanceMainJoueur();
+				he -= esperanceMainAdverse();
+			}
+			
+			if(!estIA) {
+				he*=-1;
+			}
+			
+			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
+			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
+			
+			return he;
+		}
+		
+		float heuristiquePartieEnCour1() {
 			float he = 0;
 			if(!this.estFinal()) {
 				he += esperanceMainJoueur();
@@ -481,6 +503,6 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 
 		@Override
 		public int compareTo(ConfigurationIA c) { // A REFAIRE
-			return (int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
+			return 0;//(int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
 		}
 }

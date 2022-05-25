@@ -31,7 +31,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-        long delayIA = 3000;// en ms
+        long delayIA = 5000;// en ms
         long timer;
 
         c.fixerInterfaceUtilisateur(this);
@@ -42,10 +42,6 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         // while (!j.finpartie && s.hasNextLine()) {
         while (!j.finpartie) {
             try {
-                
-            	//if (j.estIA(j.quiJoue()) && j.manchefini()) {
-            	//	entier = 1;
-            	//} else
             	if (j.estIA(j.quiJoue()) && !j.manchefini()) {
             		
                 	timer = System.currentTimeMillis();
@@ -101,17 +97,6 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         }
     }
     
-    //Pour test IA
-    @Override
-    public void Configuration() {
-        j.ModeV("m", 10);
-
-        j.ModeJoueur(1, "easy");
-
-        j.ModeJoueur(2, "non");
-    }
-    
-    /*
     @Override
     public void Configuration() {
         System.out.println(
@@ -153,5 +138,4 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         }
         j.ModeJoueur(2, typeJ2);
     }
-	*/
 }
