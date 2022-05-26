@@ -130,6 +130,7 @@ public class Manche implements Serializable{
             perdant = tours[nbtour].receveur;
             cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur - 1);
         }
+        ajoutepli();
                     tours[nbtour].fixgagnant(gagnant);
                     if(nbtour>15 && nbtour< 25){
                         donneur =  tours[nbtour].gagnant;
@@ -139,7 +140,6 @@ public class Manche implements Serializable{
                         nbtour++;nouvtour();
                     }
 
-        ajoutepli();
     }
 
     public void cochercouleur(int joueur, int couleur) {
