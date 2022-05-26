@@ -28,6 +28,10 @@ public class Manche implements Serializable{
         j2.main = new Main();
         j1.Pli = new PileCartes();
         j2.Pli = new PileCartes();
+        j1.cartesPiochees = new PileCartes();
+        j2.cartesPiochees = new PileCartes();
+        j1.tabcouleur = new boolean[4];
+        j2.tabcouleur = new boolean[4];
         pile1 = new PileCartes();
         pile2 = new PileCartes();
         pile3 = new PileCartes();
@@ -451,6 +455,25 @@ public class Manche implements Serializable{
 
     }
 
+    public int taillePile(int arg) {
+    	switch (arg) {
+        case 1:
+            return pile1.taille();
+        case 2:
+            return pile2.taille();
+        case 3:
+            return pile3.taille();
+        case 4:
+            return pile4.taille();
+        case 5:
+            return pile5.taille();
+        case 6:
+            return pile6.taille();
+        default:
+            return 0;
+    	}
+    }
+    
     public Boolean toutelespilesontvide() {
         return pile1.vide() && pile2.vide() && pile3.vide() && pile4.vide() && pile5.vide() && pile6.vide();
     }
