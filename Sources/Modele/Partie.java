@@ -1,12 +1,14 @@
 package Modele;
 
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import Patterns.Observable;
 
 import Controleur.IA;
 
-public class Partie extends Observable {
+public class Partie extends Observable implements Serializable{
     private Historique<Coup> histo;
 
     ArrayList<Manche> Manches;
@@ -22,6 +24,7 @@ public class Partie extends Observable {
     boolean J2EstIA;
     IA joueur1IA;
     IA joueur2IA;
+    Boolean pause;
 
     public Partie() {
         j1 = new Joueur();
@@ -32,6 +35,7 @@ public class Partie extends Observable {
         phasetour = 0;
         nbmanche = 1;
         score1 = 0;
+        pause=false;
         score2 = 0;
         debutpartie = true;
         finpartie = false;
@@ -40,7 +44,9 @@ public class Partie extends Observable {
         Manches = new ArrayList<Manche>();
         Manches.add(manchecourante);
     }
-    
+    public void pause(){
+        pause=!pause;
+    }
     public Carte[] CartevisiblePile() {
     	return manchecourante.CartevisiblePile();
     }
@@ -77,6 +83,76 @@ public class Partie extends Observable {
         return nbmanche;
     }
 
+    public void sauvegarder() throws IOException{
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.println("Entrez le nom du fichier de sauvegarde:");
+        String str = sc.nextLine();
+        File fichier =  new File(str) ;
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fichier));
+
+        oos.writeObject(this);
+        oos.close();
+    }
+    
+    /**
+     * Charger la configuration contenue dans un fichier dont le nom est demandé
+     * @throws IOException
+     * @throws ClassNotFoundException 
+     */
+    public void charger() throws IOException, ClassNotFoundException{
+        Scanner sc = new Scanner(System.in);
+        
+        System.out.println("Entrez le nom du fichier à charger:");
+        String str = sc.nextLine();
+        File fichier =  new File(str) ;
+
+        // ouverture d'un flux sur un fichier
+       // ouverture d'un flux sur un fichier
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichier));
+
+        // désérialization de l'objet
+        Partie e = (Partie) ois.readObject();
+        fixerPartiechargement(e);
+        ois.close();
+    }
+    void fixerPartiechargement(Partie p){
+        histo=p.histo;
+
+        Manches=p.Manches;
+        cartepiochevisible=p.cartepiochevisible;
+        manchecourante=p.manchecourante;
+    j1=p.j1; j2=p.j2;
+    Modedejeu=p.Modedejeu;
+    manchefin=p.manchefin;
+    debutpartie=p.debutpartie; finpartie=p.finpartie;
+    phase=p.phase; phasetour=p.phasetour; nbmanche=p.nbmanche; nMax=p.nMax; score1=p.score1; score2=p.score2;
+    donneurdebut=p.donneurdebut;
+    J1EstIA=p.J1EstIA;
+    J2EstIA=p.J2EstIA;
+    joueur1IA=p.joueur1IA;
+    joueur2IA=p.joueur2IA;
+    }
+    /**
+     * Renvoie la liste des fichiers contenus dans le dossier sauvegardes
+     * @return un tableau de String contenant les noms des fichiers contenus dans le dossier sauvegardes
+     */
+    public String[] afficheSauvegardes(){
+        File dossier=new File("sauvegardes");
+        if (dossier.exists() && dossier.isDirectory()){ //Si le dossier sauvegarde existe
+            File[] files=dossier.listFiles();
+            String[] res = new String[files.length];
+            for(int i=0; i<files.length;i++){
+                res[i] = files[i].getName();
+            }
+            return res;
+        }else{
+            System.out.println("Le dossier \"sauvegardes\" n'existe pas");
+            return null;
+        }
+    }
+    
     public void jouerCoup(Coup cp) {
 
         cp.fixerpartie(this);
@@ -122,6 +198,13 @@ public class Partie extends Observable {
         } else {
             finpartie = false;
         }
+                    if(finpartie){if (manchecourante.j1.scoreManche > manchecourante.j2.scoreManche
+                    && manchecourante.Manchefini()) {
+                manchecourante.j1.manchesGagnees++;
+            } else if (manchecourante.Manchefini()
+                    && manchecourante.j1.scoreManche < manchecourante.j2.scoreManche) {
+               manchecourante.j2.manchesGagnees++;
+            } }
 
     }
 
@@ -317,6 +400,15 @@ public class Partie extends Observable {
 
     public int nbmanchegagnej2() {
         return manchecourante.nbmanchegagnej2();
+    }
+    public int quiGagnetourav() {
+        return manchecourante.quigagnetourav();
+    }
+    public Carte cartePremav() {
+        return manchecourante.cartePremierav();
+    }
+    public Carte carteSecav() {
+        return manchecourante.carteSecondeav();
     }
 
 }

@@ -1,9 +1,10 @@
 package Modele;
 
 import java.util.Stack;
+import java.io.Serializable;
 import java.util.Enumeration;
 
-public class Historique<E extends Commande> {
+public class Historique<E extends Commande> implements Serializable{
 	Stack<E> passe, futur;
 
     Historique() {

@@ -1,6 +1,8 @@
 package Modele;
 
-public class Joueur {
+import java.io.Serializable;
+
+public class Joueur implements Serializable{
     PileCartes Pli, cartesPiochees;
     boolean[] tabcouleur;
     int scoreManche, scorePartie, manchesGagnees, lg;

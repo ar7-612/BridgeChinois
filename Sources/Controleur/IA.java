@@ -1,10 +1,13 @@
 package Controleur;
 
 import Modele.Partie;
+
+import java.io.Serializable;
+
 import Modele.Joueur;
 
 
-public abstract class IA {
+public abstract class IA  implements Serializable{
 	Partie jeu;
 	Joueur joueur1;
 	Joueur joueur2;

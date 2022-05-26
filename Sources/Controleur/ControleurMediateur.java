@@ -1,5 +1,7 @@
 package Controleur;
 
+import java.io.IOException;
+
 import Modele.Coup;
 import Modele.Partie;
 import Vue.CollecteurEvenements;
@@ -28,18 +30,25 @@ public class ControleurMediateur implements CollecteurEvenements {
 			jouerCoup(cp);
 		}
 	}
-
+	
 	@Override
 	public int commande(int arg) {
 		if (arg == -1) {
 			Coup cp = jeu.determinerCoup(jeu.phasetourterm(), arg);
 			annulleCoup(cp);
 			return 0;
+		} else if (arg == -3) {
+			try {
+				jeu.sauvegarder();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return 0;
 		} else if (arg == -2) {
 			Coup cp = jeu.determinerCoup(jeu.phasetourterm(), arg);
 			refaireCoup(cp);
 			return 0;
-		} else if (jeu.manchefini()) {
+		}else if (jeu.manchefini()) {
 			if (arg == 1) {
 				faitcoup(jeu.phasetourterm(), arg);
 				return 0;
