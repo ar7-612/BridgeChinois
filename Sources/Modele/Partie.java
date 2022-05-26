@@ -7,7 +7,7 @@ import java.util.Scanner;
 import Controleur.IAbase;
 import Patterns.Observable;
 
-import Controleur.IA;
+import Controleur.IAbase;
 
 public class Partie extends Observable implements Serializable{
 
