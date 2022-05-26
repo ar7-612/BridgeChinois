@@ -1,8 +1,10 @@
 package Modele;
 
+import java.io.Serializable;
+
 //import java.util.ArrayList;
 
-public class Manche {
+public class Manche implements Serializable{
     PileCartes pile1, pile2, pile3, pile4, pile5, pile6;
     Joueur j1, j2;
     int atout, gagnant, donneur, perdant, receveur, joueurGagnantPli, nbpilereste, nbtour;
@@ -40,9 +42,6 @@ public class Manche {
         j2.scoreManche = 0;
         nbpilereste = 6;
         nbtour = 0;
-
-        donneur = 1;
-        receveur = 2;
         gagnant = 0;
         perdant = 0;
         distribuer();
@@ -131,7 +130,14 @@ public class Manche {
             perdant = tours[nbtour].receveur;
             cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur - 1);
         }
-        tours[nbtour].fixgagnant(gagnant);
+                    tours[nbtour].fixgagnant(gagnant);
+                    if(nbtour>15 && nbtour< 25){
+                        donneur =  tours[nbtour].gagnant;
+                        receveur = tours[nbtour].perdant;
+                        nbtour++;nouvtour();}
+                    else if(nbtour==15){
+                        nbtour++;nouvtour();
+                    }
 
         ajoutepli();
     }
@@ -441,10 +447,11 @@ public class Manche {
                 }
                 break;
         }
-        donneur = tours[nbtour].gagnant;
+        if(nbtour<15)
+        {donneur =  tours[nbtour].gagnant;
         receveur = tours[nbtour].perdant;
         nbtour++;
-        nouvtour();
+        nouvtour();}
 
     }
 
@@ -721,6 +728,18 @@ public class Manche {
 
     public int nbmanchegagnej2() {
         return j2.manchesGagnees;
+    }
+
+    public int quigagnetourav() {
+        return tours[nbtour-1].gagnant;
+    }
+
+    public Carte cartePremierav() {
+        return tours[nbtour-1].cartePremier;
+    }
+
+    public Carte carteSecondeav() {
+        return tours[nbtour-1].carteSeconde;
     }
 
 }
