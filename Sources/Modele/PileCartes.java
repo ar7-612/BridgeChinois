@@ -1,11 +1,12 @@
 package Modele;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import static Modele.Carte.*;
 import java.util.Random;
 
-public class PileCartes implements Cloneable {
+public class PileCartes implements Cloneable , Serializable{
     ArrayList<Carte> pile;
 
     public PileCartes() {

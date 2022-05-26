@@ -1,8 +1,10 @@
 package Modele;
 
+import java.io.Serializable;
+
 //import java.util.concurrent.ExecutionException;
 
-public class Coup extends Commande {
+public class Coup extends Commande implements Serializable{
     int codecoup, argument;
     Partie partie;
   
@@ -37,9 +39,6 @@ public class Coup extends Commande {
                     partie.manchecourante.j1.manchesGagnees++;
                 } else if (partie.manchecourante.j1.scoreManche < partie.manchecourante.j2.scoreManche) {
                     partie.manchecourante.j2.manchesGagnees++;
-                } else {
-                    partie.manchecourante.j1.manchesGagnees++;
-                    partie.manchecourante.j2.manchesGagnees++;
                 }
                 partie.testFinPartie();
                 partie.nouvellemanche();
@@ -59,10 +58,11 @@ public class Coup extends Commande {
                     case Coup.Seconddepos:
                         partie.manchecourante.jouerCoupSec(argument);
                         partie.phasetour = 2;
+                        partie.manchecourante.gagnantPli();
                         if (partie.manchecourante.toutelespilesontvide() && partie.phase != 2) {
                             partie.phase = partie.phase / 2;
                         }
-                        partie.manchecourante.gagnantPli();
+                        
                         if (partie.manchefini()) {
                         	
                             partie.nbmanche++;
@@ -83,10 +83,7 @@ public class Coup extends Commande {
             } else if (partie.manchecourante.Manchefini()
                     && partie.manchecourante.j1.scoreManche < partie.manchecourante.j2.scoreManche) {
                 partie.manchecourante.j2.manchesGagnees++;
-            } else if (partie.manchecourante.Manchefini()) {
-                partie.manchecourante.j1.manchesGagnees++;
-                partie.manchecourante.j2.manchesGagnees++;
-            }
+            } 
         }
     }
 

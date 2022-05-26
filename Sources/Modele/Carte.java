@@ -1,6 +1,8 @@
 package Modele;
 
-public class Carte implements Cloneable, Comparable<Carte> {
+import java.io.Serializable;
+
+public class Carte implements Cloneable, Comparable<Carte>, Serializable {
     int valeur;
     int couleur;
     boolean visible;
