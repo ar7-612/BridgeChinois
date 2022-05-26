@@ -197,7 +197,6 @@ public class Manche {
 
         tours[nbtour].fixcoupMainSec(argument);
         if (tours[nbtour].receveur == 1) {
-
             card = j1.main.carte(argument);
             j1.main.retirer(argument);
         } else {

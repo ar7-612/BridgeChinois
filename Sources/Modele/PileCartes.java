@@ -58,7 +58,7 @@ public class PileCartes implements Cloneable {
 
     public void paquet() {
         pile.clear();
-
+        
         for (int i = 2; i < 15; i++) {
             pile.add(new Carte(COEUR, i));
         }
@@ -83,7 +83,7 @@ public class PileCartes implements Cloneable {
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random(500000018);
+        Random r = new Random(668700772);//5200001
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

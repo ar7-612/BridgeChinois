@@ -27,19 +27,17 @@ public class Coup extends Commande {
     public void fixerpartie(Partie p) {
         partie = p;
     }
-
+    
     public void Execute() {
         partie.debutpartie = false;
         partie.testFinPartie();
         if (!partie.finpartie) {
             if (partie.manchefini()) {
-                if (partie.manchecourante.j1.scoreManche > partie.manchecourante.j2.scoreManche
-                        && partie.manchecourante.Manchefini()) {
+                if (partie.manchecourante.j1.scoreManche > partie.manchecourante.j2.scoreManche) {
                     partie.manchecourante.j1.manchesGagnees++;
-                } else if (partie.manchecourante.Manchefini()
-                        && partie.manchecourante.j1.scoreManche < partie.manchecourante.j2.scoreManche) {
+                } else if (partie.manchecourante.j1.scoreManche < partie.manchecourante.j2.scoreManche) {
                     partie.manchecourante.j2.manchesGagnees++;
-                } else if (partie.manchecourante.Manchefini()) {
+                } else {
                     partie.manchecourante.j1.manchesGagnees++;
                     partie.manchecourante.j2.manchesGagnees++;
                 }
@@ -66,6 +64,7 @@ public class Coup extends Commande {
                         }
                         partie.manchecourante.gagnantPli();
                         if (partie.manchefini()) {
+                        	
                             partie.nbmanche++;
                         }
                         partie.testFinPartie();
@@ -75,7 +74,6 @@ public class Coup extends Commande {
                         partie.phasetour = 0;
                         partie.testFinPartie();
                         break;
-
                 }
             }
         } else {

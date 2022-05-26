@@ -20,8 +20,8 @@ public class InterfaceTestIA implements InterfaceUtilisateur {
     	InterfaceTestIA i = new InterfaceTestIA(j, c);
         c.fixerInterfaceUtilisateur(i);
         s = new Scanner(System.in);
-        vue = new VueTestIA(j);
         i.Configuration();
+        vue = new VueTestIA(j);
         vue.metAJour();
         i.jouePartie();
         s.close();
@@ -96,11 +96,11 @@ public class InterfaceTestIA implements InterfaceUtilisateur {
         modeJ2 = s.nextLine();
         System.out.print("nombre manches : ");
         nbManches = s.nextInt();
-        */
+        
     	for(int i=0;i<82;i++) {
     		System.out.print("|");
     	}
-    	System.out.println("|");
+    	System.out.println();*/
         j.ModeV("m", nbManches);
         j.ModeJoueur(1, modeJ1);
         j.ModeJoueur(2, modeJ2);

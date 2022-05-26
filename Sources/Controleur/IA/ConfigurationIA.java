@@ -109,12 +109,11 @@ class InfoPlateau implements Cloneable{
 		return 1f - (2f * ((float)nbcGagnante) / ((float) nbc));
 	}
 
-	
 	public float esperanceMoy(int carte, int atout, int joueur , long infoCartes) {
 		float espSur;
 		float espInc = 0;
-		//long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
-		long cartesInc = cartesInconnues(infoCartes);
+		long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);//18.1
+		//long cartesInc = cartesInconnues(infoCartes) | cartesPioche();//18.2
 		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesMIA.mCouleur(carte/13)) != 0;
 		espSur = esperance(carte,atout,mainsJ[(joueur+1)%2],!aCouleur);
 		
@@ -228,27 +227,52 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			info.addPioche(numPioche, carte);
 		}
 		
-		public long getPossibleDonne() {
+		public long getDonnePossible() {
+			if(estIA) {
+				return getDonneCertaine();
+			} else {
+				return getDonneIncertaine() | getDonneCertaine();
+			}
+		}
+		public long getDonneCertaine() {
 			if(estIA) {
 				return mainJ;
 			} else {
-				return info.cartesInconnuesJ(mainJ, joueur) | info.cartesMain(joueur);
+				return info.cartesMain(joueur);
 			}
 		}
-		
-		public long getPossibleReponse() {
+		public long getDonneIncertaine() {
+			if(estIA) {
+				return 0;
+			} else {
+				return info.cartesInconnuesJ(mainJ, joueur);
+			}
+		}
+		public long getReponsePossible() {
 			if(estIA) {
 				return info.reponsePossible(carte, atout,mainJ);
 			} else {
 				return info.reponsePossible(carte, atout,info.cartesMain(joueur) | info.cartesInconnuesJ(mainJ, joueur));
 			}
 		}
-		
-		public long getPossiblePiocheCachee(){
+		public long getReponseCertaine() {
+			if(estIA) {
+				return info.reponsePossible(carte, atout,mainJ);
+			} else {
+				return info.reponsePossible(carte, atout,info.cartesMain(joueur));
+			}
+		}
+		public long getReponseIncertaine() {
+			if(estIA) {
+				return 0;
+			} else {
+				return info.reponsePossible(carte, atout,info.cartesInconnuesJ(mainJ, joueur));
+			}
+		}
+		public long getPiocheCacheePossible(){
 			return info.cartesInconnues(mainJ);
 		}
-		
-		public long getPossiblePioche() {
+		public long getPiochePossible() {
 			return info.cartesPioche();
 		}
 		
@@ -427,36 +451,34 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		}
 		
 		float heuristiquePiocheVide() {
-			float he = 0;
+			float heMain = 0;
+			float hePlis = 0;
+			float heCarte = 0;
+			
+			//cartes en mains
 			if(!this.estFinal()) {
-				he += esperanceMainJoueur();
-				he -= esperanceMainAdverse();
+				heMain += esperanceMainJoueur();
+				heMain -= esperanceMainAdverse();
 			}
-			
 			if(!estIA) {
-				he*=-1;
+				heMain*=-1;
 			}
 			
-			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
-			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
+			// carte posee si il y en a une
+			if(phase==1) {
+				heCarte -= info.esperanceMoy(carte, atout, (joueur+1)%2, mainJ);
+			}
 			
-			return he;
+			//cartes dans les plis
+			hePlis += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
+			hePlis -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
+			
+			return heMain + heCarte + hePlis;
 		}
 		
 		float heuristiquePartieEnCour1() {
 			float he = 0;
-			if(!this.estFinal()) {
-				he += esperanceMainJoueur();
-				he -= esperanceMainAdverse();
-			}
-			
-			if(!estIA) {
-				he*=-1;
-			}
-			
-			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
-			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
-			
+			he = heuristiquePiocheVide();
 			return he;
 		}
 		

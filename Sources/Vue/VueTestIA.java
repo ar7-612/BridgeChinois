@@ -4,8 +4,13 @@ import Modele.Partie;
 import Patterns.Observateur;
 
 class VueTestIA implements Observateur {
+	
+	boolean showProgression = false;
+	boolean showTime = false;
+	boolean showText = false;
+	
 	Partie j;
-
+	
     public VueTestIA(Partie j) {
         j.ajouteObservateur(this);
         this.j = j;
@@ -14,6 +19,7 @@ class VueTestIA implements Observateur {
         debutCoup =  System.currentTimeMillis();
         maxDelay = 0;
     }
+    
     
     long debutPartie;
     long debutManche;
@@ -24,27 +30,47 @@ class VueTestIA implements Observateur {
     public void metAJour() {
     	long delay = System.currentTimeMillis()-debutCoup;
     	maxDelay = Math.max(maxDelay, delay);
-    	System.out.print("|");
+    	if(showProgression) {
+    		System.out.print("|");
+    	}
         if (j.manchefini()) {
-        	System.out.println();
+        	if(showProgression) {
+        		System.out.println();
+        	}
             afficheGagnantManche();
         }
         if (j.partifini()) {
-           	afficheGagnantPartie();
+        	if(showText) {
+        		afficheGagnantPartie();
+        	}
         }
         debutCoup = System.currentTimeMillis();
     }
-
+    
+    
+    
     private void afficheGagnantManche() {
     	long delay = System.currentTimeMillis()-debutManche;
-        System.out.print(j.nbmanche() - 1 + "  ");
+    	if(showText) {
+    		System.out.print(j.nbmanche() - 1 + "	");
+    	}
         if (j.quiGagneManche() != 0) {
-            System.out.print("joueur " + j.quiGagneManche() + " gagne");
-        	System.out.print(" Scores : "+j.scoremanchej1()+" "+j.scoremanchej2());
+        	if(showText) {
+        		System.out.print("joueur " + j.quiGagneManche() + " gagne");
+             	System.out.print(" Scores : "+j.scoremanchej1()+"	"+j.scoremanchej2()+"	");
+        	} else {
+        		System.out.print(j.scoremanchej1()+" "+j.scoremanchej2()+" ");
+        	}
         } else {
-            System.out.print("egalite");
+        	if(showText) {
+        		System.out.print("egalite                   	  	");
+        	} else {
+        		System.out.print(13+" "+13+" ");
+        	}
         }
-        System.out.print(" "+delay + " " + maxDelay);
+        if(showTime) {
+        	System.out.print(" temp : "+delay + " " + maxDelay);
+        }
         maxDelay = 0;
         debutManche = System.currentTimeMillis();
         debutCoup =  System.currentTimeMillis();
@@ -57,9 +83,11 @@ class VueTestIA implements Observateur {
             System.out.println("Le joueur " + j.quiGagnePartie() + " a gagne la partie ");
         else
             System.out.println("Il y a une egalité personne ne gagne cette partie");
-        System.out.println("Le joueur 1 a gagne" + j.nbmanchegagnej1() + " manches , Le joueur 2 a gagne "
-                + j.nbmanchegagnej2() + "manches");
+        System.out.println("Le joueur 1 a gagne " + j.nbmanchegagnej1() + " manches , Le joueur 2 a gagne "
+                + j.nbmanchegagnej2() + " manches");
         System.out.println("Score joueur 1 : " + j.scorePartiej1() + " Score joueur 2 : " + j.scorePartiej2());
-        System.out.println("Temp = " + (System.currentTimeMillis() - debutPartie) + " (ms)");
+        if(showTime) {
+        	System.out.println("Temp total = " + (System.currentTimeMillis() - debutPartie) + " (ms)");
+        }
     }
 }

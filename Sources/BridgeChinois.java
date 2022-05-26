@@ -3,6 +3,7 @@ import Modele.Partie;
 import Vue.InterfaceTestIA;
 import Vue.InterfaceTextuelle;
 
+@SuppressWarnings("unused")
 class BridgeChinois {
 
     public static void main(String[] args) {

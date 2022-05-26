@@ -85,7 +85,43 @@ class TestsIA {
 		
 		return config;
 	}
+	static ConfigurationIA configFin(int atout, int[] cartesJ1,int[] connuesJ2, int joueur, int carte, int phase) {
+		ConfigurationIA config = null;
+		long main = 0;
+		
+		int[] connuesJ1 = cartesJ1.clone();
 
+		for(int i=0;i<cartesJ1.length;i++) {
+			main |= 1L << cartesJ1[i];
+		}
+		
+		config = new ConfigurationIA(main,joueur,phase,carte,atout,true);
+		
+		for(int i=0;i<52;i++) {
+			config.addPli(0, i);
+			config.addPli(1, i);
+		}
+		
+		for(int i=0;i<cartesJ1.length;i++) {
+			main |= 1L << cartesJ1[i];
+		}
+		
+		for(int i=0;i<connuesJ1.length;i++) {
+			config.addMain(0,connuesJ1[i]);
+			config.delPli(0, connuesJ1[i]);
+			config.delPli(1, connuesJ1[i]);
+		}
+		
+		for(int i=0;i<connuesJ2.length;i++) {
+			config.addMain(1,connuesJ2[i]);
+			config.delPli(0, connuesJ2[i]);
+			config.delPli(1, connuesJ2[i]);
+		}
+		
+		return config;
+	}
+	
+	
 	static void afficherCartes(long m) {
 		for(int i=0;i<52;i++) {
 			if((m & (1L << i)) != 0) {
@@ -197,8 +233,32 @@ class TestsIA {
 	}
 	
 	static ConfigurationIA config4() {
+		/* Attendu : 8C (2-1)
+		 * Resultat : ok
+		 * 
+		 */
+		int atout = 3;
+		int[] cartesJ1  = {c("8C"),c("7H"),c("9H"),c("5C"),c("7C"),c("2S"),c("DS"),c("4S"),c("6H"),c("3S"),c("RS")};
+		int[] connuesJ2 = {c("8D"),c("9S"),c("3D"),c("AS"),c("5S"),c("AC"),c("RC"),c("2H"),c("8S"),c("VS")};//c("VH")
+		return configFin(atout,cartesJ1,connuesJ2,0,c("DD"),1);
+	}
+	static ConfigurationIA config4_1() {
+		/* Attendu : 8C (2-1)
+		 * Resultat : ok
+		 * 11111
+		 * 111111
+		 */
+		int atout = 3;
+		int[] cartesJ1  = {c("9H")};
+		int[] connuesJ2 = {c("8S")};
+		return configFin(atout,cartesJ1,connuesJ2,0,c("VS"),1);//c("4S")
+	}
+	
+	static ConfigurationIA configTest1() {
 		/* Attendu : 
 		 * Resultat : 
+		 * 11111
+		 * 111111
 		 */
 		
 		ConfigurationIA config = null;
@@ -206,20 +266,20 @@ class TestsIA {
 		
 		
 		
-		long mainJoueur =1069824834864128L;
-		long connueJ0	=427710027465728L;
-		long connueJ1	=1126449671184961L;
-		long plisJ0		=19961266049328L;
-		long plisJ1		=379634845710L;
+		long mainJoueur =1692709962121320L;
+		long connueJ0	=1692708888379432L;
+		long connueJ1	=391426207139840L;
+		long plisJ0		=158574493271168L;
+		long plisJ1		=9089142760215L;
 		//long nconnueJ0	=4503599560261632L;
 		//long nconnueJ1	=0;
-		long pioche0	=128;
+		long pioche0	=0;
 		long pioche1	=0;
-		long pioche2	=32768;
+		long pioche2	=0;
 		long pioche3	=0;
 		long pioche4	=0;
 		
-		config = new ConfigurationIA(mainJoueur,0,0,-1,-1,true);
+		config = new ConfigurationIA(mainJoueur,0,1,23,3,true);
 		
 		for(int i=0;i<52;i++) {
 			if((connueJ0 & (1L << i))!=0) {
@@ -253,6 +313,8 @@ class TestsIA {
 		System.out.println("Debut : "+config);
 		return config;
 	}
+	
+	
 	
 	/************************
 	 * TESTS PIOCHE PARTIEL *

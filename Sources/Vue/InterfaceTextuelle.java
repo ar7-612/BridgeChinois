@@ -43,7 +43,6 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         while (!j.finpartie) {
             try {
             	if (j.estIA(j.quiJoue()) && !j.manchefini()) {
-            		
                 	timer = System.currentTimeMillis();
                     if (entier == -1 || entier == -2) {
                         // On change rien
