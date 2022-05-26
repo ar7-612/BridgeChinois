@@ -445,8 +445,8 @@ public class IAMinMax extends IAbase {
 	 * 
 	 */
 	long startTime;
-	long delayVise = 500;// en ms
-	long delayMax = 1000;// en ms
+	long delayVise = 3000;// en ms
+	long delayMax = 5000;// en ms
 	int profondeurMax = 100;
 	void checkTime() throws TimeCheckException {
 		if(System.currentTimeMillis() - startTime > delayMax) {
