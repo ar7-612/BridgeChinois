@@ -33,7 +33,7 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-        long delayIA = 60;// en ms
+        long delayIA = 00;// en ms
         long timer;
 
         c.fixerInterfaceUtilisateur(this);

@@ -231,17 +231,22 @@ class TestsIA {
 		int[] connuesJ2 = {c("AH"),c("VH"),c("4C")};
 		return configFin(atout,cartesJ1,connuesJ2);
 	}
-	
 	static ConfigurationIA config4() {
-		/* Attendu : 8C (2-1)
-		 * Resultat : ok
+		/* Attendu : 
+		 * Resultat : 
 		 * 
 		 */
-		int atout = 3;
-		int[] cartesJ1  = {c("8C"),c("7H"),c("9H"),c("5C"),c("7C"),c("2S"),c("DS"),c("4S"),c("6H"),c("3S"),c("RS")};
-		int[] connuesJ2 = {c("8D"),c("9S"),c("3D"),c("AS"),c("5S"),c("AC"),c("RC"),c("2H"),c("8S"),c("VS")};//c("VH")
-		return configFin(atout,cartesJ1,connuesJ2,0,c("DD"),1);
+		int atout = -1;
+		int[] cartesJ1  = {c("VC"),c("DC"),c("RC")};
+		int[] connuesJ2 = {c("2C"),c("3C"),c("4C")};//c("VH")
+		return configFin(atout,cartesJ1,connuesJ2);
 	}
+	
+	/************************
+	 * TESTS PIOCHE PARTIEL *
+	 ************************/
+	
+	
 	
 	static ConfigurationIA configTest1() {
 		/* Attendu : 
@@ -306,12 +311,6 @@ class TestsIA {
 		System.out.println("Debut : "+config);
 		return config;
 	}
-	
-	
-	
-	/************************
-	 * TESTS PIOCHE PARTIEL *
-	 ************************/
 	
 	
 	

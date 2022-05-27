@@ -93,6 +93,9 @@ public class IAMinMax extends IAbase {
 		if(config.nbCartesInconnue()==0) {
 			h = config.heuristiquePiocheVide();
 		} else {
+			// 169 164
+			// 164 159
+			// 167 
 			h = config.heuristiquePartieEnCour1();
 		}
 		//System.out.println("Heutistique : "+h);
@@ -467,13 +470,13 @@ public class IAMinMax extends IAbase {
 		
 		
         ConfigurationIA config = trouverConfiguration();
-        //config = TestsIA.config4_1();
         List<Couple<Integer,Float>> listeCartes = null;
         int retour = -10;
         
         startTime = System.currentTimeMillis();
-        int profondeur = 3;
+        int profondeur = 0;
         
+        //config = TestsIA.config4();
         //profondeurMax = profondeur+1;
         
         try {

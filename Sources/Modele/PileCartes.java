@@ -84,7 +84,7 @@ public class PileCartes implements Cloneable , Serializable{
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random(668700772);//5200001
+        Random r = new Random();//5200001 986532147
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

@@ -5,7 +5,11 @@ import java.io.Serializable;
 //import java.util.ArrayList;
 
 public class Manche implements Serializable{
-    PileCartes pile1, pile2, pile3, pile4, pile5, pile6;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;// a verifier
+	PileCartes pile1, pile2, pile3, pile4, pile5, pile6;
     Joueur j1, j2;
     int atout, gagnant, donneur, perdant, receveur, joueurGagnantPli, nbpilereste, nbtour;
     Tour[] tours;
@@ -131,14 +135,11 @@ public class Manche implements Serializable{
             cochercouleur(tours[nbtour].receveur, tours[nbtour].cartePremier.couleur - 1);
         }
         ajoutepli();
-                    tours[nbtour].fixgagnant(gagnant);
-                    if(nbtour>15 && nbtour< 25){
-                        donneur =  tours[nbtour].gagnant;
-                        receveur = tours[nbtour].perdant;
-                        nbtour++;nouvtour();}
-                    else if(nbtour==15){
-                        nbtour++;nouvtour();
-                    }
+        tours[nbtour].fixgagnant(gagnant);
+        if(nbtour>=15 && nbtour< 25){
+            donneur =  tours[nbtour].gagnant;
+            receveur = tours[nbtour].perdant;
+            nbtour++;nouvtour();}
 
     }
 

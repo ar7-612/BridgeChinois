@@ -5,9 +5,9 @@ import Patterns.Observateur;
 
 class VueTestIA implements Observateur {
 	
-	boolean showProgression = false;
-	boolean showTime = false;
-	boolean showText = false;
+	boolean showProgression = true;
+	boolean showTime = true;
+	boolean showText = true;
 	
 	Partie j;
 	
