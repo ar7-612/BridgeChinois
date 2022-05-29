@@ -1,8 +1,6 @@
 package Modele;
 
-import java.io.Serializable;
-
-public class Main implements Serializable{
+public class Main {
     Carte[] main;
     int taille;
 
