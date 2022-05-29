@@ -1,6 +1,6 @@
 import Controleur.ControleurMediateur;
 import Modele.Partie;
-import Vue.InterfaceTestIA;
+import Vue.InterfaceGraphique;
 import Vue.InterfaceTextuelle;
 
 class BridgeChinois {
@@ -9,8 +9,9 @@ class BridgeChinois {
         try {
             Partie j = new Partie();
             ControleurMediateur c = new ControleurMediateur(j);
-            InterfaceTextuelle.demarrer(j, c);
-            //InterfaceTestIA.demarrer(j, c);
+            InterfaceGraphique ig = new InterfaceGraphique(j,c);
+            ig.setVisible(true);
+            //InterfaceTextuelle.demarrer(j, c);
         } catch (Exception e) {
             e.printStackTrace();
         }

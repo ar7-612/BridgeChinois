@@ -1,8 +1,6 @@
 package Modele;
 
-import java.io.Serializable;
-
-public class Tour implements Serializable{
+public class Tour {
     int donneur, receveur, gagnant, perdant, piochePremier, piocheSecond,
             coupmainPremier, coupmainSec;
     Carte cartePremier, carteSeconde;
