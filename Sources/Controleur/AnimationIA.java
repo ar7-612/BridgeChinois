@@ -1,5 +1,4 @@
 package Controleur;
-
 public class AnimationIA extends Animation{
 	
 	ControleurMediateur controleur;

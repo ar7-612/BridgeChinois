@@ -1,8 +1,6 @@
 package Modele;
 
-import java.io.Serializable;
-
-public abstract class Commande implements Serializable{
+public abstract class Commande {
     abstract void Execute();
 
     abstract void DesExecute();
