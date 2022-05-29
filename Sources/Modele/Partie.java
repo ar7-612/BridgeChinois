@@ -288,7 +288,7 @@ public class Partie extends Observable implements Serializable{
     }
 
     public int quiJoue() {
-        switch (phasetour()) {
+        switch (phasetourterm()) {
             case 0:
                 return quiDonne();
             case 1:
@@ -349,7 +349,6 @@ public class Partie extends Observable implements Serializable{
     }
 
     public int phasetourterm() {
-
         return phasetour % phase;
     }
   

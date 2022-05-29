@@ -59,7 +59,7 @@ public class PileCartes implements Cloneable , Serializable{
 
     public void paquet() {
         pile.clear();
-
+        
         for (int i = 2; i < 15; i++) {
             pile.add(new Carte(COEUR, i));
         }
@@ -84,7 +84,7 @@ public class PileCartes implements Cloneable , Serializable{
 
     public Carte aleatoire(boolean visible) {
 
-        Random r = new Random(500000018);
+        Random r = new Random();//5200001 986532147
 
         int i = r.nextInt(pile.size());
         Carte res = pile.get(i);

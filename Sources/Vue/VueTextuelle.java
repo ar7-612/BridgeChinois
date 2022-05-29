@@ -117,6 +117,9 @@ public class VueTextuelle implements Observateur {
                     }
                     break;
                 case 1:
+                    System.out.print("carte jouee : ");
+                	afficherCarte(j.cartePrem());
+                	System.out.println();
                     affichePile();
                     afficheCarteReceveur();
                     if (j.quiDonne() == 2) {

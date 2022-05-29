@@ -65,19 +65,44 @@ public class IAMinMax extends IAbase {
 	/* 
 	 * fonctions minMax
 	 */
-	
+	float incertitude(ConfigurationIA config, ConfigurationIA configF) {
+		float retour = 1;
+		long ensembleIncertain = 0;
+		switch(config.getPhase()) {
+		case 0:
+			ensembleIncertain = config.getDonneIncertaine();
+			break;
+		case 1:
+			ensembleIncertain = config.getReponseIncertaine();
+			break;
+		case 2:
+		case 3:
+			ensembleIncertain = 0;
+			break;
+		}
+		if((ensembleIncertain & (1L << configF.getCarte()))!=0) {
+			//0.5	: 183
+			//1		: 189
+			//2		: 180
+			retour = Math.min(1f, 1f / CartesMIA.nbCartes(ensembleIncertain));
+		}
+		return retour;
+	}
 	float heuristique(ConfigurationIA config){
 		float h;
 		if(config.nbCartesInconnue()==0) {
 			h = config.heuristiquePiocheVide();
 		} else {
+			// 169 164
+			// 164 159
+			// 167 
 			h = config.heuristiquePartieEnCour1();
 		}
 		//System.out.println("Heutistique : "+h);
 		return h;
 	}
 
-	Deque<ConfigurationIA> trouverFilsV0_1(ConfigurationIA config){ // ne pas utilisee
+	/*Deque<ConfigurationIA> trouverFilsV0_1(ConfigurationIA config){ // ne pas utilisee
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
 		long ensemble2 = 0;
@@ -138,7 +163,7 @@ public class IAMinMax extends IAbase {
 			//System.err.println(" AhA ! "+config);
 		}
 		return retour;
-	}
+	}*/
 	Deque<ConfigurationIA> trouverFilsV1_0(ConfigurationIA config){
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
@@ -147,36 +172,36 @@ public class IAMinMax extends IAbase {
 		switch(config.getPhase()) {
 			case 0 :
 				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossibleDonne();
+					ensemble1 = config.getDonnePossible();
 				} else {
-					ensemble1 = config.getPossibleDonne();
+					ensemble1 = config.getDonnePossible();
 				}
 				break;
 			case 1 :
 				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossibleReponse();
+					ensemble1 = config.getReponsePossible();
 				} else {
-					ensemble1 = config.getPossibleReponse();
+					ensemble1 = config.getReponsePossible();
 				}
 				break;
 			case 2 : 
 				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossiblePioche();
+					ensemble1 = config.getPiochePossible();
 					//cartePioche = config.carteIncMax();
 					cartePioche = config.carteIncMoy();
 				} else {
-					ensemble1 = config.getPossiblePioche();
+					ensemble1 = config.getPiochePossible();
 					//cartePioche = config.carteIncMin();
 					cartePioche = config.carteIncMoy();
 				}
 				break;
 			case 3 :
 				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossiblePioche();
+					ensemble1 = config.getPiochePossible();
 					//cartePioche = unDans(config.getPossiblePiocheCachee());
 					cartePioche = config.carteIncMoy();
 				} else {
-					ensemble1 = config.getPossiblePioche();
+					ensemble1 = config.getPiochePossible();
 					//cartePioche = unDans(config.getPossiblePiocheCachee());
 					cartePioche = config.carteIncMoy();
 				}
@@ -228,6 +253,8 @@ public class IAMinMax extends IAbase {
 				tmp = -minMax(configF,borneMaxAdv,borneMax,profondeur-1,debugHauteur+1);
 			}
 			
+			tmp = tmp * incertitude(config,configF);
+			
 			if(tmp > borneMax){// alpha/beta reduction
 				max = infinie();
 				cMax = configF;
@@ -244,7 +271,7 @@ public class IAMinMax extends IAbase {
 		configurations.put(config, cMax);
 		return max;
 	}
-	int minMaxInitial(ConfigurationIA config, int profondeur) throws TimeCheckException{
+	List<Couple<Integer,Float>> minMaxInitial(ConfigurationIA config, int profondeur) throws TimeCheckException{
 		checkTime();
 		float max = -infinie();
 		float borneMax = infinie();
@@ -258,6 +285,8 @@ public class IAMinMax extends IAbase {
 		}
 		cMax = fils.getFirst();
 		Iterator<ConfigurationIA> it = fils.iterator();
+		
+		//System.err.println("---------------------");
 		
 		while(it.hasNext()){
 			ConfigurationIA configF = it.next();
@@ -281,15 +310,7 @@ public class IAMinMax extends IAbase {
 		}
 		configurations.put(config,cMax);
 		
-		int retour = -10;
-		tableCartes.sort(null);
-		if(tableCartes.size()==0) {
-			System.err.println("Erreur critique : l'IA ne trouve pas de coups");
-		} else {
-			retour = tableCartes.get(tableCartes.size() - 1).v;
-		}
-		
-		return retour;
+		return tableCartes;
 	}
 	
 	/*
@@ -422,10 +443,14 @@ public class IAMinMax extends IAbase {
 	
 	Hashtable<ConfigurationIA,ConfigurationIA> configurations;
 	Random r;
-	
+	/* 100 500 100 17.3
+	 * 500 1000 100 17
+	 * 
+	 */
 	long startTime;
-	long delayVise = 2000;// en ms
+	long delayVise = 3000;// en ms
 	long delayMax = 5000;// en ms
+	int profondeurMax = 100;
 	void checkTime() throws TimeCheckException {
 		if(System.currentTimeMillis() - startTime > delayMax) {
 			throw new TimeCheckException("trop long");
@@ -445,28 +470,32 @@ public class IAMinMax extends IAbase {
 		
 		
         ConfigurationIA config = trouverConfiguration();
-        int idCarte = -10;
+        List<Couple<Integer,Float>> listeCartes = null;
         int retour = -10;
         
         startTime = System.currentTimeMillis();
-        int profondeur = 3;
-		
+        int profondeur = 0;
+        
+        //config = TestsIA.config4();
+        //profondeurMax = profondeur+1;
+        
         try {
-        	while(System.currentTimeMillis() - startTime < delayVise) {
-        		idCarte = minMaxInitial(config,profondeur);
+        	while(System.currentTimeMillis() - startTime < delayVise && profondeur<profondeurMax) {
+        		listeCartes = minMaxInitial(config,profondeur);
         		profondeur++;
             }
         } catch(TimeCheckException e) {
-        	if(idCarte==-10) {
+        	if(listeCartes==null) {
         		throw new RuntimeException("l'IA n'as pas eu le temps de trouver un coup");
         	}
         }
-        
-       System.err.print(profondeur);
-        
-        retour=trouverIndice(idCarte);
-		
-		//System.err.println("Carte : "+TestsIA.iToS(idCarte)+", indice : "+retour);
+        if(listeCartes.size()==0) {
+        	throw new RuntimeException("l'IA n'as pas trouvee de coups possible");
+        }
+        listeCartes.sort(null);
+        retour=trouverIndice(listeCartes.get(listeCartes.size()-1).v);
+		//System.err.print(profondeur);
+		//System.err.println("Carte : "+TestsIA.iToS(listeCartes.get(listeCartes.size()-1).v)+", indice : "+retour);
 		return retour;
 	}
 }

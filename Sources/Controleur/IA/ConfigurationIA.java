@@ -53,6 +53,25 @@ class InfoPlateau implements Cloneable{
 		}
 	}
 	
+	long cartesMain() {
+		return mainsJ[0] | mainsJ[1];
+	}
+	long cartesMain(int j) {
+		return mainsJ[j];
+	}
+	long cartesPioche(){
+		return pioche[0] | pioche[1] | pioche[2] | pioche[3] | pioche[4];
+	}
+	long cartesPioche(int p){
+		return pioche[p];
+	}
+	long cartesPlis(){
+		return plisJ[0] | plisJ[1];
+	}
+	long cartesPlis(int j){
+		return plisJ[j];
+	}
+	
 	/*
 	carte inconnues du joueur j avec mainJ info en plus
 	*/
@@ -60,33 +79,8 @@ class InfoPlateau implements Cloneable{
 		//return ~mainJ & ~mainsJ[j] & ~mainsJ[(j+1)%2] & ~cartesPlis() & ~cartesPioche() & ~nmainsJ[j];
 		return cartesInconnues(mainJ) & ~nmainsJ[j];
 	}
-	
 	long cartesInconnues(long mainJ){
 		return CartesMIA.ALL & ~mainJ & ~cartesPioche() & ~cartesMain() & ~cartesPlis();
-	}
-	
-	long cartesMain() {
-		return mainsJ[0] | mainsJ[1];
-	}
-	
-	long cartesMain(int j) {
-		return mainsJ[j];
-	}
-	
-	long cartesPioche(){
-		return pioche[0] | pioche[1] | pioche[2] | pioche[3] | pioche[4];
-	}
-	
-	long cartesPioche(int p){
-		return pioche[p];
-	}
-	
-	long cartesPlis(){
-		return plisJ[0] | plisJ[1];
-	}
-	
-	long cartesPlis(int j){
-		return plisJ[j];
 	}
 	
 	float esperance(int carte, int atout, long ensemble, boolean countAtout) {
@@ -108,20 +102,39 @@ class InfoPlateau implements Cloneable{
 		}
 		return 1f - (2f * ((float)nbcGagnante) / ((float) nbc));
 	}
-
 	
-	public float esperanceMoy(int carte, int atout, int joueur , long infoCartes) {
+	
+	private float esperanceMoy1(int carte, int atout, int joueurAdv , long infoCartes) {
 		float espSur;
 		float espInc = 0;
-		//long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);
-		long cartesInc = cartesInconnues(infoCartes);
-		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesMIA.mCouleur(carte/13)) != 0;
-		espSur = esperance(carte,atout,mainsJ[(joueur+1)%2],!aCouleur);
+		//long cartesInc = cartesInconnuesJ(infoCartes, (joueur+1)%2);//18.1
+		long cartesInc = cartesInconnues(infoCartes);//18.2
+		boolean aCouleur =( mainsJ[joueurAdv] & CartesMIA.mCouleur(carte/13)) != 0;
+		espSur = esperance(carte,atout,mainsJ[joueurAdv],!aCouleur);
 		
 		if(CartesMIA.nbCartes(cartesInc)!=0) {
-			espInc = esperance(carte,atout,cartesInc,!aCouleur) * (11 - CartesMIA.nbCartes(mainsJ[(joueur+1)%2])) / CartesMIA.nbCartes(cartesInc);
+			espInc = esperance(carte,atout,cartesInc,!aCouleur) * (11 - CartesMIA.nbCartes(mainsJ[joueurAdv])) / CartesMIA.nbCartes(cartesInc);
 		}
 		return espInc + espSur;
+	}
+	private float esperanceMoy2(int carte, int atout, int joueur , long infoCartes) {
+		float esperance;
+		long ensemble = mainsJ[(joueur+1)%2] | cartesInconnues(infoCartes) | cartesPioche();
+		boolean aCouleur =( mainsJ[(joueur+1)%2] & CartesMIA.mCouleur(carte/13)) != 0;
+		esperance = esperance(carte,atout,ensemble,!aCouleur);
+		return esperance;
+	}
+	private float esperanceMoy3(int carte, int atout, int joueur , long infoCartes) {
+		float esperance;
+		long ensemble = mainsJ[(joueur+1)%2] | cartesInconnues(infoCartes) | cartesPioche();
+		esperance = esperance(carte,atout,ensemble,true);
+		return esperance;
+	}
+	public float esperanceMoy(int carte, int atout, int joueurAdv , long infoCartes) {
+		// 169 avec pioche dans cartes inconnues
+		// 160
+		// 157
+		return esperanceMoy1(carte,atout,joueurAdv,infoCartes);
 	}
 	
 	public long reponsePossible(int carte, int atout, long ensemble) {
@@ -157,7 +170,6 @@ class InfoPlateau implements Cloneable{
 				p.pioche[3]==pioche[3] &&
 				p.pioche[4]==pioche[4];
 	}
-	
 	@Override
 	public String toString() {
 		return	mainsJ[0] + " " + mainsJ[1] + " | " +
@@ -165,7 +177,6 @@ class InfoPlateau implements Cloneable{
 				nmainsJ[0] + " " + nmainsJ[1] + " | " +
 				pioche[0] + " " + pioche[1] + " " + pioche[2] + " " + pioche[3] + " " + pioche[4];
 	}
-	
 	@Override
 	public InfoPlateau clone() {
 		InfoPlateau c = new InfoPlateau();
@@ -207,59 +218,77 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		void addMain (int joueur, int carte) {
 			info.addMain(joueur,carte);
 		}
-		
 		void addPli (int joueur, int carte) {
 			info.addPli(joueur,carte);
 		}
-		
 		void delMain (int joueur, int carte) {
 			info.delMain(joueur, carte);
 		}
-		
 		void delPli (int joueur, int carte) {
 			info.delPli(joueur, carte);
 		}
-		
 		void delCouleur(int joueur,int couleur) {
 			info.delCouleur(joueur, couleur);
 		}
-		
 		void addPioche(int numPioche,int carte) {
 			info.addPioche(numPioche, carte);
 		}
 		
-		public long getPossibleDonne() {
+		public long getDonnePossible() {
+			if(estIA) {
+				return getDonneCertaine();
+			} else {
+				return getDonneIncertaine() | getDonneCertaine();
+			}
+		}
+		public long getDonneCertaine() {
 			if(estIA) {
 				return mainJ;
 			} else {
-				return info.cartesInconnuesJ(mainJ, joueur) | info.cartesMain(joueur);
+				return info.cartesMain(joueur);
 			}
 		}
-		
-		public long getPossibleReponse() {
+		public long getDonneIncertaine() {
+			if(estIA) {
+				return 0;
+			} else {
+				return info.cartesInconnuesJ(mainJ, joueur);
+			}
+		}
+		public long getReponsePossible() {
 			if(estIA) {
 				return info.reponsePossible(carte, atout,mainJ);
 			} else {
 				return info.reponsePossible(carte, atout,info.cartesMain(joueur) | info.cartesInconnuesJ(mainJ, joueur));
 			}
 		}
-		
-		public long getPossiblePiocheCachee(){
+		public long getReponseCertaine() {
+			if(estIA) {
+				return info.reponsePossible(carte, atout,mainJ);
+			} else {
+				return info.reponsePossible(carte, atout,info.cartesMain(joueur));
+			}
+		}
+		public long getReponseIncertaine() {
+			if(estIA) {
+				return 0;
+			} else {
+				return info.reponsePossible(carte, atout,info.cartesInconnuesJ(mainJ, joueur));
+			}
+		}
+		public long getPiocheCacheePossible(){
 			return info.cartesInconnues(mainJ);
 		}
-		
-		public long getPossiblePioche() {
+		public long getPiochePossible() {
 			return info.cartesPioche();
 		}
 		
 		public int getJoueur(){ 
 			return joueur;
 		}
-		
 		public int getPhase() {
 			return phase;
 		}
-		
 		public int getCarte() {
 			return carte;
 		}
@@ -270,7 +299,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			retour = retour || (c1/13 != c2/13) && (c2/13!=atout); // si de differentes couleur
 			return retour;
 		}
-		
+
 		public void update(int carte1,int carte2){
 			switch(phase) {
 			case 0 :
@@ -329,25 +358,72 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return info.cartesMain()==0L && mainJ==0L;
 		}
 		
-		int carteIncMoy() {
-			float[] eTab = new float[52];
+		private float[] esperanceEnsemble(long ensemble) {
+			float[] tab = new float[CartesMIA.nbCartes(ensemble)];
+			int indice = 0;
+			for(int i=0;i<52;i++) {
+				if((ensemble & (1<<i))==0) {
+					tab[indice]=info.esperanceMoy(i, atout, joueur, mainJ);
+					indice++;
+				}
+			}
+			return tab;
+		}
+		float[] esperancePioches() {
+			return esperanceEnsemble(info.cartesPioche());
+		}
+		/**
+		 * FONCTIONNE BIEN UNIQUEMENT SI JOUEUR EST IA
+		 */
+		float[] esperanceMainDonne() {
+			return esperanceEnsemble(getReponsePossible());
+		}
+		float[] esperanceMainReponse() {
+			return esperanceEnsemble(getDonnePossible());
+		}
+		
+		int esperanceToCartePioche(float eMoy) {
+			long ensemble = info.cartesPioche();
+			
+			int iMin = -1;
+			float eMin = Float.MIN_VALUE;
+			
+			for(int i=0;i<52;i++) {
+				if((ensemble & (1L << i))!=0) {
+					float e = info.esperanceMoy(i, atout, joueur, mainJ);
+					if(Math.abs(e - eMoy) <= eMin) {
+						iMin = i;
+						eMin = Math.abs(e - eMoy);
+					}
+				}
+			}
+			return iMin;
+		}
+		
+		float esperanceCarteInc() {
 			float eMoy = 0;
 			for(int i=0;i<52;i++) {
 				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
-					eTab[i] = info.esperanceMoy(i, atout, joueur, 0L);
-					eMoy += eTab[i];
+					eMoy += info.esperanceMoy(i, atout, joueur, 0L);
 				}
 			}
 			eMoy = eMoy / ((float) CartesMIA.nbCartes(info.cartesInconnues(mainJ)));
+			return eMoy;
+		}
+		
+		int carteIncMoy() {
+			float eMoy = 0;
+			eMoy = esperanceCarteInc();
 			
 			int iMin = -1;
 			float eMin = Float.MIN_VALUE;
 			
 			for(int i=0;i<52;i++) {
 				if((info.cartesInconnues(mainJ) & (1L << i))!=0) {
-					if(Math.abs(eTab[i] - eMoy) <= eMin) {
+					float e = info.esperanceMoy(i, atout, joueur, mainJ);//mainJ
+					if(Math.abs(e - eMoy) <= eMin) {
 						iMin = i;
-						eMin = Math.abs(eTab[i] - eMoy);
+						eMin = Math.abs(e - eMoy);
 					}
 				}
 			}
@@ -385,28 +461,28 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return iMin;
 		}
 		
-		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
-		float esperanceMainJoueur() {
+		float esperanceMainJoueurIA() {
 			float retour = 0;
 			for(int i=0;i<52;i++) {
 				if((mainJ & (1L << i))!=0) {
-					retour += info.esperanceMoy(i, atout, joueur, mainJ);
+					retour += info.esperanceMoy(i, atout,estIA?(joueur+1)%2:(joueur), mainJ);
 				}
 			}
 			return retour;
 		}
 		
 		//FONCTIONNE UNIQUEMENT SI LE JOUEUR EST L'IA
-		float esperanceMainAdverse() {
+		float esperanceMainAdverseIA() {
 			float retour = 0;
-			long cartesCon = info.cartesMain((joueur + 1) % 2);
-			long cartesInc = info.cartesInconnuesJ(mainJ, (joueur + 1) % 2);
+			int numJoueurAdv = estIA?(joueur+1)%2:(joueur);
+			long cartesCon = info.cartesMain(numJoueurAdv);
+			long cartesInc = info.cartesInconnuesJ(mainJ, numJoueurAdv);
 			
 			if(CartesMIA.nbCartes(cartesInc)!=0) {
 				int tmp = 0;
 				for(int i=0;i<52;i++) {
 					if((cartesInc & (1L << i))!=0) {
-						retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+						retour += info.esperanceMoy(i, atout, (numJoueurAdv+1)%2, 0);
 						tmp++;
 					}
 				}
@@ -415,55 +491,63 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 					System.out.println("Hum");
 				}
 			}
-			
-			
-			cartesCon = info.cartesMain((joueur + 1) % 2);
 			for(int i=0;i<52;i++) {
 				if((cartesCon & (1L << i))!=0) {
-					retour += info.esperanceMoy(i, atout, (joueur+1)%2, 0);
+					retour += info.esperanceMoy(i, atout, (numJoueurAdv+1)%2, 0);
 				}
 			}
 			return retour;
 		}
 		
-		float heuristiquePiocheVide() {
-			float he = 0;
-			if(!this.estFinal()) {
-				he += esperanceMainJoueur();
-				he -= esperanceMainAdverse();
-			}
+		private float heuristiqueMain() {
+			float heMain = 0;
+			float heCarte = 0;
 			
+			heMain += esperanceMainJoueurIA();
+			heMain -= esperanceMainAdverseIA();
+
 			if(!estIA) {
-				he*=-1;
+				heMain*=-1;
 			}
-			
-			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
-			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
-			
-			return he;
+			if(phase==1) {
+				//heCarte -= info.esperanceMoy(carte, atout, (joueur+1)%2, mainJ);
+			}
+			return heMain + heCarte;
 		}
-		
+		private float heuristiquePlis() {
+			float hePlis = 0;
+			//cartes dans les plis
+			hePlis += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
+			hePlis -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
+			return hePlis;
+		}
+		float heuristiquePiocheVide() {
+			float hePlis = heuristiquePlis();
+			float heMain = 0f;
+			if(!estFinal()) {
+				heMain = heuristiqueMain();
+			}
+			return heMain + hePlis;
+		}
 		float heuristiquePartieEnCour1() {
-			float he = 0;
-			if(!this.estFinal()) {
-				he += esperanceMainJoueur();
-				he -= esperanceMainAdverse();
-			}
-			
-			if(!estIA) {
-				he*=-1;
-			}
-			
-			he += CartesMIA.nbCartes(info.cartesPlis(joueur)) / 2f;
-			he -= CartesMIA.nbCartes(info.cartesPlis((joueur+1)%2)) / 2f;
-			
-			return he;
+			float hePlis = heuristiquePlis();
+			float heMain = heuristiqueMain();
+			return heMain + hePlis;
+		}
+		float heuristiquePartieEnCour2() {
+			float hePlis = heuristiquePlis() / ((float)nbCartesInconnue());
+			float heMain = heuristiqueMain();
+			return heMain + hePlis;
+		}
+		float heuristiquePartieEnCour3() {
+			float hePlis = heuristiquePlis() * 2 / ((float)nbCartesInconnue());
+			float heMain = heuristiqueMain();
+			return heMain + hePlis;
 		}
 		
 		int nbCartesInconnue() {
 			return CartesMIA.nbCartes(info.cartesInconnues(mainJ));
 		}
-		
 		int nbCartesMain() {
 			return CartesMIA.nbCartes(mainJ);
 		}
@@ -472,7 +556,6 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 		public int hashCode(){
 			return this.toString().hashCode();
 		}
-		
 		@Override
 		public boolean equals(Object o){
 			if(getClass()!=o.getClass()){
@@ -487,7 +570,6 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 					c.estIA==estIA &&
 					c.info.equals(info);
 		}
-
 		@Override
 		public ConfigurationIA clone() {
 			ConfigurationIA c;
@@ -495,12 +577,10 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			c.info = info.clone();
 			return c;
 		}
-		
 		@Override
 		public String toString() {
 			return mainJ + " " + joueur + " " + phase + " " + carte + " " + atout + " " + estIA +  " | " + info;
 		}
-
 		@Override
 		public int compareTo(ConfigurationIA c) { // A REFAIRE
 			return 0;//(int) ((Float)(heuristique()*10)).compareTo(c.heuristique()*10);
