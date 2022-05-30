@@ -26,6 +26,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.RepaintManager;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
@@ -946,7 +947,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     
     @Override
     public void jouePartie() {
-        long delayIA = 2000;// en ms
+        long delayIA = 5000;// en ms
         long timer;
         c.fixerInterfaceUtilisateur(this);
         if (j.estIA(j.quiJoue()) && !j.manchefini()) {
@@ -961,9 +962,9 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                     actionCartePileIA(nb);
                 }
             }
-            /*while (System.currentTimeMillis() - timer < delayIA) {
+            while (System.currentTimeMillis() - timer < delayIA) {
                // A "threder" pour ne pas freeze l'interface graphique
-            }*/
+            }
         } else {
             nb = indiceC;
         }
@@ -1016,9 +1017,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
                     }
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
-                    }
                     break;
                 case 1:
                     quigagne.setText("");
@@ -1035,9 +1033,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                         tourJ1.setVisible(false);
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
-                    }
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
                     }
                     break;
                 case 2:
@@ -1057,9 +1052,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                     carteJ1.setIcon(null);
                     carteJ2.setIcon(null);
                     piocher = !(j.pilevide(1) && j.pilevide(2) && j.pilevide(3) && j.pilevide(4) && j.pilevide(5) && j.pilevide(6));
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
-                    }
                     break;
                 case 3:
                     quigagne.setText("");
@@ -1073,11 +1065,11 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
                     }
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
-                    }
                     afficherCarteG();
                     break;
+            }
+            if(j.estIA(j.quiJoue())){
+                jouePartie();
             }
         } else {
             if (!j.partifini()) {

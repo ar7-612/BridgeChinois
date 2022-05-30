@@ -85,9 +85,9 @@ public class InterfaceTestIA implements InterfaceUtilisateur {
     //Pour test IA
     @Override
     public void Configuration() {
-    	String modeJ1 = "medium";
-    	String modeJ2 = "hard";
-    	int nbManches = 10;
+    	String modeJ1 = "cartePiochePire";
+    	String modeJ2 = "default";
+    	int nbManches = 100;
     	/*
     	System.out.println("modes : easy, medium, hard, alea");
     	System.out.print("mode ia 1 : ");

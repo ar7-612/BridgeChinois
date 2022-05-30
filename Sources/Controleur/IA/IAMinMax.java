@@ -51,9 +51,12 @@ public class IAMinMax extends IAbase {
 			profondeurMax = 10;
 			break;
 		case 2 :
-		default :
 			delayVise = 3000;
 			delayMax = 5000;
+			profondeurMax = 120;
+		default :
+			delayVise = 100;
+			delayMax = 100;
 			profondeurMax = 120;
 			break;
 		}
@@ -118,10 +121,10 @@ public class IAMinMax extends IAbase {
 			float caractere;
 			switch(difficulte) {
 			case 0:
-				caractere = 1f;
+				caractere = CartesMIA.nbCartes(ensembleIncertain);
 				break;
 			case 1:
-				caractere = 1f;
+				caractere = CartesMIA.nbCartes(ensembleIncertain);
 				break;
 			case 2:
 			default:
@@ -180,12 +183,19 @@ public class IAMinMax extends IAbase {
 			case 2 : 
 				if(config.getJoueur()==joueurIA-1) {
 					ensemble1 = config.getPiochePossible();
-					//cartePioche = config.carteIncMax();
-					cartePioche = config.carteIncMoy();
+					if(difficulte==-12) {
+						cartePioche = config.carteIncMax();
+					} else {
+						cartePioche = config.carteIncMoy();
+					}
+					
 				} else {
 					ensemble1 = config.getPiochePossible();
-					//cartePioche = config.carteIncMin();
-					cartePioche = config.carteIncMoy();
+					if(difficulte==-12) {
+						cartePioche = config.carteIncMin();
+					} else {
+						cartePioche = config.carteIncMoy();
+					}
 				}
 				break;
 			case 3 :
