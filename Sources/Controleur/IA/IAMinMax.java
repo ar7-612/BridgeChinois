@@ -30,9 +30,8 @@ class TimeCheckException extends Exception {
 
 public class IAMinMax extends IAbase {
 	/* IAMinMax (constructeur)
-	 * heuristique
-	 * incertitude
-	 * choisirCarte
+	 * heuristique 
+	 * incertitude 
 	 */
 	int difficulte;
 	long delayVise;
@@ -445,7 +444,7 @@ public class IAMinMax extends IAbase {
 		}
 		return retour;
 	}
-	private int choisirCarte(List<Couple<Integer,Float>> listeCartes) {
+	/*private int choisirCarte(List<Couple<Integer,Float>> listeCartes) {
 		int retour;
 		int i=listeCartes.size()-1;
 		retour = listeCartes.get(i).v;
@@ -471,7 +470,7 @@ public class IAMinMax extends IAbase {
 			}
 		}
 		return retour;
-	}
+	}*/
 	@Override
  	public int jouerCoup() {
 		if(r==null) { // Initialisation
@@ -501,7 +500,7 @@ public class IAMinMax extends IAbase {
         	throw new RuntimeException("l'IA n'as pas trouvee de coups possible");
         }
         listeCartes.sort(null);
-        retour=trouverIndice(choisirCarte(listeCartes));
+        retour=trouverIndice(listeCartes.get(listeCartes.size()-1).v);
 		//System.err.print(profondeur + " ");
 		//System.err.println("Carte : "+TestsIA.iToS(listeCartes.get(listeCartes.size()-1).v)+", indice : "+retour);
 		return retour;
