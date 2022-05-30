@@ -510,7 +510,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 				heMain*=-1;
 			}
 			if(phase==1) {
-				//heCarte -= info.esperanceMoy(carte, atout, (joueur+1)%2, mainJ);
+				heCarte -= info.esperanceMoy(carte, atout, joueur, mainJ);
 			}
 			return heMain + heCarte;
 		}
@@ -540,7 +540,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return heMain + hePlis;
 		}
 		float heuristiquePartieEnCour3() {
-			float hePlis = heuristiquePlis() * 2 / ((float)nbCartesInconnue());
+			float hePlis = 0;//heuristiquePlis();
 			float heMain = heuristiqueMain();
 			return heMain + hePlis;
 		}

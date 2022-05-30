@@ -478,7 +478,7 @@ public class InterfaceGraphique extends JFrame{
         IAJ2.setBounds(52, 294, 130, 42);
 
         typeIAJ2.setFont(new Font("Times New Roman", 0, 20));
-        typeIAJ2.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile" }));
+        typeIAJ2.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile", "Moyenne", "Difficile" }));
         typeIAJ2.setEnabled(false);
         Joueurs.add(typeIAJ2);
         typeIAJ2.setBounds(213, 294, 140, 43);
@@ -564,10 +564,16 @@ public class InterfaceGraphique extends JFrame{
         if(humanJ1.isSelected()){
             typeJ1 = "non";
         } else{
-            switch (typeIAJ1.getSelectedItem().toString()) {
+        	switch (typeIAJ1.getSelectedItem().toString()) {
                 case "Facile":
                     typeJ1 = "easy";
                     break;
+                case "Moyenne":
+                	typeJ1 = "medium";
+                	break;
+                case "Difficile":
+                	typeJ1 = "hard";
+                	break;
                 case "Aléatoire":
                     typeJ1 = "alea";
                     break;
