@@ -238,15 +238,33 @@ class TestsIA {
 		 */
 		int atout = -1;
 		int[] cartesJ1  = {c("VC"),c("DC"),c("RC")};
-		int[] connuesJ2 = {c("2C"),c("3C"),c("4C")};//c("VH")
+		int[] connuesJ2 = {c("2C"),c("3C"),c("4C")};
+		return configFin(atout,cartesJ1,connuesJ2);
+	}
+	static ConfigurationIA config4_1() {
+		/* Attendu : 
+		 * Resultat : 
+		 * 
+		 */
+		int atout = -1;
+		int[] cartesJ1  = {c("VC"),c("DC"),c("RC")};
+		int[] connuesJ2 = {c("2C"),c("3C")};
+		return configFin(atout,cartesJ1,connuesJ2,0,c("4C"),1);
+	}
+	static ConfigurationIA config4_2() {
+		/* Attendu : 
+		 * Resultat : 
+		 * 
+		 */
+		int atout = 1;
+		int[] cartesJ1  = {c("VC"),c("DC"),c("2H")};
+		int[] connuesJ2 = {c("2C"),c("3C"),c("4C")};
 		return configFin(atout,cartesJ1,connuesJ2);
 	}
 	
 	/************************
 	 * TESTS PIOCHE PARTIEL *
 	 ************************/
-	
-	
 	
 	static ConfigurationIA configTest1() {
 		/* Attendu : 

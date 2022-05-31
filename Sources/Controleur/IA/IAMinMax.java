@@ -3,6 +3,7 @@ package Controleur.IA;
 import java.util.Deque;
 //import java.util.HashMap;
 import java.util.Hashtable;
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 //import java.util.Hashtable;
@@ -18,18 +19,50 @@ import Modele.Main;
 
 //joueur : 0 ou 1
 
-class TimeCheckException extends Exception {
+class TimeCheckException extends Exception  implements Serializable {
 	/**
 	 * utile pour sortir de la recurtion si le temp d'attente est trop important
 	 */
 	private static final long serialVersionUID = 1L; // a verifier
-
 	public TimeCheckException(String m) {
 		super(m);
 	}
 }
 
 public class IAMinMax extends IAbase {
+	/* IAMinMax (constructeur)
+	 * heuristique 
+	 * incertitude 
+	 */
+	int difficulte;
+	long delayVise;
+	long delayMax;
+	int profondeurMax;
+	public IAMinMax(int difficulte){
+		this.difficulte = difficulte;
+		switch(difficulte) {
+		case 0 :
+			delayVise = 500;
+			delayMax = 1000;
+			profondeurMax = 120;
+			break;
+		case 1 :
+			delayVise = 500;
+			delayMax = 1000;
+			profondeurMax = 120;
+			break;
+		case 2 :
+			delayVise = 500;
+			delayMax = 1000;
+			profondeurMax = 120;
+			break;
+		default :
+			delayVise = 500;
+			delayMax = 1000;
+			profondeurMax = 120;
+			break;
+		}
+	}
 	
 	/* 
 	 * fonctions utiles
@@ -81,10 +114,28 @@ public class IAMinMax extends IAbase {
 			break;
 		}
 		if((ensembleIncertain & (1L << configF.getCarte()))!=0) {
-			//0.5	: 183
-			//1		: 189
-			//2		: 180
-			retour = Math.min(1f, 1f / CartesMIA.nbCartes(ensembleIncertain));
+			/* caractere>1 : pessimiste
+			 * caractere<1 : optimiste
+			 * caractere=1 : realiste
+			 * caractere=0 : "si c'est pas sur d'arriver, ca n'arriveras pas"
+			 * caractere=taille : "si ca peut arriver, ca arriverras"
+			 */
+			float caractere;
+			switch(difficulte) {
+			case 0:
+				caractere = 0f;
+				//caractere = 1f;
+				break;
+			case 1:
+				caractere = CartesMIA.nbCartes(ensembleIncertain);
+				//caractere = 1f;
+				break;
+			case 2:
+			default:
+				caractere = 1f;
+				break;
+			}
+			retour = Math.min(1f, caractere / CartesMIA.nbCartes(ensembleIncertain));
 		}
 		return retour;
 	}
@@ -93,77 +144,26 @@ public class IAMinMax extends IAbase {
 		if(config.nbCartesInconnue()==0) {
 			h = config.heuristiquePiocheVide();
 		} else {
-			// 169 164
-			// 164 159
-			// 167 
-			h = config.heuristiquePartieEnCour1();
+			/* heuristiquePartieEnCour1 : prend en compte autant les plis que cartes en main
+			 * heuristiquePartieEnCour2 : prend plus en compte les cartes en main que les plis
+			 * heuristiquePartieEnCour3 : prend uniquement en compte les cartes en main
+			 */
+			switch(difficulte) {
+			case 0:
+				h = config.heuristiquePartieEnCour1();
+				break;
+			case 1:
+				h = config.heuristiquePartieEnCour1();
+				break;
+			case 2:
+			default:
+				h = config.heuristiquePartieEnCour1();
+				break;
+			}
 		}
-		//System.out.println("Heutistique : "+h);
 		return h;
 	}
 
-	/*Deque<ConfigurationIA> trouverFilsV0_1(ConfigurationIA config){ // ne pas utilisee
-		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
-		long ensemble1 = 0;
-		long ensemble2 = 0;
-		switch(config.getPhase()) {
-			case 0 :
-				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossibleDonne();
-				} else {
-					ensemble1 = config.getPossibleDonne();
-				}
-				break;
-			case 1 :
-				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossibleReponse();
-				} else {
-					ensemble1 = config.getPossibleReponse();
-				}
-				break;
-			case 2 : 
-				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossiblePioche();
-					ensemble2 = config.getPossiblePiocheCachee();
-				} else {
-					ensemble1 = config.getPossiblePioche();
-					ensemble2 = config.getPossiblePiocheCachee();
-				}
-				break;
-			case 3 :
-				if(config.getJoueur()==joueurIA-1) {
-					ensemble1 = config.getPossiblePioche();
-					ensemble2 = config.getPossiblePiocheCachee();
-				} else {
-					ensemble1 = config.getPossiblePioche();
-					ensemble2 = config.getPossiblePiocheCachee();
-				}
-				break;
-		}
-		for(int i=0;i<52;i++) {
-			if((ensemble1 & (1L<<i))!=0L) {
-				if(ensemble2==0L) {
-					ConfigurationIA config2 = config.clone();
-					config2.update(i, -1);
-					retour.addFirst(config2);
-				} else {
-					for(int j=0;j<52;j++) {
-						if((ensemble2 & (1L<<j))!=0) {
-							ConfigurationIA config2 = config.clone();
-							config2.update(i, j);
-							retour.addFirst(config2);
-						}
-					}
-				}
-			}
-		}
-		//REFAIRE COMPARAISONS
-		//retour.sort(null);
-		if(retour.isEmpty()) {
-			//System.err.println(" AhA ! "+config);
-		}
-		return retour;
-	}*/
 	Deque<ConfigurationIA> trouverFilsV1_0(ConfigurationIA config){
 		Deque<ConfigurationIA> retour = new ArrayDeque<ConfigurationIA>();
 		long ensemble1 = 0;
@@ -187,12 +187,19 @@ public class IAMinMax extends IAbase {
 			case 2 : 
 				if(config.getJoueur()==joueurIA-1) {
 					ensemble1 = config.getPiochePossible();
-					//cartePioche = config.carteIncMax();
-					cartePioche = config.carteIncMoy();
+					if(difficulte==-12) {
+						cartePioche = config.carteIncMax();
+					} else {
+						cartePioche = config.carteIncMoy();
+					}
+					
 				} else {
 					ensemble1 = config.getPiochePossible();
-					//cartePioche = config.carteIncMin();
-					cartePioche = config.carteIncMoy();
+					if(difficulte==-12) {
+						cartePioche = config.carteIncMin();
+					} else {
+						cartePioche = config.carteIncMoy();
+					}
 				}
 				break;
 			case 3 :
@@ -411,6 +418,21 @@ public class IAMinMax extends IAbase {
 		
 		return config;
 	}
+
+	/*
+	 * 
+	 */
+	
+	Hashtable<ConfigurationIA,ConfigurationIA> configurations;
+	Random r;
+	long startTime;
+	
+	void checkTime() throws TimeCheckException {
+		if(System.currentTimeMillis() - startTime > delayMax) {
+			throw new TimeCheckException("trop long");
+		}
+	}
+	
 	int trouverIndice(int idCarte) {
 		int retour = -10;
 		switch(jeu.phasetourterm()) {
@@ -436,51 +458,50 @@ public class IAMinMax extends IAbase {
 		}
 		return retour;
 	}
-	
-	/*
-	 * 
-	 */
-	
-	Hashtable<ConfigurationIA,ConfigurationIA> configurations;
-	Random r;
-	/* 100 500 100 17.3
-	 * 500 1000 100 17
-	 * 
-	 */
-	long startTime;
-	long delayVise = 3000;// en ms
-	long delayMax = 5000;// en ms
-	int profondeurMax = 100;
-	void checkTime() throws TimeCheckException {
-		if(System.currentTimeMillis() - startTime > delayMax) {
-			throw new TimeCheckException("trop long");
+	/*private int choisirCarte(List<Couple<Integer,Float>> listeCartes) {
+		int retour;
+		int i=listeCartes.size()-1;
+		retour = listeCartes.get(i).v;
+		while(i!=0) {
+			float borneMax; 
+			switch(difficulte) {
+	        case 0:
+	        	borneMax = 2.0f;
+	        	break;
+	        case 1:
+	        	borneMax = 1.5f;
+	        	break;
+	        case 2:
+	        default:// <1 => toujours meilleur carte
+	        	borneMax = 0.5f;
+	        	break;
+	        }
+			if(r.nextFloat(borneMax)<1f) {
+				i = 0;
+			} else {
+				i--;
+				retour = listeCartes.get(i).v;
+			}
 		}
-	}
-	
+		return retour;
+	}*/
 	@Override
-	public int jouerCoup() {
-		
+ 	public int jouerCoup() {
 		if(r==null) { // Initialisation
-			r=new Random(6699);
+			r=new Random();
 			configurations = new Hashtable<>();
 		} else {
 			configurations = new Hashtable<>();
 		}
-		
-		
-		
         ConfigurationIA config = trouverConfiguration();
         List<Couple<Integer,Float>> listeCartes = null;
         int retour = -10;
-        
         startTime = System.currentTimeMillis();
         int profondeur = 0;
-        
         //config = TestsIA.config4();
-        //profondeurMax = profondeur+1;
-        
+        //profondeurMax = profondeur;
         try {
-        	while(System.currentTimeMillis() - startTime < delayVise && profondeur<profondeurMax) {
+        	while(System.currentTimeMillis() - startTime < delayVise && profondeur<=profondeurMax) {
         		listeCartes = minMaxInitial(config,profondeur);
         		profondeur++;
             }
@@ -494,7 +515,7 @@ public class IAMinMax extends IAbase {
         }
         listeCartes.sort(null);
         retour=trouverIndice(listeCartes.get(listeCartes.size()-1).v);
-		//System.err.print(profondeur);
+		//System.err.print(profondeur + " ");
 		//System.err.println("Carte : "+TestsIA.iToS(listeCartes.get(listeCartes.size()-1).v)+", indice : "+retour);
 		return retour;
 	}

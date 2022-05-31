@@ -1,6 +1,8 @@
 package Controleur.IA;
 
-public class Couple<Val, Prio extends Comparable<Prio>> implements Comparable<Couple<Val,Prio>>{
+import java.io.Serializable;
+
+public class Couple<Val, Prio extends Comparable<Prio>> implements Comparable<Couple<Val,Prio>>, Serializable {
 	public Val v;
 	public Prio p;
 

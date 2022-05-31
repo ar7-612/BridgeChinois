@@ -1,5 +1,6 @@
 package Controleur.IA;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -9,7 +10,7 @@ import Controleur.IAbase;
 import Modele.Carte;
 import Modele.Main;
 
-class IAAdHoc extends IAbase {
+class IAAdHoc extends IAbase implements Serializable {
 	
 	float infinie(){
 		// doit etre superieur a l'heuristique max

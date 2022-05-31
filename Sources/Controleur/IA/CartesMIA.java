@@ -1,6 +1,8 @@
 package Controleur.IA;
 
-class CartesMIA {
+import java.io.Serializable;
+
+class CartesMIA implements Serializable {
 	public static final long TREFLE = 0b1111111111111L;
 	public static final long CARREAU = 0b1111111111111L << 13L;
 	public static final long COEUR = 0b1111111111111L << 26L;

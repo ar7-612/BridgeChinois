@@ -1,12 +1,15 @@
 package Controleur;
 
 import Modele.Partie;
+
+import java.io.Serializable;
+
 import Controleur.IA.IAAleatoire;
 import Controleur.IA.IAMinMax;
 import Modele.Joueur;
 
 
-public abstract class IAbase {
+public abstract class IAbase extends Thread implements Serializable  {
 	protected Partie jeu;
 	protected Joueur joueur1;
 	protected Joueur joueur2;
@@ -16,8 +19,14 @@ public abstract class IAbase {
 		if(mode.equals("alea")) {
 			retour = new IAAleatoire();
 		} else if(mode.equals("easy")) {
-			retour = new IAMinMax();
-		} else {
+			retour = new IAMinMax(0);
+		} 
+	 	else if(mode.equals("medium")) {
+		retour = new IAMinMax(1);
+			}
+		 else if(mode.equals("hard")) {
+			retour = new IAMinMax(2);
+		}else {
 			System.err.println("IA inconnue : " + mode);
 		}
 		/*switch(mode){
@@ -33,6 +42,11 @@ public abstract class IAbase {
 		retour.joueurIA = numJ;
 		return retour;
 	}
-	
+	@Override
+	public void run(){
+		jeu.reflechie1();
+		jeu.entierfix(jouerCoup());
+		jeu.reflechie0();
+	}
 	public abstract int jouerCoup();
 }

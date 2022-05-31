@@ -1,6 +1,8 @@
 package Controleur.IA;
 
-class InfoPlateau implements Cloneable{
+import java.io.Serializable;
+
+class InfoPlateau implements Cloneable , Serializable{
 	long[] mainsJ;
 	long[] plisJ;
 	long[] pioche;
@@ -196,7 +198,7 @@ class InfoPlateau implements Cloneable{
 	
 }
 
-class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
+class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> ,Serializable {
 		long mainJ;
 		InfoPlateau info;
 		int joueur;
@@ -510,7 +512,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 				heMain*=-1;
 			}
 			if(phase==1) {
-				//heCarte -= info.esperanceMoy(carte, atout, (joueur+1)%2, mainJ);
+				heCarte -= info.esperanceMoy(carte, atout, joueur, mainJ);
 			}
 			return heMain + heCarte;
 		}
@@ -540,7 +542,7 @@ class ConfigurationIA implements Cloneable, Comparable<ConfigurationIA> {
 			return heMain + hePlis;
 		}
 		float heuristiquePartieEnCour3() {
-			float hePlis = heuristiquePlis() * 2 / ((float)nbCartesInconnue());
+			float hePlis = 0;//heuristiquePlis();
 			float heMain = heuristiqueMain();
 			return heMain + hePlis;
 		}

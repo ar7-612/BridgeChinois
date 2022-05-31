@@ -1,11 +1,12 @@
 package Controleur.IA;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import Controleur.IAbase;
 import Modele.Carte;
 
-public class IAAleatoire extends IAbase {
+public class IAAleatoire extends IAbase implements Serializable {
 
 	Random r;
 
