@@ -43,20 +43,21 @@ public class IAMinMax extends IAbase {
 		case 0 :
 			delayVise = 500;
 			delayMax = 1000;
-			profondeurMax = 4;
+			profondeurMax = 120;
 			break;
 		case 1 :
 			delayVise = 500;
 			delayMax = 1000;
-			profondeurMax = 10;
+			profondeurMax = 120;
 			break;
 		case 2 :
-			delayVise = 3000;
-			delayMax = 5000;
+			delayVise = 500;
+			delayMax = 1000;
 			profondeurMax = 120;
+			break;
 		default :
-			delayVise = 100;
-			delayMax = 100;
+			delayVise = 500;
+			delayMax = 1000;
 			profondeurMax = 120;
 			break;
 		}
@@ -121,10 +122,12 @@ public class IAMinMax extends IAbase {
 			float caractere;
 			switch(difficulte) {
 			case 0:
-				caractere = CartesMIA.nbCartes(ensembleIncertain);
+				caractere = 0f;
+				//caractere = 1f;
 				break;
 			case 1:
 				caractere = CartesMIA.nbCartes(ensembleIncertain);
+				//caractere = 1f;
 				break;
 			case 2:
 			default:
@@ -494,7 +497,7 @@ public class IAMinMax extends IAbase {
         int retour = -10;
         startTime = System.currentTimeMillis();
         int profondeur = 0;
-        //config = TestsIA.config4_2();
+        //config = TestsIA.config4();
         //profondeurMax = profondeur;
         try {
         	while(System.currentTimeMillis() - startTime < delayVise && profondeur<=profondeurMax) {
