@@ -2056,9 +2056,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur , Actio
                 J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
             }
         }
-        afficherCarteReceveur();
-        afficherCarteDonneur();
-        afficherPile();
     }
     
     
