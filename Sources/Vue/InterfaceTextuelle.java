@@ -1,10 +1,12 @@
 package Vue;
 
+import java.io.IOException;
 //import java.lang.module.Configuration;
 import java.util.Scanner;
 //import java.util.concurrent.ExecutionException;
 
 import Modele.Partie;
+
 
 public class InterfaceTextuelle implements InterfaceUtilisateur {
     Partie j;
@@ -31,33 +33,31 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
     @Override
     public void jouePartie() {
 
-        long delayIA = 3000;// en ms
-
+        long delayIA = 60;// en ms
         long timer;
 
         c.fixerInterfaceUtilisateur(this);
         s = new Scanner(System.in);
-
+        
         int entier = -10;
-
+        
         // while (!j.finpartie && s.hasNextLine()) {
         while (!j.finpartie) {
             try {
             	if (j.estIA(j.quiJoue()) && !j.manchefini()) {
+            		
                 	timer = System.currentTimeMillis();
-
                     if (entier == -1 || entier == -2) {
                         // On change rien
                     } else {
                         entier = j.getCoupIA(j.quiJoue());
                     }
-                    //timer = System.currentTimeMillis();
                     while (System.currentTimeMillis() - timer < delayIA) {
                         // A "threder" pour ne pas freeze l'interface graphique
                     }
                 } else {
                     boolean estEntier = false;
-                    while (!estEntier) {
+                    while (!estEntier && s.hasNextInt()) {
                         try {
                             entier = Integer.parseInt(s.nextLine());
                             estEntier = true;
@@ -98,9 +98,17 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
             }
         }
     }
-
+    
     @Override
     public void Configuration() {
+        System.out.println(
+        "Mode de jeu :  tapez 1 pour nouvelle partie et 0 pour charger une partie");
+        String chargesauv = s.nextLine();
+        while (!chargesauv.equals("1") && !chargesauv.equals("0")) {
+        System.out.println("commande inconnu");
+        chargesauv = s.nextLine();
+}
+        if(chargesauv.equals("1")){
         System.out.println(
                 "Mode de jeu :  tapez m pour victoire en nombre de manche et p pour victoire en nombre de point");
         String mode = s.nextLine();
@@ -140,5 +148,17 @@ public class InterfaceTextuelle implements InterfaceUtilisateur {
         }
         j.ModeJoueur(2, typeJ2);
     }
+    else {
+        try {
+            j.charger();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+}
 
 }

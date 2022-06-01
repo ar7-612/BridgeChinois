@@ -7,7 +7,6 @@ import java.util.Scanner;
 import Controleur.IAbase;
 import Patterns.Observable;
 
-import Controleur.IAbase;
 
 public class Partie extends Observable implements Serializable{
 
@@ -27,8 +26,35 @@ public class Partie extends Observable implements Serializable{
     IAbase joueur1IA;
     IAbase joueur2IA;
     Boolean pause;
+    int reflechie1,reflechie2;
+
+    private String modeia2;
+
+    private String modeia1;
+
+    private int reflechie;
+
+    private int entier;
 
     public Partie() {
+        j1 = new Joueur();
+        j2 = new Joueur();
+        donneurdebut = 1;
+        manchecourante = new Manche(j1, j2, donneurdebut);
+        phase = 4;
+        phasetour = 0;
+        nbmanche = 1;
+        score1 = 0;
+        pause=false;
+        score2 = 0;
+        debutpartie = true;
+        finpartie = false;
+        histo = new Historique<Coup>();
+
+        Manches = new ArrayList<Manche>();
+        Manches.add(manchecourante);
+    }
+    public void nouvellePartie(){
         j1 = new Joueur();
         j2 = new Joueur();
         donneurdebut = 1;
@@ -85,6 +111,15 @@ public class Partie extends Observable implements Serializable{
         return nbmanche;
     }
 
+    public void sauvegarder(String str) throws IOException{
+
+        File fichier =  new File(str) ;
+
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fichier));
+
+        oos.writeObject(this);
+        oos.close();
+    }
     public void sauvegarder() throws IOException{
         Scanner sc = new Scanner(System.in);
         
@@ -103,6 +138,18 @@ public class Partie extends Observable implements Serializable{
      * @throws IOException
      * @throws ClassNotFoundException 
      */
+    public void charger(String fichier) throws IOException, ClassNotFoundException{
+
+
+        // ouverture d'un flux sur un fichier
+       // ouverture d'un flux sur un fichier
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fichier));
+
+        // désérialization de l'objet
+        Partie e = (Partie) ois.readObject();
+        fixerPartiechargement(e);
+        ois.close();
+    }
     public void charger() throws IOException, ClassNotFoundException{
         Scanner sc = new Scanner(System.in);
         
@@ -125,16 +172,22 @@ public class Partie extends Observable implements Serializable{
         Manches=p.Manches;
         cartepiochevisible=p.cartepiochevisible;
         manchecourante=p.manchecourante;
-    j1=p.j1; j2=p.j2;
-    Modedejeu=p.Modedejeu;
-    manchefin=p.manchefin;
-    debutpartie=p.debutpartie; finpartie=p.finpartie;
-    phase=p.phase; phasetour=p.phasetour; nbmanche=p.nbmanche; nMax=p.nMax; score1=p.score1; score2=p.score2;
-    donneurdebut=p.donneurdebut;
-    J1EstIA=p.J1EstIA;
-    J2EstIA=p.J2EstIA;
-    joueur1IA=p.joueur1IA;
-    joueur2IA=p.joueur2IA;
+        j1=p.j1; j2=p.j2;
+        Modedejeu=p.Modedejeu;
+        manchefin=p.manchefin;
+        debutpartie=p.debutpartie; finpartie=p.finpartie;
+        phase=p.phase; phasetour=p.phasetour; nbmanche=p.nbmanche; nMax=p.nMax; score1=p.score1; score2=p.score2;
+        donneurdebut=p.donneurdebut;
+        J1EstIA=p.J1EstIA;
+        J2EstIA=p.J2EstIA;
+        modeia1=p.modeia1;
+        modeia2=p.modeia2;
+        pause=p.pause;
+        reflechie=p.reflechie;
+        entier=p.entier;
+        if(modeia1!=null)
+        joueur1IA=IAbase.creerIA(this, j1, j2, 1, modeia1);
+        if(modeia2!=null)        joueur2IA=IAbase.creerIA(this, j1, j2, 2, modeia2);
     }
     /**
      * Renvoie la liste des fichiers contenus dans le dossier sauvegardes
@@ -166,6 +219,8 @@ public class Partie extends Observable implements Serializable{
         if (donneurdebut == 1)
             donneurdebut = 2;
         manchecourante = new Manche(j1, j2, donneurdebut);
+        System.out.println("hh");
+        histo=new Historique<>();
         Manches.add(manchecourante);
         phasetour = 0;
         phase = 4;
@@ -288,7 +343,7 @@ public class Partie extends Observable implements Serializable{
     }
 
     public int quiJoue() {
-        switch (phasetourterm()) {
+        switch (phasetour()) {
             case 0:
                 return quiDonne();
             case 1:
@@ -309,14 +364,18 @@ public class Partie extends Observable implements Serializable{
     	if(mode.equals("non")) {
     		if(joueur==1) {
         		J1EstIA=false;
+                        joueur1IA=null;
         	}else {
         		J2EstIA=false;
+                         joueur2IA=null;
         	}
     	} else {
     		if(joueur==1) {
+                modeia1=mode;
         		J1EstIA=true;
         		joueur1IA = IAbase.creerIA(this,j1,j2,1,mode);
         	}else {
+                modeia2=mode;
         		J2EstIA=true;
         		joueur2IA = IAbase.creerIA(this,j1,j2,2,mode);
         	}
@@ -334,9 +393,19 @@ public class Partie extends Observable implements Serializable{
 
     public int getCoupIA(int joueur) {
         if (joueur == 1) {
-            return joueur1IA.jouerCoup();
+
+            if(!joueur1IA.isAlive())
+                {   
+                    joueur1IA=IAbase.creerIA(this, j1, j2, 1, modeia1);
+                    joueur1IA.start();}
+            return getreflechie();
         } else {
-            return joueur2IA.jouerCoup();
+            reflechie2=1;
+            if(!joueur2IA.isAlive())
+                {   
+                    joueur2IA=IAbase.creerIA(this, j1, j2, 2, modeia2);
+                    joueur2IA.start();}
+            return getreflechie();
         }
     }
 
@@ -349,6 +418,7 @@ public class Partie extends Observable implements Serializable{
     }
 
     public int phasetourterm() {
+
         return phasetour % phase;
     }
   
@@ -414,6 +484,72 @@ public class Partie extends Observable implements Serializable{
     }
     public Carte carteSecav() {
         return manchecourante.carteSecondeav();
+    }
+    public int getreflechie() {
+        if (quiJoue()==1){
+            return reflechie;
+        }
+        else{
+            return reflechie;
+        }
+    }
+    public void reflechie1() {
+        reflechie=1;
+    }
+    public void reflechie0() {
+        reflechie=0;
+    }
+    public int getentier() {
+        if (quiJoue()==1){
+            return entier;
+        }
+        else{
+            return entier;
+        }
+    }
+    public void entierfix(int jouerCoup) {
+        entier=jouerCoup;
+    }
+    public boolean getpause() {
+        return pause;
+    }
+    public boolean IsIa(int quiJoue) {
+        if(quiJoue==1)
+           { if(J1EstIA)
+                return true;
+            else    
+                return false;
+
+           }else
+            {
+                if(J2EstIA)
+                    return true;
+                else 
+                    return false;
+            }
+    }
+    public boolean peutRefaire() {
+        return histo.peutRefaire();
+    }
+    public int taillepile(int pile)
+    {
+        switch(pile)
+        {
+            case 1:
+             return manchecourante.pile1.taille();
+            case 2:
+             return manchecourante.pile2.taille();
+            case 3:
+             return manchecourante.pile3.taille();
+             case 4:
+             return manchecourante.pile4.taille();
+             case 5:
+             return manchecourante.pile5.taille();
+             case 6:
+             return manchecourante.pile6.taille();
+             default:
+                return 0;
+        }
     }
 
 }

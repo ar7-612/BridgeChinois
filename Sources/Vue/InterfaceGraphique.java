@@ -12,6 +12,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import static javax.swing.BorderFactory.createBevelBorder;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -45,12 +46,14 @@ public class InterfaceGraphique extends JFrame{
     JTextField nameJ1,nameJ2,points,manches;
     Partie j;
     CollecteurEvenements c;
+    boolean nouvellepartie;
     
     
     public InterfaceGraphique(Partie j, CollecteurEvenements c){
-        initComponents();
         this.j = j;
         this.c = c;
+        initComponents();
+        nouvellepartie = true;
         this.setLocationRelativeTo(null);
     }
             
@@ -96,12 +99,17 @@ public class InterfaceGraphique extends JFrame{
             @Override
             public void actionPerformed(ActionEvent evt) {
                JFileChooser filec = new JFileChooser();
-               filec.setCurrentDirectory(new File("C:\\Users\\khebt\\Desktop"));
-               int rep = filec.showOpenDialog(null);//select file to open
-               //int rep = filec.showSaveDialog(null); select file to save
+               filec.setCurrentDirectory(new File(System.getProperty("user.dir")));
+               int rep = filec.showOpenDialog(null);
                if(rep == JFileChooser.APPROVE_OPTION){
                     File file = new File(filec.getSelectedFile().getAbsolutePath());
-                    System.out.println(file);
+                   try {
+                       j.charger(file.toString());
+                   } catch (IOException | ClassNotFoundException e) {
+                       e.printStackTrace();
+                   }
+                   nouvellepartie = false;
+                   demarrer();
                  }
             }
         });
@@ -123,6 +131,7 @@ public class InterfaceGraphique extends JFrame{
         regles.setBounds(110, 350, 200, 40);
 
         titre.setFont(new Font("Times New Roman", 3, 48)); 
+        titre.setForeground(Color.white);
         titre.setHorizontalAlignment(SwingConstants.CENTER);
         titre.setText("Bridge Chinois");
         getContentPane().add(titre);
@@ -342,7 +351,7 @@ public class InterfaceGraphique extends JFrame{
             @Override
             public void actionPerformed(ActionEvent evt) {
                 manches.setEnabled(false);
-                manches.setText("5");
+                manches.setText("4");
                 points.setEnabled(true);
             }
         });
@@ -358,7 +367,7 @@ public class InterfaceGraphique extends JFrame{
             @Override
             public void actionPerformed(ActionEvent evt) {
                 points.setEnabled(false);
-                points.setText("5");
+                points.setText("100");
                 manches.setEnabled(true);
             }
         });
@@ -366,12 +375,12 @@ public class InterfaceGraphique extends JFrame{
         radiobtn2.setBounds(71, 206, 113, 49);
 
         points.setFont(new Font("Times New Roman", 0, 20));
-        points.setText("5");
+        points.setText("100");
         condition.add(points);
         points.setBounds(226, 90, 94, 49);
 
         manches.setFont(new Font("Times New Roman", 0, 20));
-        manches.setText("5");
+        manches.setText("4");
         manches.setEnabled(false);
         condition.add(manches);
         manches.setBounds(226, 206, 94, 49);
@@ -428,7 +437,7 @@ public class InterfaceGraphique extends JFrame{
         IAJ1.setBounds(52, 141, 130, 42);
 
         typeIAJ1.setFont(new Font("Times New Roman", 0, 20));
-        typeIAJ1.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile" }));
+        typeIAJ1.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile", "Moyen", "Difficile" }));
         typeIAJ1.setEnabled(false);
         Joueurs.add(typeIAJ1);
         typeIAJ1.setBounds(213, 141, 140, 43);
@@ -478,7 +487,7 @@ public class InterfaceGraphique extends JFrame{
         IAJ2.setBounds(52, 294, 130, 42);
 
         typeIAJ2.setFont(new Font("Times New Roman", 0, 20));
-        typeIAJ2.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile" }));
+        typeIAJ2.setModel(new DefaultComboBoxModel<>(new String[] { "Aléatoire", "Facile", "Moyen", "Difficile" }));
         typeIAJ2.setEnabled(false);
         Joueurs.add(typeIAJ2);
         typeIAJ2.setBounds(213, 294, 140, 43);
@@ -533,13 +542,18 @@ public class InterfaceGraphique extends JFrame{
                 gf.mode.setText(radiobtn2.getText());
                 gf.nbr.setText(manches.getText());
             }
-            Configuration();
+            if(nouvellepartie){
+                Configuration();
+            } else {
+                gf.debuter();
+            }
             gf.metAJour();
             gf.setVisible(true);
             gf.setLocationRelativeTo(null);
             configf.dispose();
         }catch(Exception e){
-            JOptionPane.showMessageDialog(configf, "Vous devez remplir tout les champs !");
+            JOptionPane.showMessageDialog(configf, "Vous devez remplir tout les champs !"+ e);
+            
         }
     }
         
@@ -571,6 +585,12 @@ public class InterfaceGraphique extends JFrame{
                 case "Aléatoire":
                     typeJ1 = "alea";
                     break;
+                case "Moyen":
+                    typeJ1 = "medium";
+                    break;
+                case "Difficile":
+                    typeJ1 = "hard";
+                    break;
                 default:
                     typeJ1 = "alea";
             }
@@ -588,6 +608,12 @@ public class InterfaceGraphique extends JFrame{
                     break;
                 case "Aléatoire":
                     typeJ2 = "alea";
+                    break;
+                case "Moyen":
+                    typeJ2 = "medium";
+                    break;
+                case "Difficile":
+                    typeJ2 = "hard";
                     break;
                 default:
                     typeJ2 = "alea";

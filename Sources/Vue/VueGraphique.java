@@ -7,6 +7,7 @@ package Vue;
 
 import Modele.Carte;
 import Modele.Partie;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -15,6 +16,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+
 import javax.swing.BorderFactory;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import javax.swing.GroupLayout;
@@ -29,7 +32,9 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JSeparator;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
@@ -41,30 +46,32 @@ import javax.swing.border.TitledBorder;
  *
  * @author khebt
  */
-public class VueGraphique extends JFrame implements InterfaceUtilisateur{
+public class VueGraphique extends JFrame implements InterfaceUtilisateur , ActionListener {
     Partie j;
     CollecteurEvenements c;
     JLabel J1c1,J1c2,J1c3,J1c4,J1c5,J1c6,J1c7,J1c8,J1c9,J1c10,J1c11,J2c1,J2c2,J2c3,J2c4,J2c5,J2c6,J2c7,J2c8,J2c9,J2c10,J2c11;
     JLabel pile1,pile2,pile3,pile4,pile5,pile6,crtpile1,crtpile2,crtpile3,crtpile4,crtpile5,crtpile6,carteJ1,carteJ2;    
     JLabel J1pli,J2pli,J1nbrpli,J2nbrpli,tourJ1,tourJ2,quitour,quigagne,action,action2;
-    JLabel nummanche,atout,namej1,namej2,nomJ1,nomJ2;;
-    JLabel scorej1,scorej2,winner,trophy;
-    JTextField j1m1,j2m1,j1m2,j2m2,j1m3,j2m3,j1m4,j2m4,j1m5,j2m5;
-    JLabel nbr,mode;
-    JTextField ptJ1,ptJ2;
-    JButton rejouer;
+    JLabel nummanche,atout,namej1,namej2,nomJ1,nomJ2,scorej1,scorej2,winner,trophy,nbr,mode;
+    JTextField ptJ1,ptJ2,j1m1,j2m1,j1m2,j2m2,j1m3,j2m3,j1m4,j2m4;
+    JButton contin,hide,hide2;
+    JToggleButton pause;
     int indiceC,nb;
     int p1=4,p2=4,p3=4,p4=4,p5=4,p6=4;
     int pli1=1,pli2=1;
-    boolean tourj1 = false, tourj2 = false, piocher = false;
+    boolean tourj1 = false, tourj2 = false, piocher = false, dosj1 = false, dosj2 = false;
     JFrame histof,partief;
-    int r = 1;
+    int r = 1, r2 = 1;
+    private int reflechie;
+    Timer time;
+    int ref;
     
     
     public VueGraphique(Partie j, CollecteurEvenements c)  {
-        initComponents();
         this.j = j;
         this.c = c;
+        ref=0;
+        initComponents();
     }
        
         
@@ -429,9 +436,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
             }
         }
     }
-    
-    
-    
+      
     public void afficherCarteReceveur(){
         if(j.quiRecois() == 1){
             switch (j.joueurReceveur().main().taille()) {
@@ -755,9 +760,198 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     }
     
     
+    public void cacherCarteJ(){
+        if(j.quiJoue() == 2){
+            dosj1 = true;
+            switch (j.joueurReceveur().main().taille()) {
+                case 11:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c10.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c11.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 10:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c10.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 9:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 8:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 7:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));  
+                    break;
+                case 6:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 5:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 4:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 3:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 2:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 1:
+                    J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+            }
+        } else {
+            dosj2 = true;
+            switch (j.joueurReceveur().main().taille()) {
+                case 11:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c10.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c11.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 10:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c10.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 9:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 8:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 7:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));  
+                    break;
+                case 6:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 5:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 4:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 3:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 2:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+                case 1:
+                    J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                    break;
+            }
+        }
+    }
+    
+    
     public void afficherCarteG(){
         if(j.quiDonne() == 1){
-            if(j.quiGagnetour() == 1 || j.quiGagnetour() == 0){
+            if(j.quiGagnetour() == 1){
                 J1c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(0))+".png")));
                 J1c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(1))+".png")));
                 J1c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(2))+".png")));
@@ -783,7 +977,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                 J2c11.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(10))+".png")));
             }
         } else {
-            if(j.quiGagnetour() == 2 || j.quiGagnetour() == 0){
+            if(j.quiGagnetour() == 2){
                 J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(0))+".png")));
                 J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(1))+".png")));
                 J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(2))+".png")));
@@ -813,6 +1007,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     
     
     public void afficherPile() {
+    	Pile();
         Carte[] carteVisible = j.cartevisiblepioche();
         if(!j.pilevide(1)){
             crtpile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(carteVisible[0])+".png")));
@@ -891,6 +1086,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         }
     }
     
+    
     private void afficherGagnantPlisav() {
         if (!j.debutpartie){
             if(j.quiGagnetourav() == 1){
@@ -905,6 +1101,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         }
     }
         
+    
     private void afficherGagnantManche() {
         if (j.quiGagneManche() != 0){
             if(j.quiGagneManche() == 1){
@@ -924,16 +1121,24 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         if (j.quiGagnePartie() != 0){
             trophy.setIcon(new ImageIcon(getClass().getResource("/images/trophe.png")));
             if(j.quiGagnePartie() == 1){
-                winner.setText("Le joueur "+ nomJ1.getText() + " a gagné cette partie");
+                winner.setText(nomJ1.getText() + " a gagné cette partie");
+                ptJ1.setText(Integer.toString(j.scorePartiej1()));
+                J1nbrpli.setText(Integer.toString(j.scorePartiej1()));
             } else {
-                winner.setText("Le joueur " + nomJ2.getText() + " a gagné cette partie");
+                winner.setText(nomJ2.getText() + " a gagné cette partie");
+                ptJ2.setText(Integer.toString(j.scorePartiej2()));
+                J2nbrpli.setText(Integer.toString(j.scorePartiej2()));
             }
+            if(!mode.equals("Point(s)")){
+                scorej1.setText("Points "+nomJ1.getText()+ " : " +j.scorePartiej1());
+                scorej2.setText("Points "+nomJ2.getText()+ " : " +j.scorePartiej2());
+            } else {
+                scorej1.setText("Manches "+nomJ1.getText()+ " : " +j.scoremanchej1());
+                scorej2.setText("Manches "+nomJ2.getText()+ " : " +j.scoremanchej1());
+            }
+        } else{
+            winner.setText("Egalité! Pas de gagnant pour cette partie");
         }
-        else{
-            winner.setText("Egalité ! Pas de gagnant pour cette partie");
-        }
-        scorej1.setText("Score "+nomJ1.getText()+ " : " +j.scorePartiej1());
-        scorej2.setText("Score "+nomJ2.getText()+ " : " +j.scorePartiej2());
     }
     
     
@@ -944,54 +1149,137 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     }
             
     
+    
     @Override
     public void jouePartie() {
-        long delayIA = 2000;// en ms
-        long timer;
+        time = new Timer(1000, this);
         c.fixerInterfaceUtilisateur(this);
         if (j.estIA(j.quiJoue()) && !j.manchefini()) {
-            timer = System.currentTimeMillis();
-            if (nb == -1 || nb == -2) {
-                // On change rien
-            } else {
-                nb = j.getCoupIA(j.quiJoue());
-                if(piocher != true){
-                    actionCarteIA();
-                } else {
-                    actionCartePileIA(nb);
+            if (indiceC == -1 || indiceC == -2) {
+                reflechie=0;
+                nb = indiceC;
+                switch (c.commande(nb)) {
+                    case 0:
+                        break;
+                    case 1  :
+                        action.setText("Vous n'avez pas choisi de");
+                        action2.setText("carte sur l'une des piles");
+                        break; 
+                    case 2:
+                        action.setText("Vous n'avez pas choisi de carte");
+                        break; 
+                    case 4:
+                        if((j.quiRecois() == 1 && dosj1 != true) || (j.quiRecois() == 2 && dosj2 != true)){
+                            afficherCarteReceveur();
+                        } else {
+                            cacherCarteJ();
+                        }
+                        if(j.quiRecois() == 1){
+                            carteJ1.setIcon(null);
+                        } else{
+                            carteJ2.setIcon(null);
+                        }
+                        action.setText("Vous devez jouer la couleur");
+                        action2.setText(j.cartePremCouleur());
+                        break; 
                 }
+                indiceC=-10;
+                metAJour();
+            } else {
+                if(reflechie!=1 && ref==0){
+                nb = j.getCoupIA(j.quiJoue());
+                time.start();}
             }
             /*while (System.currentTimeMillis() - timer < delayIA) {
                // A "threder" pour ne pas freeze l'interface graphique
             }*/
         } else {
             nb = indiceC;
+            switch (c.commande(nb)) {
+                case 0:
+                    break;
+                case 1  :
+                    action.setText("Vous n'avez pas choisi de");
+                    action2.setText("carte sur l'une des piles");
+                    break; 
+                case 2:
+                    action.setText("Vous n'avez pas choisi de carte");
+                    break; 
+                case 4:
+                    if((j.quiRecois() == 1 && dosj1 != true) || (j.quiRecois() == 2 && dosj2 != true)){
+                        afficherCarteReceveur();
+                    } else {
+                        cacherCarteJ();
+                    }
+                    if(j.quiRecois() == 1){
+                        carteJ1.setIcon(null);
+                    } else{
+                        carteJ2.setIcon(null);
+                    }
+                    action.setText("Vous devez jouer la couleur");
+                    action2.setText(j.cartePremCouleur());
+                    break; 
+            }
+            metAJour();
         }
-           
-        switch (c.commande(nb)) {
-            case 0:
-                break;
-            case 1  :
-                action.setText("Vous n'avez pas choisi de");
-                action2.setText("carte sur l'une des piles");
-                break; 
-            case 2:
-                action.setText("Vous n'avez pas choisi de carte");
-                break; 
-            case 4:
-                afficherCarteReceveur();
-                if(j.quiRecois() == 1){
-                    carteJ1.setIcon(null);
-                } else{
-                    carteJ2.setIcon(null);
-                }
-                action.setText("Vous devez jouer la couleur");
-                action2.setText(j.cartePremCouleur());
-                break; 
-        }
-        metAJour();
     }
         
+    
+    public void debuter(){
+        if(j.phase() == 2){
+            afficherGagnantPlisav();
+        }
+        action.getText();
+        action2.getText();
+        quigagne.getText();
+        ptJ1.setText(Integer.toString(j.scorePartiej1()));
+        if(j.getpause() == true){
+            pause.setSelected(true);
+        }
+        if(j.scorePartiej1() != 0){
+            if(j.scorePartiej1() == 1){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png")));
+            } else if(j.scorePartiej1() >= 2){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png")));
+            } 
+        } else {
+            J1pli.setIcon(null);
+        }
+        ptJ2.setText(Integer.toString(j.scorePartiej2()));
+        if(j.scorePartiej2() != 0){
+            if(j.scorePartiej2() == 1){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png")));
+            } else if(j.scorePartiej1() >= 2){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png")));
+            } 
+        } else {
+            J2pli.setIcon(null);
+        }
+        J1nbrpli.setText(Integer.toString(j.scorePartiej1()));
+        J2nbrpli.setText(Integer.toString(j.scorePartiej2()));
+        afficherCarteDonneur();
+        afficherCarteReceveur();
+        Pile();
+        afficherPile();
+        afficherAtout(atout);
+        if (j.quiDonne() == 1) {
+            tourj1 = true;
+            tourJ1.setVisible(true);
+            tourJ2.setVisible(false);
+            quitour.setText(nomJ1.getText());
+            hide2.setEnabled(true);
+        } else {
+            tourj2 = true;
+            tourJ1.setVisible(false);
+            tourJ2.setVisible(true);
+            quitour.setText(nomJ2.getText());
+            hide.setEnabled(true);
+        }
+        if(j.estIA(j.quiJoue())){
+            jouePartie();
+        }
+    }
+    
     
     public void metAJour() {
         if (!j.partifini() && (!j.tourfini() || j.debutpartie)) {
@@ -1003,6 +1291,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                     action.setText("Choisissez une carte");
                     afficherCarteDonneur();
                     afficherCarteReceveur();
+                    Pile();
                     afficherPile();
                     afficherAtout(atout);
                     if (j.quiDonne() == 1) {
@@ -1010,18 +1299,20 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                         tourJ1.setVisible(true);
                         tourJ2.setVisible(false);
                         quitour.setText(nomJ1.getText());
+                        hide2.setEnabled(true);
                     } else {
                         tourj2 = true;
                         tourJ1.setVisible(false);
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
+                        hide.setEnabled(true);
                     }
-                    if(j.estIA(j.quiJoue())){
+                    if(j.estIA(j.quiJoue())&& !j.partifini()){
                         jouePartie();
                     }
+                    //piocher = false;
                     break;
                 case 1:
-                    quigagne.setText("");
                     afficherPile();
                     if (j.quiDonne() == 2) {
                         tourj2 = false;
@@ -1029,16 +1320,21 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                         tourJ1.setVisible(true);
                         tourJ2.setVisible(false);
                         quitour.setText(nomJ1.getText());
+                        hide.setEnabled(false);
+                        hide2.setEnabled(true);
                     } else {
                         tourj1 = false;
                         tourj2 = true;
                         tourJ1.setVisible(false);
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
+                        hide2.setEnabled(false);
+                        hide.setEnabled(true);
                     }
-                    if(j.estIA(j.quiJoue())){
+                    if(j.estIA(j.quiJoue()) && !j.partifini()){
                         jouePartie();
                     }
+                    //piocher = false;
                     break;
                 case 2:
                     action.setText("Piochez une carte dans une");
@@ -1046,80 +1342,111 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                     afficherGagnantPlis();
                     afficherPile();
                     if (j.quiGagnetour() == 1) {
-                        tourJ1.setVisible(true);
-                        tourJ2.setVisible(false);
-                        quitour.setText(nomJ1.getText());
-                    } else {
-                        tourJ1.setVisible(false);
-                        tourJ2.setVisible(true);
-                        quitour.setText(nomJ2.getText());
-                    }
-                    carteJ1.setIcon(null);
-                    carteJ2.setIcon(null);
-                    piocher = !(j.pilevide(1) && j.pilevide(2) && j.pilevide(3) && j.pilevide(4) && j.pilevide(5) && j.pilevide(6));
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
-                    }
-                    break;
-                case 3:
-                    quigagne.setText("");
-                    afficherPile();
-                    if (j.quiGagnetour() == 2) {
-                        tourJ1.setVisible(true);
-                        tourJ2.setVisible(false);
-                        quitour.setText(nomJ1.getText());
-                    } else {
-                        tourJ1.setVisible(false);
-                        tourJ2.setVisible(true);
-                        quitour.setText(nomJ2.getText());
-                    }
-                    if(j.estIA(j.quiJoue())){
-                        jouePartie();
-                    }
-                    afficherCarteG();
-                    break;
-            }
-        } else {
-            if (!j.partifini()) {
-                if (j.phase() == 2 && !j.manchefini()) {
-                    afficherGagnantPlisav();
-                    afficherCarteDonneur();
-                    carteJ1.setIcon(null);
-                    carteJ2.setIcon(null);
-                }
-                if (j.manchefini()) {
-                    afficherGagnantPlis();
-                    afficherGagnantManche();
-                    rejouer.setEnabled(true);
-                    action.setText("Pour rejouer cliquez");
-                    action2.setBounds(30, 430, 261, 41);
-                    action2.setText("sur le bouton REJOUER");
-                } else {
-                    action.setText("Choisissez une carte");
-                    action2.setText("");
-                    afficherPile();
-                    afficherCarteReceveur();
-                    piocher = false;
-                    if(j.quiGagnetourav() == 1){
                         tourj1 = true;
                         tourj2 = false;
                         tourJ1.setVisible(true);
                         tourJ2.setVisible(false);
                         quitour.setText(nomJ1.getText());
+                        hide.setEnabled(false);
+                        hide2.setEnabled(true);
                     } else {
-                        tourj2 = true;
                         tourj1 = false;
+                        tourj2 = true;
                         tourJ1.setVisible(false);
                         tourJ2.setVisible(true);
                         quitour.setText(nomJ2.getText());
+                        hide.setEnabled(true);
+                        hide2.setEnabled(false);
                     }
-                    if(j.estIA(j.quiJoue())){
+                    //piocher = !(j.pilevide(1) && j.pilevide(2) && j.pilevide(3) && j.pilevide(4) && j.pilevide(5) && j.pilevide(6));
+                    if(j.estIA(j.quiJoue())&& !j.partifini()){
+                        jouePartie();
+                    }
+                    break;
+                case 3:
+                    quigagne.setText("");
+                    carteJ1.setIcon(null);
+                    carteJ2.setIcon(null);
+                    afficherPile();
+                    if (j.quiGagnetour() == 2) {
+                        tourj1 = true;
+                        tourj2 = false;
+                        tourJ1.setVisible(true);
+                        tourJ2.setVisible(false);
+                        quitour.setText(nomJ1.getText());
+                        hide.setEnabled(false);
+                        hide2.setEnabled(true);
+                    } else {
+                        tourj1 = false;
+                        tourj2 = true;
+                        tourJ1.setVisible(false);
+                        tourJ2.setVisible(true);
+                        quitour.setText(nomJ2.getText());
+                        hide.setEnabled(true);
+                        hide2.setEnabled(false);
+                    }
+                    if(j.estIA(j.quiJoue())&& !j.partifini()){
+                        jouePartie();
+                    }
+                    if((tourj1 != true && dosj1 != true) || (tourj2 != true && dosj2 != true)){
+                        afficherCarteG();
+                    } else {
+                        cacherCarteJ();
+                    }
+                    //piocher = !(j.pilevide(1) && j.pilevide(2) && j.pilevide(3) && j.pilevide(4) && j.pilevide(5) && j.pilevide(6));
+                    break;
+            }
+            piocher = j.phasetourterm()==2 || j.phasetourterm()==3;
+        } else {
+            if (!j.partifini()) {
+                if (j.phase() == 2 && !j.manchefini()) {
+                    afficherGagnantPlisav();
+                    afficherCarteDonneur();
+                }
+                if (j.manchefini()) {
+                    afficherGagnantPlis();
+                    afficherGagnantManche();
+                    contin.setEnabled(true);
+                    action.setText("Pour continuer appuyez sur");
+                    action2.setText("CONTINUER");
+                } else {
+                    carteJ1.setIcon(null);
+                    carteJ2.setIcon(null);
+                    action.setText("Choisissez une carte");
+                    action2.setText("");
+                    afficherPile();
+                    if((j.quiRecois() == 1 && dosj1 != true) || (j.quiRecois() == 2 && dosj2 != true)){
+                        afficherCarteReceveur();
+                    } else {
+                        cacherCarteJ();
+                    }
+                    piocher = false;
+                    if(j.quiDonne()== 1){
+                        tourj1 = true;
+                        tourj2 = false;
+                        tourJ1.setVisible(true);
+                        tourJ2.setVisible(false);
+                        quitour.setText(nomJ1.getText());
+                        hide.setEnabled(false);
+                        hide2.setEnabled(true);
+                    } else {
+                        tourj1 = false;
+                        tourj2 = true;
+                        tourJ1.setVisible(false);
+                        tourJ2.setVisible(true);
+                        quitour.setText(nomJ2.getText());
+                        hide.setEnabled(true);
+                        hide2.setEnabled(false);
+                    }
+                    if(j.estIA(j.quiJoue())&& !j.partifini()){
                         jouePartie();
                     }
                 }
             } else {
                 afficherGagnantManche();
                 afficherGagnantPartie();
+                tourj1 = true;
+                tourj2 = true;
             }
         }
     }   
@@ -1130,11 +1457,286 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     }
     
     
-    private void deplaceCarte(JLabel carte, JLabel empl){
-       empl.setIcon(carte.getIcon());
+    private void deplaceCarte(JLabel carte, JLabel dest){
+       dest.setIcon(carte.getIcon());
        carte.setIcon(null);
-   }
+    }
     
+    private void deplaceCarteJ(JLabel carte, int i, JLabel dest){
+        if(j.quiJoue() == 1){
+            if(j.quiDonne() == 1){
+                switch(i){
+                    case 0:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(0))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 1:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(1))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 2:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(2))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 3:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(3))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 4:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(4))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 5:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(5))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 6:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(6))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 7:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(7))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 8:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(8))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 9:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(9))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 10:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(10))+".png")));
+                        carte.setIcon(null);
+                        break;
+                }
+            } else {
+                switch(i){
+                    case 0:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(0))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 1:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(1))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 2:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(2))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 3:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(3))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 4:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(4))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 5:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(5))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 6:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(6))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 7:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(7))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 8:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(8))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 9:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(9))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 10:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(10))+".png")));
+                        carte.setIcon(null);
+                        break;
+                }
+            }
+        } else {
+            if(j.quiDonne() == 2){
+                switch(i){
+                    case 0:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(0))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 1:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(1))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 2:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(2))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 3:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(3))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 4:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(4))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 5:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(5))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 6:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(6))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 7:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(7))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 8:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(8))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 9:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(9))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 10:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurDonneur().main().carte(10))+".png")));
+                        carte.setIcon(null);
+                        break;
+                }
+            } else {
+                switch(i){
+                    case 0:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(0))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 1:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(1))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 2:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(2))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 3:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(3))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 4:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(4))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 5:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(5))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 6:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(6))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 7:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(7))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 8:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(8))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 9:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(9))+".png")));
+                        carte.setIcon(null);
+                        break;
+                    case 10:
+                        dest.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(j.joueurReceveur().main().carte(10))+".png")));
+                        carte.setIcon(null);
+                        break;
+                }
+            }
+        }
+   }
+   
+    void peutJouerCarte(int i){
+        if(j.quiJoue() == 1){
+            if(j.JouableSec(i) == true){
+                switch(i){
+                    case 0:
+                        apercuCarte(250, 580, J1c1);
+                        break;
+                    case 1:
+                        apercuCarte(330, 580, J1c2);
+                        break;
+                    case 2:
+                        apercuCarte(400, 580, J1c3);
+                        break;
+                    case 3:
+                        apercuCarte(470, 580, J1c4);
+                        break;
+                    case 4:
+                        apercuCarte(540, 580, J1c5);
+                        break;
+                    case 5:
+                        apercuCarte(620, 580, J1c6);
+                        break;
+                    case 6:
+                        apercuCarte(690, 580, J1c7);
+                        break;
+                    case 7:
+                        apercuCarte(770, 580, J1c8);
+                        break;
+                    case 8:
+                        apercuCarte(840, 580, J1c9);
+                        break;
+                    case 9:
+                        apercuCarte(920, 580, J1c10);
+                        break;
+                    case 10:
+                        apercuCarte(990, 580, J1c11);
+                        break;
+                }
+            }
+        } else {
+            if(j.JouableSec(i) == true){
+                switch(i){
+                    case 0:
+                        apercuCarte(240, 60, J2c1);
+                        break;
+                    case 1:
+                        apercuCarte(320, 60, J2c2);
+                        break;
+                    case 2:
+                        apercuCarte(390, 60, J2c3);
+                        break;
+                    case 3:
+                        apercuCarte(460, 60, J2c4);
+                        break;
+                    case 4:
+                        apercuCarte(530, 60, J2c5);
+                        break;
+                    case 5:
+                        apercuCarte(610, 60, J2c6);
+                        break;
+                    case 6:
+                        apercuCarte(680, 60, J2c7);
+                        break;
+                    case 7:
+                        apercuCarte(760, 60, J2c8);
+                        break;
+                    case 8:
+                        apercuCarte(830, 60, J2c9);
+                        break;
+                    case 9:
+                        apercuCarte(910, 60, J2c10);
+                        break;
+                    case 10:
+                        apercuCarte(980, 60, J2c11);
+                        break;
+                }
+            }
+        }
+    }
     
     private void actionCartePileIA(int i){
         switch(i){
@@ -1201,8 +1803,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         } 
     }
     
-    
-   
     private void actionCartePile(int i, boolean pioche){
         if(pioche == true){
             switch(i){
@@ -1283,105 +1883,249 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         }
     }
     
-    
-    private void actionCarte(JLabel carte, JLabel empl, int i, boolean tour, boolean pioche){
+    private void actionCarte(JLabel carte, JLabel dest, int i, boolean tour, boolean pioche, boolean dosc){
         if(tour != true && pioche != true){
-            deplaceCarte(carte, empl);
             indiceC = i;
+            if(dest == carteJ1){
+                if(dosc == true){
+                    deplaceCarteJ(carte, i, dest);
+                } else {
+                    deplaceCarte(carte, dest);
+                }
+            } else {
+                if(dosc == true){
+                    deplaceCarteJ(carte, i, dest);
+                } else {
+                    deplaceCarte(carte, dest);
+                }
+            }
             jouePartie();
         }
     }
     
     
-    public void actionCarteIA(){
+    public void actionCarteIA(int nb){
         if(j.quiJoue() == 1){
             switch(nb){
                 case 0:
-                    deplaceCarte(J1c1, carteJ1);
+                    deplaceCarteJ(J1c1, 0, carteJ1);
                     break;
                 case 1:
-                    deplaceCarte(J1c2, carteJ1);
+                    deplaceCarteJ(J1c2, 1, carteJ1);
                     break;
                 case 2:
-                    deplaceCarte(J1c3, carteJ1);
+                    deplaceCarteJ(J1c3, 2, carteJ1);
                     break;
                 case 3:
-                    deplaceCarte(J1c4, carteJ1);
+                    deplaceCarteJ(J1c4, 3, carteJ1);
                     break; 
                 case 4:
-                    deplaceCarte(J1c5, carteJ1);
+                    deplaceCarteJ(J1c5, 4, carteJ1);
                     break;
                 case 5:
-                    deplaceCarte(J1c6, carteJ1);
+                    deplaceCarteJ(J1c6, 5, carteJ1);
                     break;
                 case 6:
-                    deplaceCarte(J1c7, carteJ1);
+                    deplaceCarteJ(J1c7, 6, carteJ1);
                     break; 
                 case 7:
-                    deplaceCarte(J1c8, carteJ1);
+                    deplaceCarteJ(J1c8, 7, carteJ1);
                     break;
                 case 8:
-                    deplaceCarte(J1c9, carteJ1);
+                    deplaceCarteJ(J1c9, 8, carteJ1);
                     break;
                 case 9:
-                    deplaceCarte(J1c10, carteJ1);
+                    deplaceCarteJ(J1c10, 9, carteJ1);
                     break; 
                 case 10:
-                    deplaceCarte(J1c11, carteJ1);
+                    deplaceCarteJ(J1c11, 10, carteJ1);
                     break;
             }
         } else {
             switch(nb){
                 case 0:
-                    deplaceCarte(J2c1, carteJ2);
+                    deplaceCarteJ(J2c1, 0, carteJ2);
                     break;
                 case 1:
-                    deplaceCarte(J2c2, carteJ2);
+                    deplaceCarteJ(J2c2, 1, carteJ2);
                     break;
                 case 2:
-                    deplaceCarte(J2c3, carteJ2);
+                    deplaceCarteJ(J2c3, 2, carteJ2);
                     break;
                 case 3:
-                    deplaceCarte(J2c4, carteJ2);
+                    deplaceCarteJ(J2c4, 3, carteJ2);
                     break; 
                 case 4:
-                    deplaceCarte(J2c5, carteJ2);
+                    deplaceCarteJ(J2c5, 4, carteJ2);
                     break;
                 case 5:
-                    deplaceCarte(J2c6, carteJ2);
+                    deplaceCarteJ(J2c6, 5, carteJ2);
                     break;
                 case 6:
-                    deplaceCarte(J2c7, carteJ2);
+                    deplaceCarteJ(J2c7, 6, carteJ2);
                     break; 
                 case 7:
-                    deplaceCarte(J2c8, carteJ2);
+                    deplaceCarteJ(J2c8, 7, carteJ2);
                     break;
                 case 8:
-                    deplaceCarte(J2c9, carteJ2);
+                    deplaceCarteJ(J2c9, 8, carteJ2);
                     break;
                 case 9:
-                    deplaceCarte(J2c10, carteJ2);
+                    deplaceCarteJ(J2c10, 9, carteJ2);
                     break; 
                 case 10:
-                    deplaceCarte(J2c11, carteJ2);
+                    deplaceCarteJ(J2c11, 10, carteJ2);
                     break;
             }
         }
     }
-    
-    /*private void deplacerCartePileIA(JLabel carte, int x, int y, int dest){
-        Timer timer = new Timer(2,new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent evt) {
-                int p = y;
-                if(carte.getY() != dest){
-                    carte.setLocation(x, p--);
-                } 
-            }
-        });
-        timer.start();
 
-    }*/
+    
+    
+    private void continuerManche(){
+        nummanche.setText(Integer.toString(j.nbmanche()));
+        carteJ1.setIcon(null);
+        carteJ2.setIcon(null);
+        ptJ1.setText("0");
+        ptJ2.setText("0");
+        J1pli.setIcon(null);
+        J2pli.setIcon(null);
+        J1nbrpli.setText("0");
+        J2nbrpli.setText("0");
+        pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png")));
+        p1 = 4; p2 = 4; p3 = 4; p4 = 4; p5 = 4; p6 = 4; p6 = 4;
+        pli1 = 1; pli2 = 1;
+        afficherCarteReceveur();
+        afficherCarteDonneur();
+        afficherPile();
+        afficherAtout(atout);
+    }
+    
+    private void annulerCoup(){
+        Carte cartej1,cartej2;
+        if(j.quiJoue() == 1){
+            if(j.quiDonne() == 1){
+                afficherCarteDonneur();
+            } else {
+                afficherCarteReceveur();
+            }
+            carteJ1.setIcon(null);
+        } else {
+            if(j.quiDonne() == 2){
+                afficherCarteDonneur();
+            } else {
+                afficherCarteReceveur();
+            }
+            carteJ2.setIcon(null);
+        } 
+        if(j.quiDonne() == 1) {
+                    cartej1=j.cartePrem();
+                    cartej2=j.carteSec();
+                } else {
+                    cartej1=j.carteSec();
+                    cartej2=j.cartePrem();
+                }
+                if(cartej1!=null) {
+                    carteJ1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(cartej1)+".png")));
+                }
+                if (cartej2!=null){carteJ2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(cartej2)+".png")));}
+        ptJ1.setText(Integer.toString(j.scorePartiej1()));
+        ptJ2.setText(Integer.toString(j.scorePartiej2()));
+        J1nbrpli.setText(Integer.toString(j.scorePartiej1()));
+        J2nbrpli.setText(Integer.toString(j.scorePartiej2()));
+        if(j.scorePartiej1() == 0){
+            J1pli.setIcon(null);
+        } else {
+            if(j.scorePartiej1() == 1){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+            } else if(j.scorePartiej1() >=2){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+            }
+        }
+        if(j.scorePartiej2() == 0){
+            J2pli.setIcon(null);
+        } else {
+            if(j.scorePartiej2() == 1){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+            } else if(j.scorePartiej2() >=2){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+            }
+        }
+    }
+    
+    
+   private void refaireCoup(){
+        if(j.peutRefaire()){
+                Carte cartej1,cartej2;
+                boolean tourJ1;
+                if(j.phasetourterm()==2 && j.quiGagnetour()==j.quiJoue()) {
+                    tourJ1=j.quiJoue()==1;
+                } else {
+                    tourJ1=!(j.quiJoue()==1);
+                }
+                if(j.quiDonne() == 1) {
+                    cartej1=j.cartePrem();
+                    cartej2=j.carteSec();
+                } else {
+                    cartej1=j.carteSec();
+                    cartej2=j.cartePrem();
+                }
+                if(cartej1!=null ) {
+                    carteJ1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(cartej1)+".png")));
+                }
+                if (cartej2!=null){carteJ2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/"+afficherCarte(cartej2)+".png")));}
+                for(int i=0;i<11;i++) {
+                       JLabel label;
+                       switch(i) {
+                       case 0: label = tourJ1?J1c1:J2c1;break;
+                       case 1: label = tourJ1?J1c2:J2c2;break;
+                       case 2: label = tourJ1?J1c3:J2c3;break;
+                       case 3: label = tourJ1?J1c4:J2c4;break;
+                       case 4: label = tourJ1?J1c5:J2c5;break;
+                       case 5: label = tourJ1?J1c6:J2c6;break;
+                       case 6: label = tourJ1?J1c7:J2c7;break;
+                       case 7: label = tourJ1?J1c8:J2c8;break;
+                       case 8: label = tourJ1?J1c9:J2c9;break;
+                       case 9: label = tourJ1?J1c10:J2c10;break;
+                       case 10: label= tourJ1?J1c11:J2c11;break;
+                       default: label = null;
+                       }
+                       if(j.joueurDonneur().main().carte(i)!=null ){
+                           label.setIcon(null);
+                    }
+                       
+               }
+               ptJ1.setText(Integer.toString(j.scorePartiej1()));
+               ptJ2.setText(Integer.toString(j.scorePartiej2()));
+                J1nbrpli.setText(Integer.toString(j.scorePartiej1()));
+                J2nbrpli.setText(Integer.toString(j.scorePartiej2()));
+        if(j.scorePartiej1() == 0){
+            J1pli.setIcon(null);
+        } else {
+            if(j.scorePartiej1() == 1){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+            } else if(j.scorePartiej1() >=2){
+                J1pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+            }
+        }
+        if(j.scorePartiej2() == 0){
+            J2pli.setIcon(null);
+        } else {
+            if(j.scorePartiej2() == 1){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+            } else if(j.scorePartiej2() >=2){
+                J2pli.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+            }
+        }
+             afficherCarteDonneur();
+             afficherCarteReceveur();
+        }
+    }
     
     
     
@@ -1390,11 +2134,12 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         JPanel panel = new JPanel();
         JPanel resume = new JPanel();
         JPanel options = new JPanel();
-        JButton pause = new JButton();
+        pause = new JToggleButton();
         JButton annuler = new JButton();
         JButton refaire = new JButton();
-        rejouer = new JButton();
-        JButton hide = new JButton();
+        contin = new JButton();
+        hide = new JButton();
+        hide2 = new JButton();
         carteJ2 = new JLabel();
         carteJ1 = new JLabel();
         J2pli = new JLabel();
@@ -1468,14 +2213,12 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         JMenuItem newpartie = new JMenuItem();
         JMenuItem save = new JMenuItem();
         JMenuItem historique = new JMenuItem();
-        //JMenuItem config = new JMenuItem();
                
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("Bridge Chinois");
-        setResizable(false);
+        setResizable(false);        
 
-        panel.setPreferredSize(new Dimension(1600, 1000));
         panel.setLayout(null);
         
         jLabel7.setVisible(false);
@@ -1495,11 +2238,11 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         pause.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                //afaire
+                j.pause();
             }
         });
         options.add(pause);
-        pause.setBounds(160, 40, 90, 45);
+        pause.setBounds(170, 40, 110, 45);
 
         annuler.setFont(new Font("Times New Roman", 1, 16)); 
         annuler.setText("ANNULER");
@@ -1508,14 +2251,14 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
             @Override
             public void actionPerformed(ActionEvent evt) {
                 indiceC = -1;
-                carteJ1.setIcon(null);
-                carteJ2.setIcon(null);
                 jouePartie();
+                metAJour();
+                annulerCoup();
             }
         });
 
         options.add(annuler);
-        annuler.setBounds(60, 100, 90, 45);
+        annuler.setBounds(40, 100, 110, 45);
 
         refaire.setFont(new Font("Times New Roman", 1, 16)); 
         refaire.setText("REFAIRE");
@@ -1524,67 +2267,87 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
             @Override
             public void actionPerformed(ActionEvent evt) {
                 indiceC = -2;
-                carteJ1.setIcon(null);
-                carteJ2.setIcon(null);
                 jouePartie();
+                refaireCoup();
             }
         });
         options.add(refaire);
-        refaire.setBounds(160, 100, 90, 45);
+        refaire.setBounds(170, 100, 110, 45);
         
-        rejouer.setFont(new Font("Times New Roman", 1, 16)); 
-        rejouer.setText("REJOUER");
-        rejouer.setEnabled(false);
-        rejouer.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
-        rejouer.addActionListener(new ActionListener() {
+        contin.setFont(new Font("Times New Roman", 1, 16)); 
+        contin.setText("CONTINUER");
+        contin.setEnabled(false);
+        contin.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+        contin.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                //bug
                 indiceC = 1;
                 jouePartie();
+                continuerManche();
             }
         });
-        options.add(rejouer);
-        rejouer.setBounds(60, 40, 90, 45);
+        options.add(contin);
+        contin.setBounds(40, 40, 110, 45);
+        
+        panel.add(options);
+        options.setBounds(1365, 655, 310, 170);
+        panel.add(carteJ2);
+        carteJ2.setBounds(15, 100, 140, 200);
+        panel.add(carteJ1);
+        carteJ1.setBounds(15, 550, 140, 200);
+        
+        
+        hide2.setFont(new Font("Times New Roman", 1, 16)); 
+        hide2.setText("CACHER");
+        hide2.setEnabled(false);
+        hide2.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
+        hide2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                if(tourj1 == true){
+                    r2++;
+                    if(r2 % 2 == 0){
+                        cacherCarteJ();
+                    } else {
+                        dosj2 = false;
+                        if(j.quiRecois() == 2){
+                            afficherCarteReceveur();
+                        } else if(j.quiDonne() == 2){
+                            afficherCarteDonneur();
+                        }
+                    }
+                } 
+            }
+        });
+        panel.add(hide2);
+        hide2.setBounds(155, 180, 80, 30);
+        
         
         hide.setFont(new Font("Times New Roman", 1, 16)); 
         hide.setText("CACHER");
+        hide.setEnabled(false);
         hide.setBorder(new SoftBevelBorder(BevelBorder.RAISED));
         hide.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
-                //not sur a supprimer pas important
-                if(j.joueurDonneur().main().taille() == 11 || j.joueurReceveur().main().taille() == 11){
+                if(tourj2 == true){
                     r++;
                     if(r % 2 == 0){
-                        J2c1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c7.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c8.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c9.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c10.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
-                        J2c11.setIcon(new ImageIcon(getClass().getResource("/images/cartes/dos.png")));
+                        cacherCarteJ();
                     } else {
-                        afficherCarteReceveur();
-                        afficherCarteDonneur();
+                        dosj1 = false;
+                        if(j.quiRecois() == 1){
+                            afficherCarteReceveur();
+                        } else if(j.quiDonne() == 1){
+                            afficherCarteDonneur();
+                        }
                     }
                 }
             }
         });
         panel.add(hide);
-        hide.setBounds(140, 15, 80, 40);
-
-        panel.add(options);
-        options.setBounds(1390, 690, 310, 170);
-        panel.add(carteJ2);
-        carteJ2.setBounds(30, 130, 140, 200);
-        panel.add(carteJ1);
-        carteJ1.setBounds(30, 590, 140, 200);
-
+        hide.setBounds(165, 623, 80, 30);
+        
         
         J2pli.addMouseListener(new MouseAdapter() {
             @Override
@@ -1601,9 +2364,8 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
             }
         });
         panel.add(J2pli);
-        J2pli.setBounds(1150, 50, 141, 196);
+        J2pli.setBounds(1150, 20, 141, 196);
 
-        
         J1pli.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
@@ -1619,243 +2381,309 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
             }
         });
         panel.add(J1pli);
-        J1pli.setBounds(1160, 650, 141, 196);
-
-        J2c1.addMouseListener(new MouseAdapter() {
+        J1pli.setBounds(1160, 620, 141, 196);
+        
+        J2c11.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(240, 90, J2c1);
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c11.getIcon() != null){
+                        peutJouerCarte(10);
+                    } else {
+                        apercuCarte(980, 60, J2c11);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(240, 50, J2c1);
+                apercuCarte(980, 20, J2c11);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c1, carteJ2, 0, tourj1, piocher);
-            }
-        });
-        panel.add(J2c1);
-        J2c1.setBounds(240, 50, 136, 197);
-
-        J2c2.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(320, 90, J2c2);
+                if(!j.estIA(2)){
+                    actionCarte(J2c11, carteJ2, 10, tourj1, piocher, dosj2);
                 }
             }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(320, 50, J2c2);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c2, carteJ2, 1, tourj1, piocher);
-            }
         });
-        panel.add(J2c2);
-        J2c2.setBounds(320, 50, 136, 197);
-
-        J2c3.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(390, 90, J2c3);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(390, 50, J2c3);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c3, carteJ2, 2, tourj1, piocher);
-            }
-        });
-        panel.add(J2c3);
-        J2c3.setBounds(390, 50, 136, 196);
-
-        J2c4.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(460, 90, J2c4);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(460, 50, J2c4);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c4, carteJ2, 3, tourj1, piocher);
-            }
-        });
-        panel.add(J2c4);
-        J2c4.setBounds(460, 50, 136, 196);
-
-        J2c5.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(530, 90, J2c5);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(530, 50, J2c5);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c5, carteJ2, 4, tourj1, piocher);
-            }
-        });
-        panel.add(J2c5);
-        J2c5.setBounds(530, 50, 136, 197);
-
-        J2c6.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(610, 90, J2c6);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(610, 50, J2c6);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c6, carteJ2, 5, tourj1, piocher);
-            }
-        });
-        panel.add(J2c6);
-        J2c6.setBounds(610, 50, 136, 197);
-
-        J2c7.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(680, 90, J2c7);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(680, 50, J2c7);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c7, carteJ2, 6, tourj1, piocher);
-            }
-        });
-        panel.add(J2c7);
-        J2c7.setBounds(680, 50, 136, 197);
-
-        J2c8.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(760, 90, J2c8);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(760, 50, J2c8);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c8, carteJ2, 7, tourj1, piocher);
-            }
-        });
-        panel.add(J2c8);
-        J2c8.setBounds(760, 50, 136, 196);
-
-        J2c9.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(830, 90, J2c9);
-                }
-            }
-            @Override
-            public void mouseExited(MouseEvent evt) {
-                apercuCarte(830, 50, J2c9);
-            }
-            @Override
-            public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c9, carteJ2, 8, tourj1, piocher);
-            }
-        });
-        panel.add(J2c9);
-        J2c9.setBounds(830, 50, 136, 196);
+        panel.add(J2c11);
+        J2c11.setBounds(980, 20, 136, 197);
 
         J2c10.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(910, 90, J2c10);
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c10.getIcon() != null){
+                        peutJouerCarte(9);
+                    } else {
+                        apercuCarte(910, 60, J2c10);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(910, 50, J2c10);
+                apercuCarte(910, 20, J2c10);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c10, carteJ2, 9, tourj1, piocher);
+                if(!j.estIA(2)){
+                    actionCarte(J2c10, carteJ2, 9, tourj1, piocher, dosj2);
+                }
             }
         });
         panel.add(J2c10);
-        J2c10.setBounds(910, 50, 136, 196);
+        J2c10.setBounds(910, 20, 136, 196);
 
-        J2c11.addMouseListener(new MouseAdapter() {
+        J2c9.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj1 != true && piocher != true){
-                    apercuCarte(980, 90, J2c11);
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c9.getIcon() != null){
+                        peutJouerCarte(8);
+                    } else {
+                        apercuCarte(830, 60, J2c9);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(980, 50, J2c11);
+                apercuCarte(830, 20, J2c9);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J2c11, carteJ2, 10, tourj1, piocher);
+                if(!j.estIA(2)){
+                    actionCarte(J2c9, carteJ2, 8, tourj1, piocher, dosj2);
+                }
             }
         });
-        panel.add(J2c11);
-        J2c11.setBounds(980, 50, 136, 197);
+        panel.add(J2c9);
+        J2c9.setBounds(830, 20, 136, 196);
+
+        J2c8.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt ) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c8.getIcon() != null){
+                        peutJouerCarte(7);
+                    } else {
+                        apercuCarte(760, 60, J2c8);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(760, 20, J2c8);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c8, carteJ2, 7, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c8);
+        J2c8.setBounds(760, 20, 136, 196);
+
+        J2c7.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c7.getIcon() != null){
+                        peutJouerCarte(6);
+                    } else {
+                        apercuCarte(680, 60, J2c7);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(680, 20, J2c7);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c7, carteJ2, 6, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c7);
+        J2c7.setBounds(680, 20, 136, 197);        
+
+        J2c6.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c6.getIcon() != null){
+                        peutJouerCarte(5);
+                    } else {
+                        apercuCarte(610, 60, J2c6);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(610, 20, J2c6);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c6, carteJ2, 5, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c6);
+        J2c6.setBounds(610, 20, 136, 197);
+
+        J2c5.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c5.getIcon() != null){
+                        peutJouerCarte(4);
+                    } else {
+                        apercuCarte(530, 60, J2c5);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(530, 20, J2c5);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c5, carteJ2, 4, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c5);
+        J2c5.setBounds(530, 20, 136, 197);
+        
+        J2c4.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c4.getIcon() != null){
+                        peutJouerCarte(3);
+                    } else {
+                        apercuCarte(460, 60, J2c4);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(460, 20, J2c4);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c4, carteJ2, 3, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c4);
+        J2c4.setBounds(460, 20, 136, 196);
+
+        J2c3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c3.getIcon() != null){
+                        peutJouerCarte(2);
+                    } else {
+                        apercuCarte(390, 60, J2c3);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(390, 20, J2c3);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c3, carteJ2, 2, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c3);
+        J2c3.setBounds(390, 20, 136, 196);
+
+        J2c2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c2.getIcon() != null){
+                        peutJouerCarte(1);
+                    } else {
+                        apercuCarte(320, 60, J2c2);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(320, 20, J2c2);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c2, carteJ2, 1, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c2);
+        J2c2.setBounds(320, 20, 136, 197);
+
+        J2c1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent evt) {
+                if(tourj1 != true && piocher != true && !j.estIA(2)){
+                    if(j.quiRecois() == 2 && J2c1.getIcon() != null){
+                        peutJouerCarte(0);
+                    } else {
+                        apercuCarte(240, 60, J2c1);
+                    }
+                }
+            }
+            @Override
+            public void mouseExited(MouseEvent evt) {
+                apercuCarte(240, 20, J2c1);
+            }
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                if(!j.estIA(2)){
+                    actionCarte(J2c1, carteJ2, 0, tourj1, piocher, dosj2);
+                }
+            }
+        });
+        panel.add(J2c1);
+        J2c1.setBounds(240, 20, 136, 197);
 
         resume.setBackground(new Color(204, 204, 204));
         resume.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(), "Résumé", TitledBorder.CENTER, TitledBorder.TOP, new Font("Times New Roman", 3, 26), new Color(255, 255, 255))); 
         resume.setOpaque(false);
         resume.setLayout(null);
 
-        jLabel1.setFont(new Font("Times New Roman", 1, 22)); 
+        jLabel1.setFont(new Font("Times New Roman", 1, 20)); 
         jLabel1.setForeground(new Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel1.setText("Manche");
         resume.add(jLabel1);
         jLabel1.setBounds(86, 80, 105, 30);
 
-        nummanche.setFont(new Font("Times New Roman", 1, 22)); 
+        nummanche.setFont(new Font("Times New Roman", 1, 20)); 
         nummanche.setForeground(new Color(255, 255, 255));
         nummanche.setHorizontalAlignment(SwingConstants.CENTER);
         nummanche.setText("1");
         resume.add(nummanche);
         nummanche.setBounds(192, 80, 26, 30);
 
-        atout.setFont(new Font("Times New Roman", 1, 22)); 
+        atout.setFont(new Font("Times New Roman", 1, 20)); 
         atout.setForeground(new Color(255, 255, 255));
         atout.setHorizontalAlignment(SwingConstants.CENTER);
         resume.add(atout);
         atout.setBounds(78, 116, 161, 47);
 
-        jLabel2.setFont(new Font("Times New Roman", 1, 22)); 
+        jLabel2.setFont(new Font("Times New Roman", 1, 20)); 
         jLabel2.setForeground(new Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel2.setText("L'atout");
@@ -1873,57 +2701,57 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         resume.add(jLabel3);
         jLabel3.setBounds(82, 237, 138, 35);
 
-        jLabel4.setFont(new Font("Times New Roman", 1, 22)); 
+        jLabel4.setFont(new Font("Times New Roman", 1, 20)); 
         jLabel4.setForeground(new Color(255, 255, 255));
         jLabel4.setText("Partie en ");
         resume.add(jLabel4);
         jLabel4.setBounds(32, 33, 91, 41);
 
-        nbr.setFont(new Font("Times New Roman", 1, 22)); 
+        nbr.setFont(new Font("Times New Roman", 1, 20)); 
         nbr.setForeground(new Color(255, 255, 255));
         nbr.setHorizontalAlignment(SwingConstants.CENTER);
         resume.add(nbr);
         nbr.setBounds(129, 33, 41, 41);
 
-        mode.setFont(new Font("Times New Roman", 1, 22)); 
+        mode.setFont(new Font("Times New Roman", 1, 20)); 
         mode.setForeground(new Color(255, 255, 255));
         resume.add(mode);
         mode.setBounds(176, 33, 107, 41);
 
-        jLabel5.setFont(new Font("Times New Roman", 1, 22)); 
+        jLabel5.setFont(new Font("Times New Roman", 1, 20)); 
         jLabel5.setForeground(new Color(255, 255, 255));
         jLabel5.setText("Tour de ");
         resume.add(jLabel5);
         jLabel5.setBounds(30, 280, 90, 41);
 
-        quitour.setFont(new Font("Times New Roman", 1, 22)); 
+        quitour.setFont(new Font("Times New Roman", 1, 20)); 
         quitour.setForeground(new Color(255, 255, 255));
         resume.add(quitour);
         quitour.setBounds(120, 280, 132, 41);
 
         jSeparator2.setForeground(new Color(255, 255, 255));
         resume.add(jSeparator2);
-        jSeparator2.setBounds(6, 488, 298, 9);
+        jSeparator2.setBounds(6, 470, 298, 9);
 
         jLabel6.setFont(new Font("Times New Roman", 3, 26)); 
         jLabel6.setForeground(new Color(255, 255, 255));
         jLabel6.setHorizontalAlignment(SwingConstants.CENTER);
         jLabel6.setText("Points");
         resume.add(jLabel6);
-        jLabel6.setBounds(100, 500, 103, 41);
+        jLabel6.setBounds(100, 480, 103, 41);
 
-        nomJ1.setFont(new Font("Times New Roman", 1, 22)); 
+        nomJ1.setFont(new Font("Times New Roman", 1, 20)); 
         nomJ1.setForeground(new Color(255, 255, 255));
         resume.add(nomJ1);
-        nomJ1.setBounds(80, 550, 95, 35);
+        nomJ1.setBounds(80, 530, 95, 35);
 
-        nomJ2.setFont(new Font("Times New Roman", 1, 22)); 
+        nomJ2.setFont(new Font("Times New Roman", 1, 20)); 
         nomJ2.setForeground(new Color(255, 255, 255));
         resume.add(nomJ2);
-        nomJ2.setBounds(80, 600, 95, 31);
+        nomJ2.setBounds(80, 580, 95, 31);
 
         ptJ1.setBackground(new Color(204, 204, 204));
-        ptJ1.setFont(new Font("Times New Roman", 1, 22)); 
+        ptJ1.setFont(new Font("Times New Roman", 1, 20)); 
         ptJ1.setForeground(new Color(255, 255, 255));
         ptJ1.setHorizontalAlignment(JTextField.CENTER);
         ptJ1.setText("0");
@@ -1931,10 +2759,10 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         ptJ1.setFocusable(false);
         ptJ1.setOpaque(false);
         resume.add(ptJ1);
-        ptJ1.setBounds(180, 550, 44, 31);
+        ptJ1.setBounds(180, 530, 44, 31);
 
         ptJ2.setBackground(new Color(204, 204, 204));
-        ptJ2.setFont(new Font("Times New Roman", 1, 22)); 
+        ptJ2.setFont(new Font("Times New Roman", 1, 20)); 
         ptJ2.setForeground(new Color(255, 255, 255));
         ptJ2.setHorizontalAlignment(JTextField.CENTER);
         ptJ2.setText("0");
@@ -1942,408 +2770,490 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         ptJ2.setFocusable(false);
         ptJ2.setOpaque(false);
         resume.add(ptJ2);
-        ptJ2.setBounds(180, 600, 44, 31);
+        ptJ2.setBounds(180, 580, 44, 31);
 
-        quigagne.setFont(new Font("Times New Roman", 1, 22)); 
+        quigagne.setFont(new Font("Times New Roman", 1, 20)); 
         quigagne.setForeground(new Color(255, 255, 255));
         resume.add(quigagne);
-        quigagne.setBounds(30, 340, 260, 41);
+        quigagne.setBounds(30, 330, 260, 41);
         
-        action.setFont(new Font("Times New Roman", 1, 22)); 
+        action.setFont(new Font("Times New Roman", 1, 20)); 
         action.setForeground(new Color(255, 255, 255));
+        action.setText("vueillez choisir la couleur");
         resume.add(action);
-        action.setBounds(30, 400, 260, 41);
+        action.setBounds(30, 385, 260, 41);
         
-        action2.setFont(new Font("Times New Roman", 1, 22)); 
+        action2.setFont(new Font("Times New Roman", 1, 20)); 
         action2.setForeground(new Color(255, 255, 255));
         action2.setHorizontalAlignment(SwingConstants.CENTER);
         resume.add(action2);
-        action2.setBounds(70, 430, 180, 41);
+        action2.setBounds(70, 415, 180, 41);
 
         panel.add(resume);
-        resume.setBounds(1390, 30, 310, 660);
+        resume.setBounds(1365, 10, 310, 640);
 
         jLabel7.setFont(new Font("Times New Roman", 1, 18)); 
         jLabel7.setForeground(new Color(255, 255, 255));
         jLabel7.setText("Nombre de pli :");
         panel.add(jLabel7);
-        jLabel7.setBounds(1150, 610, 121, 40);
+        jLabel7.setBounds(1160, 585, 121, 40);
 
         J1nbrpli.setFont(new Font("Times New Roman", 1, 18)); 
         J1nbrpli.setForeground(new Color(255, 255, 255));
+        J1nbrpli.setText("0");
         panel.add(J1nbrpli);
-        J1nbrpli.setBounds(1280, 610, 40, 40);
+        J1nbrpli.setBounds(1290, 585, 40, 40);
 
         jLabel8.setFont(new Font("Times New Roman", 1, 18)); 
         jLabel8.setForeground(new Color(255, 255, 255));
         jLabel8.setText("Nombre de pli :");
         panel.add(jLabel8);
-        jLabel8.setBounds(1140, 10, 121, 40);
+        jLabel8.setBounds(1150, 210, 121, 40);
 
         J2nbrpli.setFont(new Font("Times New Roman", 1, 18)); 
         J2nbrpli.setForeground(new Color(255, 255, 255));
+        J2nbrpli.setText("0");
         panel.add(J2nbrpli);
-        J2nbrpli.setBounds(1270, 10, 40, 40);
+        J2nbrpli.setBounds(1280, 210, 40, 40);
 
         crtpile1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(150, 320, crtpile1);
-                }
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(150, 280, crtpile1);
+                    } 
+                } 
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(150, 360, crtpile1);
+                apercuCarte(150, 320, crtpile1);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(1,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(1,piocher);
+                }
             }
         });
         panel.add(crtpile1);
-        crtpile1.setBounds(150, 360, 136, 197);
+        crtpile1.setBounds(150, 320, 136, 197);
 
         crtpile2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(340, 320, crtpile2);
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(340, 280, crtpile2);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(340, 360, crtpile2);
+                apercuCarte(340, 320, crtpile2);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(2,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(2,piocher);
+                }
             }
         });
         panel.add(crtpile2);
-        crtpile2.setBounds(340, 360, 136, 196);
+        crtpile2.setBounds(340, 320, 136, 196);
 
         crtpile3.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(530, 320, crtpile3);
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(530, 280, crtpile3);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(530, 360, crtpile3);
+                apercuCarte(530, 320, crtpile3);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(3,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(3,piocher);
+                }
             }
         });
         panel.add(crtpile3);
-        crtpile3.setBounds(530, 360, 136, 196);
+        crtpile3.setBounds(530, 320, 136, 196);
 
         crtpile4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(720, 320, crtpile4); 
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(720, 280, crtpile4); 
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(720, 360, crtpile4);
+                apercuCarte(720, 320, crtpile4);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(4,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(4,piocher);
+                }
             }
         });
         panel.add(crtpile4);
-        crtpile4.setBounds(720, 360, 136, 197);
+        crtpile4.setBounds(720, 320, 136, 197);
 
         crtpile5.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(910, 320, crtpile5);
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(910, 280, crtpile5);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(910, 360, crtpile5);
+                apercuCarte(910, 320, crtpile5);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(5,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(5,piocher);
+                } 
             }
         });
         panel.add(crtpile5);
-        crtpile5.setBounds(910, 360, 136, 196);
+        crtpile5.setBounds(910, 320, 136, 196);
 
         crtpile6.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
                 if(piocher == true){
-                    apercuCarte(1090, 320, crtpile6);
+                    if(tourj1 == true && !j.estIA(1) || tourj2 == true && !j.estIA(2)){
+                        apercuCarte(1090, 280, crtpile6);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(1090, 360, crtpile6);
+                apercuCarte(1090, 320, crtpile6);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCartePile(6,piocher);
+                if(tourj2 == true && !j.estIA(2) || tourj1 == true && !j.estIA(1)){
+                    actionCartePile(6,piocher);
+                }
             }
         });
         panel.add(crtpile6);
-        crtpile6.setBounds(1090, 360, 136, 196);
-
-        pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        crtpile6.setBounds(1090, 320, 136, 196);
+        
+        
         panel.add(pile1);
-        pile1.setBounds(170, 360, 146, 196);
-
-        pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile1.setBounds(170, 320, 146, 196);
         panel.add(pile2);
-        pile2.setBounds(360, 360, 146, 196);
-
-        pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile2.setBounds(360, 320, 146, 196);
         panel.add(pile3);
-        pile3.setBounds(550, 360, 146, 196);
-
-        pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile3.setBounds(550, 320, 146, 196);
         panel.add(pile4);
-        pile4.setBounds(740, 360, 146, 196);
-
-        pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile4.setBounds(740, 320, 146, 196);
         panel.add(pile5);
-        pile5.setBounds(930, 360, 146, 196);
-
-        pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+        pile5.setBounds(930, 320, 146, 196);
         panel.add(pile6);
-        pile6.setBounds(1110, 360, 146, 196);
-
+        pile6.setBounds(1110, 320, 146, 196);
+        
         J1c11.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(990, 600, J1c11);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c11.getIcon() != null){
+                        peutJouerCarte(10);
+                    } else {
+                        apercuCarte(990, 580, J1c11);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(990, 650, J1c11);
+                apercuCarte(990, 620, J1c11);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c11, carteJ1, 10, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c11, carteJ1, 10, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c11);
-        J1c11.setBounds(990, 650, 136, 197);
+        J1c11.setBounds(990, 620, 136, 197);
 
         J1c10.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(920, 600, J1c10);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c10.getIcon() != null){
+                        peutJouerCarte(9);
+                    } else {
+                        apercuCarte(920, 580, J1c10);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(920, 650, J1c10);
+                apercuCarte(920, 620, J1c10);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c10, carteJ1, 9, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c10, carteJ1, 9, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c10);
-        J1c10.setBounds(920, 650, 136, 196);
-
+        J1c10.setBounds(920, 620, 136, 196);
         J1c9.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(840, 600, J1c9);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c9.getIcon() != null){
+                        peutJouerCarte(8);
+                    } else {
+                        apercuCarte(840, 580, J1c9);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(840, 650, J1c9);
+                apercuCarte(840, 620, J1c9);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c9, carteJ1, 8, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c9, carteJ1, 8, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c9);
-        J1c9.setBounds(840, 650, 136, 196);
+        J1c9.setBounds(840, 620, 136, 196);
 
         J1c8.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(770, 600, J1c8);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c8.getIcon() != null){
+                        peutJouerCarte(7);
+                    } else {
+                        apercuCarte(770, 580, J1c8);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(770, 650, J1c8);
+                apercuCarte(770, 620, J1c8);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c8, carteJ1, 7, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c8, carteJ1, 7, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c8);
-        J1c8.setBounds(770, 650, 136, 196);
+        J1c8.setBounds(770, 620, 136, 196);
 
         J1c7.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(690, 600, J1c7);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c7.getIcon() != null){
+                        peutJouerCarte(6);
+                    } else {
+                        apercuCarte(690, 580, J1c7);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(690, 650, J1c7);
+                apercuCarte(690, 620, J1c7);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c7, carteJ1, 6, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c7, carteJ1, 6, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c7);
-        J1c7.setBounds(690, 650, 136, 197);
+        J1c7.setBounds(690, 620, 136, 197);
 
         J1c6.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(620, 600, J1c6);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c6.getIcon() != null){
+                        peutJouerCarte(5);
+                    } else {
+                        apercuCarte(620, 580, J1c6);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(620, 650, J1c6);
+                apercuCarte(620, 620, J1c6);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c6, carteJ1, 5, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c6, carteJ1, 5, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c6);
-        J1c6.setBounds(620, 650, 136, 196);
+        J1c6.setBounds(620, 620, 136, 196);
 
         J1c5.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(540, 600, J1c5);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c5.getIcon() != null){
+                        peutJouerCarte(4);
+                    } else {
+                        apercuCarte(540, 580, J1c5);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(540, 650, J1c5);
+                apercuCarte(540, 620, J1c5);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c5, carteJ1, 4, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c5, carteJ1, 4, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c5);
-        J1c5.setBounds(540, 650, 136, 197);
+        J1c5.setBounds(540, 620, 136, 197);
 
         J1c4.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(470, 600, J1c4);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c4.getIcon() != null){
+                        peutJouerCarte(3);
+                    } else {
+                        apercuCarte(470, 580, J1c4);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(470, 650, J1c4);
+                apercuCarte(470, 620, J1c4);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c4, carteJ1, 3, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c4, carteJ1, 3, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c4);
-        J1c4.setBounds(470, 650, 136, 196);
+        J1c4.setBounds(470, 620, 136, 196);
 
         J1c3.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(400, 600, J1c3);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c3.getIcon() != null){
+                        peutJouerCarte(2);
+                    } else {
+                        apercuCarte(400, 580, J1c3);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(400, 650, J1c3);
+                apercuCarte(400, 620, J1c3);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c3, carteJ1, 2, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c3, carteJ1, 2, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c3);
-        J1c3.setBounds(400, 650, 136, 196);
+        J1c3.setBounds(400, 620, 136, 196);
 
         J1c2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(330, 600, J1c2);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c2.getIcon() != null){
+                        peutJouerCarte(1);
+                    } else {
+                        apercuCarte(330, 580, J1c2);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(330, 650, J1c2);
+                apercuCarte(330, 620, J1c2);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c2, carteJ1, 1, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c2, carteJ1, 1, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c2);
-        J1c2.setBounds(330, 650, 136, 196);
+        J1c2.setBounds(330, 620, 136, 196);
 
         J1c1.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent evt) {
-                if(tourj2 != true && piocher != true){
-                    apercuCarte(250, 600, J1c1);
+                if(tourj2 != true && piocher != true && !j.estIA(1)){
+                    if(j.quiRecois() == 1 && J1c1.getIcon() != null){
+                        peutJouerCarte(0);
+                    } else {
+                        apercuCarte(250, 580, J1c1);
+                    }
                 }
             }
             @Override
             public void mouseExited(MouseEvent evt) {
-                apercuCarte(250, 650, J1c1);
+                apercuCarte(250, 620, J1c1);
             }
             @Override
             public void mouseClicked(MouseEvent evt) {
-                actionCarte(J1c1, carteJ1, 0, tourj2, piocher);
+                if(!j.estIA(1)){
+                    actionCarte(J1c1, carteJ1, 0, tourj2, piocher, dosj1);
+                }
             }
         });
         panel.add(J1c1);
-        J1c1.setBounds(250, 650, 136, 197);
+        J1c1.setBounds(250, 620, 136, 197);
 
         tourJ1.setIcon(new ImageIcon(getClass().getResource("/images/tour.png"))); 
         panel.add(tourJ1);
-        tourJ1.setBounds(170, 780, 70, 64);
+        tourJ1.setBounds(170, 750, 70, 64);
 
         tourJ2.setIcon(new ImageIcon(getClass().getResource("/images/tour.png"))); 
         panel.add(tourJ2);
-        tourJ2.setBounds(160, 60, 64, 64);
+        tourJ2.setBounds(160, 20, 64, 64);
 
         fond.setIcon(new ImageIcon(getClass().getResource("/images/fond3.jpg"))); 
         fond.setPreferredSize(new Dimension(1356, 1000));
         panel.add(fond);
-        fond.setBounds(0, 0, 1740, 870);
+        fond.setBounds(0, 0, 1700, 850);
 
         jMenuBar1.setBackground(new Color(204, 204, 204));
         jMenuBar1.setFont(new Font("Times New Roman", 0, 24)); 
@@ -2355,10 +3265,30 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
 
         newpartie.setFont(new Font("Times New Roman", 1, 18)); 
         newpartie.setText("Nouvelle partie");
+        newpartie.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent evt) {
+                j.nouvellePartie();
+                afficherAtout(atout);
+                ptJ1.setText("0");
+                ptJ2.setText("0");
+                carteJ1.setIcon(null);
+                carteJ2.setIcon(null);
+                J1pli.setIcon(null);
+                J2pli.setIcon(null);
+                J1nbrpli.setText("0");
+                J2nbrpli.setText("0");
+                piocher=false;
+                tourj1=true;
+                tourj2=false;
+                pause.setSelected(false);
+                metAJour();
+            }
+        });
         jMenu1.add(newpartie);
 
         save.setFont(new Font("Times New Roman", 1, 18)); 
-        save.setText("Sauvergarder");
+        save.setText("Sauvegarder");
         save.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent evt) {
@@ -2367,7 +3297,12 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                 int rep = filec.showSaveDialog(null); 
                 if(rep == JFileChooser.APPROVE_OPTION){
                      File file = new File(filec.getSelectedFile().getAbsolutePath());
-                     System.out.println(file);
+                     try {
+                        j.sauvegarder(file.toString());
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -2382,8 +3317,24 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
                 histof.setLocationRelativeTo(null);
                 namej1.setText(nomJ1.getText());
                 namej2.setText(nomJ2.getText());
-                j1m1.setText(Integer.toString(j.scorePartiej1()));
-                j2m1.setText(Integer.toString(j.scorePartiej2()));
+                switch(j.nbmanche()){
+                    case 1:
+                        j1m1.setText(Integer.toString(j.scorePartiej1()));
+                        j2m1.setText(Integer.toString(j.scorePartiej2()));
+                        break;
+                    case 2:
+                        j1m2.setText(Integer.toString(j.scorePartiej1()));
+                        j2m2.setText(Integer.toString(j.scorePartiej2()));
+                        break;
+                    case 3:
+                        j1m3.setText(Integer.toString(j.scorePartiej1()));
+                        j2m3.setText(Integer.toString(j.scorePartiej2()));
+                        break;
+                    case 4:
+                        j1m4.setText(Integer.toString(j.scorePartiej1()));
+                        j2m4.setText(Integer.toString(j.scorePartiej2()));
+                        break;
+                }              
             }
         });
         jMenu1.add(historique);
@@ -2392,7 +3343,7 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
 
         jMenu2.setText("Regles");
         jMenu2.setFont(new Font("Times New Roman", 1, 20)); 
-        jMenu2.setPreferredSize(new Dimension(65, 35));
+        jMenu2.setPreferredSize(new Dimension(70, 35));
         jMenu2.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent evt) {
@@ -2409,12 +3360,12 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(panel, GroupLayout.PREFERRED_SIZE, 1740, GroupLayout.PREFERRED_SIZE)
+            .addComponent(panel, GroupLayout.PREFERRED_SIZE, 1700, GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(panel, GroupLayout.PREFERRED_SIZE, 869, GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel, GroupLayout.PREFERRED_SIZE, 850, GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -2422,11 +3373,12 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     }
     
     
+    //LA fenetre fin partie
     private void finPartieFrame() {
         partief = new JFrame();
         winner = new JLabel();
-        scorej1 = new JLabel();
         scorej2 = new JLabel();
+        scorej1 = new JLabel();
         trophy = new JLabel();
         JLabel fond = new JLabel();
 
@@ -2442,15 +3394,15 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         partief.getContentPane().add(winner);
         winner.setBounds(30, 260, 450, 50);
 
-        scorej1.setFont(new Font("Times New Roman", 3, 24));
-        scorej1.setForeground(new Color(255, 255, 255));
-        partief.getContentPane().add(scorej1);
-        scorej1.setBounds(150, 370, 210, 50);
-
         scorej2.setFont(new Font("Times New Roman", 3, 24));
         scorej2.setForeground(new Color(255, 255, 255));
         partief.getContentPane().add(scorej2);
-        scorej2.setBounds(150, 320, 210, 50);
+        scorej2.setBounds(150, 370, 210, 50);
+
+        scorej1.setFont(new Font("Times New Roman", 3, 24));
+        scorej1.setForeground(new Color(255, 255, 255));
+        partief.getContentPane().add(scorej1);
+        scorej1.setBounds(150, 320, 210, 50);
 
         partief.getContentPane().add(trophy);
         trophy.setBounds(170, 20, 190, 240);
@@ -2462,12 +3414,116 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
     }
     
     
+    private void Pile(){
+        switch(j.taillepile(1)){
+            case 1:
+                pile1.setIcon(null); 
+                break;
+            case 2:
+                pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile1.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+        switch(j.taillepile(2)){
+            case 1:
+                pile2.setIcon(null); 
+                break;
+            case 2:
+                pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile2.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+        switch(j.taillepile(3)){
+            case 1:
+                pile3.setIcon(null); 
+                break;
+            case 2:
+                pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile3.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+        switch(j.taillepile(4)){
+            case 1:
+                pile4.setIcon(null); 
+                break;
+            case 2:
+                pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile4.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+        switch(j.taillepile(5)){
+            case 1:
+                pile5.setIcon(null); 
+                break;
+            case 2:
+                pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile5.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+        switch(j.taillepile(6)){
+            case 1:
+                pile6.setIcon(null); 
+                break;
+            case 2:
+                pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_1.png"))); 
+                break;
+            case 3:
+                pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_2.png"))); 
+                break;
+            case 4:
+                pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_3.png"))); 
+                break;
+            case 5:
+                pile6.setIcon(new ImageIcon(getClass().getResource("/images/cartes/pile_4.png"))); 
+                break;
+        }
+    }
+    
     private void histoFrame() {
         
         histof = new JFrame();
         namej1 = new JLabel();
         namej2 = new JLabel();
-        JLabel jLabel2 = new JLabel();
         JLabel jLabel3 = new JLabel();
         JLabel jLabel4 = new JLabel();
         JLabel jLabel5 = new JLabel();
@@ -2476,12 +3532,10 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         j1m2 = new JTextField();
         j1m3 = new JTextField();
         j1m4 = new JTextField();
-        j1m5 = new JTextField();
         j2m1 = new JTextField();
         j2m2 = new JTextField();
         j2m3 = new JTextField();
         j2m4 = new JTextField();
-        j2m5 = new JTextField();
         JLabel fond = new JLabel();
 
         histof.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -2502,11 +3556,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         histof.getContentPane().add(namej2);
         namej2.setBounds(370, 40, 100, 30);
 
-        jLabel2.setFont(new Font("Times New Roman", 3, 24));
-        jLabel2.setForeground(new Color(255, 255, 255));
-        jLabel2.setText("Points manche 5 :");
-        histof.getContentPane().add(jLabel2);
-        jLabel2.setBounds(30, 330, 180, 50);
 
         jLabel3.setFont(new Font("Times New Roman", 3, 24));
         jLabel3.setForeground(new Color(255, 255, 255));
@@ -2576,17 +3625,6 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         histof.getContentPane().add(j1m4);
         j1m4.setBounds(270, 270, 40, 40);
 
-        j1m5.setBackground(new Color(204, 204, 204));
-        j1m5.setFont(new Font("Times New Roman", 1, 22));
-        j1m5.setForeground(new Color(255, 255, 255));
-        j1m5.setHorizontalAlignment(JTextField.CENTER);
-        j1m5.setText("0");
-        j1m5.setBorder(createEtchedBorder());
-        j1m5.setFocusable(false);
-        j1m5.setOpaque(false);
-        histof.getContentPane().add(j1m5);
-        j1m5.setBounds(270, 330, 40, 40);
-
         j2m1.setBackground(new Color(204, 204, 204));
         j2m1.setFont(new Font("Times New Roman", 1, 22));
         j2m1.setForeground(new Color(255, 255, 255));
@@ -2631,21 +3669,47 @@ public class VueGraphique extends JFrame implements InterfaceUtilisateur{
         histof.getContentPane().add(j2m4);
         j2m4.setBounds(390, 270, 40, 40);
 
-        j2m5.setBackground(new Color(204, 204, 204));
-        j2m5.setFont(new Font("Times New Roman", 1, 22));
-        j2m5.setForeground(new Color(255, 255, 255));
-        j2m5.setHorizontalAlignment(JTextField.CENTER);
-        j2m5.setText("0");
-        j2m5.setBorder(createEtchedBorder());
-        j2m5.setFocusable(false);
-        j2m5.setOpaque(false);
-        histof.getContentPane().add(j2m5);
-        j2m5.setBounds(390, 330, 40, 40);
-
         fond.setIcon(new ImageIcon(getClass().getResource("/images/fond3.jpg")));
         histof.getContentPane().add(fond);
         fond.setBounds(0, 0, 500, 400);
         histof.setVisible(true);
     }
-    
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        reflechie = j.getreflechie();
+        int nb =j.getentier();
+        ref=1;
+        if(reflechie!=1 && !j.getpause() && !j.partifini()){
+            if(piocher != true){
+                actionCarteIA(nb);
+            } else {
+                actionCartePileIA(nb);
+            }
+            switch (c.commande(nb)) {
+                case 0:
+                    break;
+                case 1  :
+                    action.setText("Vous n'avez pas choisi de");
+                    action2.setText("carte sur l'une des piles");
+                    break; 
+                case 2:
+                    action.setText("Vous n'avez pas choisi de carte");
+                    break; 
+                case 4:
+                    afficherCarteReceveur();
+                    if(j.quiRecois() == 1){
+                        carteJ1.setIcon(null);
+                    } else{
+                        carteJ2.setIcon(null);
+                    }
+                    action.setText("Vous devez jouer la couleur");
+                    action2.setText(j.cartePremCouleur());
+                    break; 
+                }
+            this.ref=0;
+            time.stop();
+            metAJour();
+        }
+    }
 }

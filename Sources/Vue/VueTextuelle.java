@@ -71,6 +71,7 @@ public class VueTextuelle implements Observateur {
             }
             i++;
         }
+
     }
 
     public void afficheGagnantPlis() {
@@ -103,10 +104,15 @@ public class VueTextuelle implements Observateur {
         if (!j.partifini() && (!j.tourfini() || j.debutpartie)) {
             switch (j.phasetourterm()) {
                 case 0:
+                    if (j.phase() == 2) {
+                        afficheGagnantPlisav();
+
+                    }
                     affichePile();
                     afficherCarteDonneur();
                     if (j.quiDonne() == 1) {
                         afficheAtout();
+
                         System.out.println(
                                 "Joueur 1 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
@@ -117,13 +123,11 @@ public class VueTextuelle implements Observateur {
                     }
                     break;
                 case 1:
-                    System.out.print("carte jouee : ");
-                	afficherCarte(j.cartePrem());
-                	System.out.println();
                     affichePile();
                     afficheCarteReceveur();
                     if (j.quiDonne() == 2) {
                         afficheAtout();
+
                         System.out.println(
                                 "Joueur 1 Choisisez une carte a jouer | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
@@ -138,6 +142,7 @@ public class VueTextuelle implements Observateur {
                     affichePile();
                     if (j.quiGagnetour() == 1) {
                         afficheAtout();
+
                         System.out.println(
                                 "Joueur 1 Choisisez une carte a piocher | -1 pour annuler le dernier coup | -2 pour refaire le coup annuler");
                     } else {
@@ -164,11 +169,12 @@ public class VueTextuelle implements Observateur {
             }
         } else {
             if (!j.partifini()) {
-                if (j.phase() == 2) {
-                    afficheGagnantPlis();
+                if (j.phase() == 2 && !j.manchefini()) {
+                    afficheGagnantPlisav();
 
                 }
                 if (j.manchefini()) {
+                    afficheGagnantPlis();
                     afficheGagnantManche();
                 } else {
 
@@ -182,6 +188,16 @@ public class VueTextuelle implements Observateur {
                 afficheGagnantPartie();
             }
         }
+    }
+
+    private void afficheGagnantPlisav() {
+        if (!j.debutpartie)
+
+        System.out.println("Le joueur " + j.quiGagnetourav() + " a gagne le plis avec");
+
+        afficherCarte(j.cartePremav());
+        afficherCarte(j.carteSecav());
+        
     }
 
     private void afficheAtout() {
@@ -222,8 +238,8 @@ public class VueTextuelle implements Observateur {
             System.out.println("Le joueur " + j.quiGagnePartie() + " a gagne la partie ");
         else
             System.out.println("Il y a une egalité personne ne gagne cette partie");
-        System.out.println("Le joueur 1 a gagne" + j.nbmanchegagnej1() + " manches , Le joueur 2 a gagne "
-                + j.nbmanchegagnej2() + "manches");
+        System.out.println("Le joueur 1 a gagne " + j.nbmanchegagnej1() + " manches , Le joueur 2 a gagne "
+                + j.nbmanchegagnej2() + " manches");
         System.out.println("Score joueur 1 : " + j.scorePartiej1() + " Score joueur 2 : " + j.scorePartiej2());
     }
 
